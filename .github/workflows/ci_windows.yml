@@ -6,7 +6,7 @@ on:
       - 'main'
   pull_request:
     paths:
-      - '.github/workflows/ci_coverage-windows.yml'
+      - '.github/workflows/ci_windows.yml'
       - 'src/**'
       - 'test/**'
       - 'package-lock.json'

@@ -6,7 +6,7 @@ on:
       - 'main'
   pull_request:
     paths:
-      - '.github/workflows/ci_coverage-linux.yml'
+      - '.github/workflows/ci_linux.yml'
       - 'src/**'
       - 'test/**'
       - 'package-lock.json'
