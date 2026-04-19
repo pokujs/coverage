@@ -1,3 +1,5 @@
+import type { BranchBlockEntry } from './branch-blocks.js';
+
 export type V8Range = {
   startOffset: number;
   endOffset: number;
@@ -18,6 +20,8 @@ export type V8ScriptCoverage = {
 
 export type SubRangeEntry = {
   line: number;
+  startOffset: number;
+  endOffset: number;
   takenCount: number;
   indexInFunction: number;
 };
@@ -25,9 +29,12 @@ export type SubRangeEntry = {
 export type FunctionEntry = {
   line: number;
   name: string;
+  startOffset: number;
+  endOffset: number;
   outerCount: number;
   isBlockCoverage: boolean;
   subRanges: Map<string, SubRangeEntry>;
+  blocks: BranchBlockEntry[];
 };
 
 export type FileAggregation = {

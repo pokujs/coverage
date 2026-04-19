@@ -10,74 +10,28 @@ import type { SourceMapInput, TraceMap } from '../@types/source-map.js';
 import type { V8Range } from '../@types/v8.js';
 import { readFileSync } from 'node:fs';
 import { isAbsolute, sep } from 'node:path';
-import { parse as acornParse } from 'acorn';
 import { offsets } from '../utils/offsets.js';
 import { isBannedPath } from '../utils/paths.js';
 import { traceMap } from '../utils/source-map/index.js';
 import { armCoverage } from './shared/arm-coverage.js';
+import { astCache } from './shared/ast-cache.js';
+import { astWalk } from './shared/ast-walk.js';
 import { passesPreRemapFilter } from './shared/pre-remap-filter.js';
 import { sourceCache } from './shared/source-cache.js';
 import { findV8JsonFiles, parseV8Json } from './shared/v8-discovery.js';
-
-const ACORN_OPTIONS = {
-  ecmaVersion: 'latest',
-  sourceType: 'module',
-  allowHashBang: true,
-  allowAwaitOutsideFunction: true,
-  allowImportExportEverywhere: true,
-  allowReturnOutsideFunction: true,
-  allowSuperOutsideMethod: true,
-} as const;
-
-const SKIP_KEYS: ReadonlySet<string> = new Set([
-  'type',
-  'start',
-  'end',
-  'loc',
-  'range',
-]);
-
-const parseWithAcorn = (source: string): Program | null => {
-  try {
-    return acornParse(source, ACORN_OPTIONS);
-  } catch {
-    return null;
-  }
-};
-
-const isOptionalAccess = (currentNode: Node): boolean =>
-  (currentNode.type === 'MemberExpression' ||
-    currentNode.type === 'CallExpression') &&
-  Reflect.get(currentNode, 'optional') === true;
-
-const isBranchNode = (currentNode: Node): boolean =>
-  currentNode.type === 'LogicalExpression' ||
-  currentNode.type === 'ConditionalExpression' ||
-  currentNode.type === 'AssignmentPattern' ||
-  currentNode.type === 'IfStatement' ||
-  currentNode.type === 'SwitchStatement' ||
-  isOptionalAccess(currentNode);
-
-const isNodeLike = (candidate: unknown): candidate is Node => {
-  if (candidate === null || typeof candidate !== 'object') return false;
-
-  const typed: { type?: unknown; start?: unknown } = candidate;
-
-  return typeof typed.type === 'string' && typeof typed.start === 'number';
-};
 
 const getChildNode = (parentNode: Node, propertyName: string): Node | null => {
   const value: unknown = Reflect.get(parentNode, propertyName);
 
   if (value === null || value === undefined) return null;
-  return isNodeLike(value) ? value : null;
+  return astWalk.isNodeLike(value) ? value : null;
 };
 
 const getChildNodes = (parentNode: Node, propertyName: string): Node[] => {
   const value: unknown = Reflect.get(parentNode, propertyName);
 
   if (!Array.isArray(value)) return [];
-  return value.filter(isNodeLike);
+  return value.filter(astWalk.isNodeLike);
 };
 
 const computeArmRanges = (currentNode: Node): readonly AstArmRange[] => {
@@ -135,7 +89,7 @@ const computeArmRanges = (currentNode: Node): readonly AstArmRange[] => {
 
   if (
     currentNode.type === 'MemberExpression' &&
-    isOptionalAccess(currentNode)
+    astWalk.isOptionalAccess(currentNode)
   ) {
     const objectNode = getChildNode(currentNode, 'object');
     const propertyNode = getChildNode(currentNode, 'property');
@@ -147,7 +101,10 @@ const computeArmRanges = (currentNode: Node): readonly AstArmRange[] => {
     ];
   }
 
-  if (currentNode.type === 'CallExpression' && isOptionalAccess(currentNode)) {
+  if (
+    currentNode.type === 'CallExpression' &&
+    astWalk.isOptionalAccess(currentNode)
+  ) {
     const calleeNode = getChildNode(currentNode, 'callee');
     if (calleeNode === null) return [];
 
@@ -163,37 +120,19 @@ const computeArmRanges = (currentNode: Node): readonly AstArmRange[] => {
 const collectBranchEntries = (programTree: Program): AstBranchEntry[] => {
   const entries: AstBranchEntry[] = [];
 
-  const walkNode = (currentNode: Node): void => {
-    if (isBranchNode(currentNode)) {
-      const armRanges = computeArmRanges(currentNode);
+  astWalk.forEachNode(programTree, (currentNode) => {
+    if (!astWalk.isBranchNode(currentNode)) return;
 
-      if (armRanges.length > 0)
-        entries.push({
-          nodeStart: currentNode.start,
-          armStarts: armRanges.map((range) => range.armStart),
-          armEnds: armRanges.map((range) => range.armEnd),
-        });
-    }
+    const armRanges = computeArmRanges(currentNode);
+    if (armRanges.length === 0) return;
 
-    for (const propertyKey of Object.keys(currentNode)) {
-      if (SKIP_KEYS.has(propertyKey)) continue;
+    entries.push({
+      nodeStart: currentNode.start,
+      armStarts: armRanges.map((range) => range.armStart),
+      armEnds: armRanges.map((range) => range.armEnd),
+    });
+  });
 
-      const propertyValue: unknown = Reflect.get(currentNode, propertyKey);
-      if (propertyValue === null || propertyValue === undefined) continue;
-
-      if (Array.isArray(propertyValue)) {
-        for (const childCandidate of propertyValue) {
-          if (isNodeLike(childCandidate)) walkNode(childCandidate);
-        }
-
-        continue;
-      }
-
-      if (isNodeLike(propertyValue)) walkNode(propertyValue);
-    }
-  };
-
-  walkNode(programTree);
   return entries;
 };
 
@@ -248,6 +187,8 @@ export const discoverBranches = (
   cwd: string,
   preRemapFilter: ResolvedFileFilter
 ): Map<string, readonly DiscoveredBranch[]> => {
+  astCache.reset();
+
   const discoveredByPath = new Map<string, DiscoveredBranch[]>();
   const processedScriptUrls = new Set<string>();
 
@@ -280,7 +221,7 @@ export const discoverBranches = (
 
       processedScriptUrls.add(script.url);
 
-      const programTree = parseWithAcorn(resolved.source);
+      const programTree = astCache.parse(resolved.source);
       if (programTree === null) continue;
 
       const branchEntries = collectBranchEntries(programTree);

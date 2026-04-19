@@ -52,49 +52,6 @@ export const computeLineHits = (
   return result;
 };
 
-const branchTokenPattern =
-  /\?|&&|\|\||\bif\b|\belse\b|\bswitch\b|\bcase\b|\bdefault\b|\bfor\b|\bwhile\b|\bdo\b|\bcatch\b/;
-
-export const filterGhostBranches = (
-  fileAggregation: FileAggregation,
-  source: string,
-  lineStarts: number[]
-): void => {
-  const sourceLength = source.length;
-  const lineHasBranchToken = new Map<number, boolean>();
-
-  const lineCarriesBranchToken = (lineNumber: number): boolean => {
-    if (lineNumber < 1) return true;
-
-    const cached = lineHasBranchToken.get(lineNumber);
-    if (cached !== undefined) return cached;
-
-    const lineStart = lineStarts[lineNumber - 1] ?? 0;
-    const lineEnd = lineStarts[lineNumber] ?? sourceLength;
-    const lineText = source.slice(lineStart, lineEnd);
-    const carries = branchTokenPattern.test(lineText);
-
-    lineHasBranchToken.set(lineNumber, carries);
-    return carries;
-  };
-
-  for (const functionEntry of fileAggregation.functions.values()) {
-    if (!functionEntry.isBlockCoverage) continue;
-    if (functionEntry.subRanges.size === 0) continue;
-
-    const ghostKeys: string[] = [];
-    for (const [subKey, subRange] of functionEntry.subRanges) {
-      if (!lineCarriesBranchToken(subRange.line)) {
-        ghostKeys.push(subKey);
-      }
-    }
-
-    for (const subKey of ghostKeys) {
-      functionEntry.subRanges.delete(subKey);
-    }
-  }
-};
-
 export const applyIgnoredLines = (
   lineHits: Map<number, number>,
   ignoredLines: Set<number>
@@ -111,15 +68,11 @@ export const applyIgnoredBranches = (
   if (ignoredLines.size === 0) return;
 
   for (const functionEntry of fileAggregation.functions.values()) {
-    if (functionEntry.subRanges.size === 0) continue;
+    if (functionEntry.blocks.length === 0) continue;
 
-    const ignoredKeys: string[] = [];
-
-    for (const [subKey, subRange] of functionEntry.subRanges) {
-      if (ignoredLines.has(subRange.line)) ignoredKeys.push(subKey);
-    }
-
-    for (const subKey of ignoredKeys) functionEntry.subRanges.delete(subKey);
+    functionEntry.blocks = functionEntry.blocks.filter(
+      (block) => !ignoredLines.has(block.line)
+    );
   }
 };
 
@@ -153,9 +106,12 @@ export const absorbFunctions = (
       functionEntry = {
         line,
         name: scriptFunction.functionName,
+        startOffset: outerRange.startOffset,
+        endOffset: outerRange.endOffset,
         outerCount: 0,
         isBlockCoverage: scriptFunction.isBlockCoverage,
         subRanges: new Map(),
+        blocks: [],
       };
       fileAggregation.functions.set(functionKey, functionEntry);
     } else if (
@@ -176,18 +132,21 @@ export const absorbFunctions = (
       const subKey = `${subRange.startOffset}-${subRange.endOffset}`;
 
       let subRangeEntry = functionEntry.subRanges.get(subKey);
-
       if (!subRangeEntry) {
         const [subLine] = offsets.rangeLines(
           subRange.startOffset,
           subRange.endOffset,
           lineStarts
         );
+
         subRangeEntry = {
           line: subLine,
+          startOffset: subRange.startOffset,
+          endOffset: subRange.endOffset,
           takenCount: 0,
           indexInFunction: rangeIndex - 1,
         };
+
         functionEntry.subRanges.set(subKey, subRangeEntry);
       }
 

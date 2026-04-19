@@ -45,6 +45,7 @@ The first code coverage package that targets Node.js, Bun, and Deno simultaneous
 - **Extract duplicated logic between sibling modules to a shared module in the same layer.** If N files in the same folder share the same skeleton with small parameterizable differences, extract the skeleton. The `shared/` pattern applies equally to `src/` and to test helpers.
   - [src/runtimes/lifecycle.ts](src/runtimes/lifecycle.ts) for runtime setup and teardown.
   - `shared/` subfolders under [src/reporters/](src/reporters/), [src/converters/](src/converters/), and [test/**utils**/readers/](test/__utils__/readers/) for cross-consumer helpers.
+  - AST primitives live in [src/converters/shared/](src/converters/shared/).
 - **Promote on second consumer. Never duplicate. Never import from a sibling.** The moment a helper in `reporters/text/` is needed by `reporters/html/`, it moves to `reporters/shared/` in the same commit. A sibling reporter (or converter) reaching into another's internals is a bug to fix, not a shortcut to use.
 - **Single file vs. directory with `index.ts` barrel.** When a file accumulates distinct responsibilities (discovery, parsing, serialization, orchestration), promote it to a directory. `index.ts` is strictly the orchestrator and public entry. Each responsibility goes into its own file. Established patterns: [src/reporters/text/](src/reporters/text/), [src/converters/v8-to-lcov/](src/converters/v8-to-lcov/), [src/reporters/lcovonly/](src/reporters/lcovonly/).
 - **`index.ts` is never a type aggregator.** Types still come from `@types/`.

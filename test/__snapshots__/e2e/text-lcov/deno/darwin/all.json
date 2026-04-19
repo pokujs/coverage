@@ -588,8 +588,8 @@
       ]
     },
     "branches": {
-      "hit": 48,
-      "found": 48,
+      "hit": 50,
+      "found": 50,
       "details": [
         {
           "line": 4,
@@ -709,55 +709,55 @@
           "line": 16,
           "block": 9,
           "branch": 1,
-          "taken": 2
+          "taken": 1
         },
         {
-          "line": 16,
+          "line": 21,
           "block": 10,
           "branch": 0,
           "taken": 1
         },
         {
-          "line": 16,
+          "line": 22,
           "block": 10,
+          "branch": 1,
+          "taken": 3
+        },
+        {
+          "line": 23,
+          "block": 11,
+          "branch": 0,
+          "taken": 1
+        },
+        {
+          "line": 24,
+          "block": 11,
           "branch": 1,
           "taken": 2
         },
         {
-          "line": 21,
-          "block": 11,
-          "branch": 0,
-          "taken": 1
-        },
-        {
-          "line": 21,
-          "block": 11,
-          "branch": 1,
-          "taken": 3
-        },
-        {
-          "line": 23,
+          "line": 25,
           "block": 12,
           "branch": 0,
           "taken": 1
         },
         {
-          "line": 23,
+          "line": 26,
           "block": 12,
           "branch": 1,
-          "taken": 3
-        },
-        {
-          "line": 25,
-          "block": 13,
-          "branch": 0,
           "taken": 1
         },
         {
-          "line": 25,
+          "line": 31,
+          "block": 13,
+          "branch": 0,
+          "taken": 2
+        },
+        {
+          "line": 31,
           "block": 13,
           "branch": 1,
-          "taken": 3
+          "taken": 1
         },
         {
           "line": 31,
@@ -772,13 +772,13 @@
           "taken": 1
         },
         {
-          "line": 31,
+          "line": 32,
           "block": 15,
           "branch": 0,
           "taken": 2
         },
         {
-          "line": 31,
+          "line": 32,
           "block": 15,
           "branch": 1,
           "taken": 1
@@ -787,13 +787,13 @@
           "line": 32,
           "block": 16,
           "branch": 0,
-          "taken": 2
+          "taken": 1
         },
         {
           "line": 32,
           "block": 16,
           "branch": 1,
-          "taken": 1
+          "taken": 2
         },
         {
           "line": 33,
@@ -820,62 +820,74 @@
           "taken": 1
         },
         {
-          "line": 42,
+          "line": 38,
           "block": 19,
           "branch": 0,
           "taken": 1
         },
         {
-          "line": 42,
+          "line": 38,
           "block": 19,
+          "branch": 1,
+          "taken": 2
+        },
+        {
+          "line": 42,
+          "block": 20,
+          "branch": 0,
+          "taken": 1
+        },
+        {
+          "line": 42,
+          "block": 20,
           "branch": 1,
           "taken": 1
         },
         {
           "line": 47,
-          "block": 20,
+          "block": 21,
           "branch": 0,
           "taken": 1
         },
         {
           "line": 47,
-          "block": 20,
+          "block": 21,
           "branch": 1,
           "taken": 1
         },
         {
           "line": 52,
-          "block": 21,
+          "block": 22,
           "branch": 0,
           "taken": 2
         },
         {
           "line": 52,
-          "block": 21,
-          "branch": 1,
-          "taken": 1
-        },
-        {
-          "line": 57,
-          "block": 22,
-          "branch": 0,
-          "taken": 1
-        },
-        {
-          "line": 57,
           "block": 22,
           "branch": 1,
           "taken": 1
         },
         {
-          "line": 65,
+          "line": 57,
           "block": 23,
           "branch": 0,
           "taken": 1
         },
         {
-          "line": 65,
+          "line": 57,
           "block": 23,
+          "branch": 1,
+          "taken": 1
+        },
+        {
+          "line": 65,
+          "block": 24,
+          "branch": 0,
+          "taken": 1
+        },
+        {
+          "line": 65,
+          "block": 24,
           "branch": 1,
           "taken": 1
         }

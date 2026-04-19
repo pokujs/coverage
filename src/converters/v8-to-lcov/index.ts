@@ -8,6 +8,8 @@ import type {
 import { readFileSync } from 'node:fs';
 import { offsets } from '../../utils/offsets.js';
 import { traceMap } from '../../utils/source-map/index.js';
+import { astCache } from '../shared/ast-cache.js';
+import { branchBlocks } from '../shared/branch-blocks.js';
 import { ignoreDirectives } from '../shared/ignore-directives.js';
 import { passesPreRemapFilter } from '../shared/pre-remap-filter.js';
 import { sourceMapRemap } from '../shared/remap.js';
@@ -18,13 +20,13 @@ import {
   applyIgnoredBranches,
   applyIgnoredLines,
   computeLineHits,
-  filterGhostBranches,
   mergeLineHits,
 } from './extraction.js';
 import { serializeLcov } from './serialize.js';
 
 const mergeIntoAggregation = (
   aggregations: Map<string, FileAggregation>,
+  sourceByPath: Map<string, string>,
   filePath: string,
   source: string,
   script: V8ScriptCoverage
@@ -40,20 +42,36 @@ const mergeIntoAggregation = (
     aggregations.set(filePath, aggregation);
   }
 
+  sourceByPath.set(filePath, source);
+
   const lineStartTable = offsets.lineStarts(source);
 
   mergeLineHits(aggregation.lineHits, computeLineHits(source, script));
   absorbFunctions(aggregation, script, lineStartTable);
-  filterGhostBranches(aggregation, source, lineStartTable);
 
   const ignoredLines = ignoreDirectives.parseSource(source);
-
   applyIgnoredLines(aggregation.lineHits, ignoredLines);
-  applyIgnoredBranches(aggregation, ignoredLines);
+};
+
+const finalizeAggregations = (
+  aggregations: Map<string, FileAggregation>,
+  sourceByPath: Map<string, string>
+): void => {
+  for (const [filePath, aggregation] of aggregations) {
+    const source = sourceByPath.get(filePath);
+    if (source === undefined) continue;
+
+    const lineStartTable = offsets.lineStarts(source);
+    const ignoredLines = ignoreDirectives.parseSource(source);
+
+    branchBlocks.build(aggregation, source, lineStartTable);
+    applyIgnoredBranches(aggregation, ignoredLines);
+  }
 };
 
 const processDirectScript = (
   aggregations: Map<string, FileAggregation>,
+  sourceByPath: Map<string, string>,
   resolved: ResolvedScriptSource,
   script: V8ScriptCoverage
 ): void => {
@@ -61,6 +79,7 @@ const processDirectScript = (
 
   mergeIntoAggregation(
     aggregations,
+    sourceByPath,
     resolved.filePath,
     resolved.source,
     script
@@ -69,6 +88,7 @@ const processDirectScript = (
 
 const processRemappedScript = (
   aggregations: Map<string, FileAggregation>,
+  sourceByPath: Map<string, string>,
   resolved: ResolvedScriptSource,
   script: V8ScriptCoverage,
   cwd: string
@@ -88,6 +108,7 @@ const processRemappedScript = (
   for (const entry of projected) {
     mergeIntoAggregation(
       aggregations,
+      sourceByPath,
       entry.originalPath,
       entry.originalSource,
       entry.syntheticScript
@@ -100,10 +121,13 @@ export const v8ToLcov = (
   cwd: string,
   preRemapFilter: ResolvedFileFilter
 ): string => {
+  astCache.reset();
+
   const jsonFiles = findV8JsonFiles(tempDir);
   if (jsonFiles.length === 0) return '';
 
   const fileAggregations = new Map<string, FileAggregation>();
+  const sourceByPath = new Map<string, string>();
 
   for (const jsonPath of jsonFiles) {
     let content: string;
@@ -128,12 +152,20 @@ export const v8ToLcov = (
         continue;
 
       if (resolved.sourceMapData !== undefined) {
-        processRemappedScript(fileAggregations, resolved, script, cwd);
+        processRemappedScript(
+          fileAggregations,
+          sourceByPath,
+          resolved,
+          script,
+          cwd
+        );
       } else {
-        processDirectScript(fileAggregations, resolved, script);
+        processDirectScript(fileAggregations, sourceByPath, resolved, script);
       }
     }
   }
+
+  finalizeAggregations(fileAggregations, sourceByPath);
 
   return serializeLcov(fileAggregations, cwd);
 };
