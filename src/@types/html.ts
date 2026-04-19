@@ -2,6 +2,7 @@ import type {
   FileCoverage as IstanbulFileCoverage,
   Position,
 } from './istanbul.js';
+import type { Runtime } from './reporters.js';
 import type { RowMetrics } from './text.js';
 import type { CoverageModel } from './tree.js';
 import type { WatermarkLevel, Watermarks } from './watermarks.js';
@@ -78,17 +79,18 @@ export type HtmlBreadcrumbEntry = {
 
 export type HtmlProjectedCoverage = {
   model: CoverageModel;
-  byPath: Map<string, IstanbulFileCoverage>;
+  byPath: Map<string, IstanbulFileCoverage | null>;
 };
 
 export type HtmlWalkInput = {
   reportsDir: string;
   title: string;
   resolvedWatermarks: Watermarks;
-  istanbulByPath: Map<string, IstanbulFileCoverage>;
+  istanbulByPath: Map<string, IstanbulFileCoverage | null>;
   skipFull: boolean;
   skipEmpty: boolean;
   datetime: string;
+  runtime: Runtime;
 };
 
 export type HtmlDetailEmissionInput = {
@@ -96,11 +98,12 @@ export type HtmlDetailEmissionInput = {
   title: string;
   rootLabel: string;
   resolvedWatermarks: Watermarks;
-  istanbulByPath: Map<string, IstanbulFileCoverage>;
+  istanbulByPath: Map<string, IstanbulFileCoverage | null>;
   skipFull: boolean;
   skipEmpty: boolean;
   datetime: string;
   backBreadcrumb?: boolean;
+  runtime: Runtime;
 };
 
 export type HtmlSpaMetricData = {
@@ -159,6 +162,7 @@ export type HtmlSummaryPageInput = {
   children: readonly HtmlSummaryChild[];
   resolvedWatermarks: Watermarks;
   datetime: string;
+  runtime: Runtime;
 };
 
 export type HtmlDetailPageInput = {
@@ -171,6 +175,21 @@ export type HtmlDetailPageInput = {
   resolvedWatermarks: Watermarks;
   datetime: string;
   backBreadcrumb?: boolean;
+  runtime: Runtime;
+};
+
+export type HtmlLineOnlyDetailPageInput = {
+  title: string;
+  pagePath: string;
+  breadcrumb: readonly HtmlBreadcrumbEntry[];
+  currentLabel: string;
+  metrics: RowMetrics;
+  filePath: string;
+  lineHits: ReadonlyMap<number, number>;
+  resolvedWatermarks: Watermarks;
+  datetime: string;
+  backBreadcrumb?: boolean;
+  runtime: Runtime;
 };
 
 export type HtmlPageTemplateInput = {
@@ -182,4 +201,5 @@ export type HtmlPageTemplateInput = {
   reportClass: WatermarkLevel | 'empty';
   datetime: string;
   backBreadcrumb?: boolean;
+  runtime: Runtime;
 };

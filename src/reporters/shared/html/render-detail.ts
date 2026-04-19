@@ -50,6 +50,7 @@ export const renderDetailPage = (input: HtmlDetailPageInput): string => {
     reportClass,
     datetime: input.datetime,
     backBreadcrumb: input.backBreadcrumb,
+    runtime: input.runtime,
   });
 
   const footer = renderFooter({
@@ -61,6 +62,7 @@ export const renderDetailPage = (input: HtmlDetailPageInput): string => {
     reportClass,
     datetime: input.datetime,
     backBreadcrumb: input.backBreadcrumb,
+    runtime: input.runtime,
   });
 
   const lineNumbersHtml = buildLineNumbers(annotation.maxLines);

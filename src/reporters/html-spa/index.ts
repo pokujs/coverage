@@ -47,6 +47,7 @@ const report: Reporter = (context) => {
     skipEmpty,
     datetime,
     backBreadcrumb: true,
+    runtime: context.runtime,
   });
 
   const data = buildHtmlSpaNode(tree, {

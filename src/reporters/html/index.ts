@@ -14,7 +14,6 @@ import {
   pagePathForDirectory,
   pagePathForFile,
 } from '../shared/html/link-mapper.js';
-import { projectCoverageMap } from '../shared/html/project-coverage-map.js';
 import {
   metricsForFile,
   metricsForSubtree,
@@ -24,6 +23,11 @@ import { shouldHideFileRow } from '../shared/skip.js';
 import { buildTree } from '../shared/tree.js';
 import { copyAssets } from './copy-assets.js';
 import { renderSummaryPage } from './render-summary.js';
+import { bun } from './runtimes/bun.js';
+import { deno } from './runtimes/deno.js';
+import { node } from './runtimes/node.js';
+
+const runtimes = { node, deno, bun };
 
 const childRelativePath = (
   directoryRelativePath: string,
@@ -119,6 +123,7 @@ const walkDirectory = (
     children,
     resolvedWatermarks: input.resolvedWatermarks,
     datetime: input.datetime,
+    runtime: input.runtime,
   });
 
   writePage(input.reportsDir, pagePath, html);
@@ -142,13 +147,10 @@ const walkDirectory = (
 };
 
 const report: Reporter = (context) => {
-  const coverageMap = context.produceCoverageMap();
-  if (coverageMap === null) return;
+  const projectedCoverage = runtimes[context.runtime].project(context);
+  if (projectedCoverage === null) return;
 
-  const entries = Object.keys(coverageMap);
-  if (entries.length === 0) return;
-
-  const { model, byPath } = projectCoverageMap(coverageMap);
+  const { model, byPath } = projectedCoverage;
   if (model.length === 0) return;
 
   const tree = buildTree(model, context.cwd);
@@ -171,6 +173,7 @@ const report: Reporter = (context) => {
       skipFull,
       skipEmpty,
       datetime,
+      runtime: context.runtime,
     },
     tree,
     '',
@@ -187,7 +190,8 @@ const report: Reporter = (context) => {
     skipFull,
     skipEmpty,
     datetime,
+    runtime: context.runtime,
   });
 };
 
-export const html: HtmlHandler = { report };
+export const html: HtmlHandler = { runtimes, report };

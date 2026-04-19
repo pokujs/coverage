@@ -14,7 +14,7 @@ export const projectCoverageMap = (
   coverageMap: CoverageMap
 ): HtmlProjectedCoverage => {
   const model: CoverageModel = [];
-  const byPath = new Map<string, IstanbulFileCoverage>();
+  const byPath = new Map<string, IstanbulFileCoverage | null>();
 
   for (const absolutePath of Object.keys(coverageMap)) {
     const istanbulFile = coverageMap[absolutePath];

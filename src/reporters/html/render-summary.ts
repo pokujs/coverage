@@ -2,7 +2,9 @@ import type {
   HtmlSummaryChild,
   HtmlSummaryPageInput,
 } from '../../@types/html.js';
+import type { Runtime } from '../../@types/reporters.js';
 import type { Metric } from '../../@types/text.js';
+import type { WatermarkMetric } from '../../@types/watermarks.js';
 import { htmlEscape } from '../../utils/html.js';
 import { relativeHref } from '../shared/html/link-mapper.js';
 import {
@@ -10,7 +12,7 @@ import {
   renderFooter,
   renderHeader,
 } from '../shared/html/templates.js';
-import { formatPct, pctValue } from '../shared/metrics.js';
+import { formatPct, pctValue, resolveDisplayPct } from '../shared/metrics.js';
 
 const METRIC_ORDER: readonly ['statements', 'branches', 'functions', 'lines'] =
   ['statements', 'branches', 'functions', 'lines'];
@@ -32,12 +34,54 @@ const percentGraph = (percentage: number | null): string => {
 const summaryCell = (
   metric: Metric,
   reportClass: string,
-  showGraph: boolean
+  showGraph: boolean,
+  runtime: Runtime,
+  metricName: WatermarkMetric
 ): string => {
   const parts: string[] = [];
   const percentage = pctValue(metric);
-  const displayPercentage =
-    percentage === null ? '0' : (Math.round(percentage * 100) / 100).toString();
+
+  if (percentage === null) {
+    const metricAbsent =
+      resolveDisplayPct(metric, runtime, metricName) === null;
+
+    if (metricAbsent) {
+      if (showGraph) {
+        parts.push(
+          `<td data-value="-1" class="pic ${reportClass}">`,
+          `<div class="chart">${percentGraph(null)}</div>`,
+          `</td>`
+        );
+      }
+
+      parts.push(
+        `<td data-value="-1" class="pct ${reportClass}">-</td>`,
+        `<td data-value="-1" class="abs ${reportClass}">-</td>`
+      );
+
+      return parts.join('\n\t');
+    }
+
+    const total = metric.total ?? 0;
+    const covered = metric.hit ?? 0;
+
+    if (showGraph) {
+      parts.push(
+        `<td data-value="0" class="pic ${reportClass}">`,
+        `<div class="chart">${percentGraph(null)}</div>`,
+        `</td>`
+      );
+    }
+
+    parts.push(
+      `<td data-value="0" class="pct ${reportClass}">0%</td>`,
+      `<td data-value="${total}" class="abs ${reportClass}">${covered}/${total}</td>`
+    );
+
+    return parts.join('\n\t');
+  }
+
+  const displayPercentage = (Math.round(percentage * 100) / 100).toString();
   const total = metric.total ?? 0;
   const covered = metric.hit ?? 0;
 
@@ -59,7 +103,8 @@ const summaryCell = (
 
 const summaryRow = (
   summaryChild: HtmlSummaryChild,
-  pagePath: string
+  pagePath: string,
+  runtime: Runtime
 ): string => {
   const displayName = summaryChild.isDirectory
     ? `${summaryChild.displayName}/`
@@ -74,25 +119,33 @@ const summaryRow = (
   const statementsCell = summaryCell(
     summaryChild.metrics.statements,
     summaryChild.watermarkClasses.statements,
-    true
+    true,
+    runtime,
+    'statements'
   );
 
   const branchesCell = summaryCell(
     summaryChild.metrics.branches,
     summaryChild.watermarkClasses.branches,
-    false
+    false,
+    runtime,
+    'branches'
   );
 
   const functionsCell = summaryCell(
     summaryChild.metrics.functions,
     summaryChild.watermarkClasses.functions,
-    false
+    false,
+    runtime,
+    'functions'
   );
 
   const linesCell = summaryCell(
     summaryChild.metrics.lines,
     summaryChild.watermarkClasses.lines,
-    false
+    false,
+    runtime,
+    'lines'
   );
 
   return [
@@ -130,7 +183,7 @@ const TABLE_FOOTER = ['</tbody>', '</table>', '</div>'].join('\n');
 
 export const renderSummaryPage = (input: HtmlSummaryPageInput): string => {
   const childRows = input.children.map((summaryChild) =>
-    summaryRow(summaryChild, input.pagePath)
+    summaryRow(summaryChild, input.pagePath, input.runtime)
   );
 
   const reportClass = overallReportClass(
@@ -146,6 +199,7 @@ export const renderSummaryPage = (input: HtmlSummaryPageInput): string => {
     metrics: input.metrics,
     reportClass,
     datetime: input.datetime,
+    runtime: input.runtime,
   });
 
   const footer = renderFooter({
@@ -156,6 +210,7 @@ export const renderSummaryPage = (input: HtmlSummaryPageInput): string => {
     metrics: input.metrics,
     reportClass,
     datetime: input.datetime,
+    runtime: input.runtime,
   });
 
   const formattedTotals = METRIC_ORDER.map((metricName) => {

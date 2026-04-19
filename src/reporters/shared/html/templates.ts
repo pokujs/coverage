@@ -2,6 +2,7 @@ import type {
   HtmlBreadcrumbEntry,
   HtmlPageTemplateInput,
 } from '../../../@types/html.js';
+import type { Runtime } from '../../../@types/reporters.js';
 import type { Metric, RowMetrics } from '../../../@types/text.js';
 import type {
   WatermarkLevel,
@@ -10,7 +11,7 @@ import type {
 } from '../../../@types/watermarks.js';
 import { htmlEscape } from '../../../utils/html.js';
 import { watermarks } from '../../../watermarks.js';
-import { formatPct, pctValue } from '../metrics.js';
+import { formatPct, pctValue, resolveDisplayPct } from '../metrics.js';
 import { relativeHref } from './link-mapper.js';
 
 export const metricReportClass = (
@@ -33,15 +34,35 @@ export const overallReportClass = (
 ): WatermarkLevel | 'empty' =>
   metricReportClass(resolvedWatermarks, metrics.statements, 'statements');
 
-const metricBlock = (label: string, metric: Metric): string => {
+const metricBlock = (
+  label: string,
+  metric: Metric,
+  runtime: Runtime,
+  metricName: WatermarkMetric
+): string => {
   const percentage = pctValue(metric);
-  const displayPercentage = percentage === null ? '0' : formatPct(percentage);
   const total = metric.total ?? 0;
   const covered = metric.hit ?? 0;
 
+  if (percentage !== null)
+    return `
+        <div class='fl pad1y space-right2'>
+            <span class="strong">${formatPct(percentage)}</span>
+            <span class="quiet">${label}</span>
+            <span class='fraction'>${covered}/${total}</span>
+        </div>`;
+
+  if (resolveDisplayPct(metric, runtime, metricName) === null)
+    return `
+        <div class='fl pad1y space-right2'>
+            <span class="strong">-</span>
+            <span class="quiet">${label}</span>
+            <span class='fraction'>-</span>
+        </div>`;
+
   return `
         <div class='fl pad1y space-right2'>
-            <span class="strong">${displayPercentage}</span>
+            <span class="strong">0</span>
             <span class="quiet">${label}</span>
             <span class='fraction'>${covered}/${total}</span>
         </div>`;
@@ -89,7 +110,7 @@ export const renderHeader = (input: HtmlPageTemplateInput): string => {
 <div class='wrapper'>
     <div class='pad1'>
         <h1>${buildBreadcrumb(input.pagePath, input.breadcrumb, input.currentLabel, input.backBreadcrumb === true)}</h1>
-        <div class='clearfix'>${metricBlock('Statements', input.metrics.statements)}${metricBlock('Branches', input.metrics.branches)}${metricBlock('Functions', input.metrics.functions)}${metricBlock('Lines', input.metrics.lines)}
+        <div class='clearfix'>${metricBlock('Statements', input.metrics.statements, input.runtime, 'statements')}${metricBlock('Branches', input.metrics.branches, input.runtime, 'branches')}${metricBlock('Functions', input.metrics.functions, input.runtime, 'functions')}${metricBlock('Lines', input.metrics.lines, input.runtime, 'lines')}
         </div>
         <p class="quiet">
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
