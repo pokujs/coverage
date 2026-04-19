@@ -1,6 +1,6 @@
 import type { Node } from 'acorn';
 import type { FunctionLocation } from '../../@types/function-names.js';
-import type { FileAggregation, FunctionEntry } from '../../@types/v8.js';
+import type { FileAggregation } from '../../@types/v8.js';
 import { astCache } from './ast-cache.js';
 import { astWalk } from './ast-walk.js';
 
@@ -133,14 +133,11 @@ const collectFunctionLocations = (program: Node): FunctionLocation[] => {
   return locations;
 };
 
-const fallbackName = (entry: FunctionEntry): string =>
-  `(anonymous_${entry.line}_${entry.column})`;
-
 const resolve = (aggregation: FileAggregation, source: string): void => {
   const program = astCache.parse(source);
   const locations = program === null ? null : collectFunctionLocations(program);
 
-  for (const functionEntry of aggregation.functions.values()) {
+  for (const [functionKey, functionEntry] of aggregation.functions) {
     if (functionEntry.isModuleFunction) continue;
     if (functionEntry.name !== '') continue;
 
@@ -157,7 +154,7 @@ const resolve = (aggregation: FileAggregation, source: string): void => {
       }
     }
 
-    functionEntry.name = fallbackName(functionEntry);
+    aggregation.functions.delete(functionKey);
   }
 };
 
