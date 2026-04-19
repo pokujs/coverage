@@ -26,11 +26,11 @@ const getChildren = (node: Node, property: string): Node[] => {
   return value.filter(astWalk.isNodeLike);
 };
 
-const isOptionalMember = (node: Node): boolean =>
-  node.type === 'MemberExpression' && astWalk.isOptionalAccess(node);
+const isOptionalChainMember = (node: Node): boolean =>
+  node.type === 'MemberExpression' && astWalk.isOptionalChaining(node);
 
-const isOptionalCall = (node: Node): boolean =>
-  node.type === 'CallExpression' && astWalk.isOptionalAccess(node);
+const isOptionalChainCall = (node: Node): boolean =>
+  node.type === 'CallExpression' && astWalk.isOptionalChaining(node);
 
 const describeBlock = (node: Node): BlockTemplate | null => {
   if (node.type === 'IfStatement') {
@@ -141,7 +141,7 @@ const describeBlock = (node: Node): BlockTemplate | null => {
     };
   }
 
-  if (isOptionalMember(node)) {
+  if (isOptionalChainMember(node)) {
     const object = getChild(node, 'object');
     const property = getChild(node, 'property');
 
@@ -154,7 +154,7 @@ const describeBlock = (node: Node): BlockTemplate | null => {
     };
   }
 
-  if (isOptionalCall(node)) {
+  if (isOptionalChainCall(node)) {
     const callee = getChild(node, 'callee');
     if (callee === null) return null;
 

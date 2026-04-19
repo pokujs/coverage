@@ -89,7 +89,7 @@ const computeArmRanges = (currentNode: Node): readonly AstArmRange[] => {
 
   if (
     currentNode.type === 'MemberExpression' &&
-    astWalk.isOptionalAccess(currentNode)
+    astWalk.isOptionalChaining(currentNode)
   ) {
     const objectNode = getChildNode(currentNode, 'object');
     const propertyNode = getChildNode(currentNode, 'property');
@@ -103,7 +103,7 @@ const computeArmRanges = (currentNode: Node): readonly AstArmRange[] => {
 
   if (
     currentNode.type === 'CallExpression' &&
-    astWalk.isOptionalAccess(currentNode)
+    astWalk.isOptionalChaining(currentNode)
   ) {
     const calleeNode = getChildNode(currentNode, 'callee');
     if (calleeNode === null) return [];

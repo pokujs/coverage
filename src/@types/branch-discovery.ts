@@ -26,7 +26,7 @@ export type AstBranchEntry = {
 
 export type AstWalkHandler = {
   isBranchNode: (candidate: Node) => boolean;
-  isOptionalAccess: (candidate: Node) => boolean;
+  isOptionalChaining: (candidate: Node) => boolean;
   isNodeLike: (candidate: unknown) => candidate is Node;
   forEachNode: (root: Node, visitor: (current: Node) => void) => void;
 };

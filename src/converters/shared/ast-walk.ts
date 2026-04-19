@@ -17,7 +17,7 @@ const isNodeLike = (candidate: unknown): candidate is Node => {
   return typeof typed.type === 'string' && typeof typed.start === 'number';
 };
 
-const isOptionalAccess = (candidate: Node): boolean =>
+const isOptionalChaining = (candidate: Node): boolean =>
   (candidate.type === 'MemberExpression' ||
     candidate.type === 'CallExpression') &&
   Reflect.get(candidate, 'optional') === true;
@@ -28,7 +28,7 @@ const isBranchNode = (candidate: Node): boolean =>
   candidate.type === 'AssignmentPattern' ||
   candidate.type === 'IfStatement' ||
   candidate.type === 'SwitchStatement' ||
-  isOptionalAccess(candidate);
+  isOptionalChaining(candidate);
 
 const forEachNode = (root: Node, visitor: (current: Node) => void): void => {
   const walkNode = (currentNode: Node): void => {
@@ -57,7 +57,7 @@ const forEachNode = (root: Node, visitor: (current: Node) => void): void => {
 
 export const astWalk: AstWalkHandler = {
   isBranchNode,
-  isOptionalAccess,
+  isOptionalChaining,
   isNodeLike,
   forEachNode,
 };
