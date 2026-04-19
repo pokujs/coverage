@@ -83,8 +83,8 @@
       ]
     },
     "functions": {
-      "hit": 3,
-      "found": 3,
+      "hit": 4,
+      "found": 4,
       "details": [
         {
           "name": "unique",
@@ -100,6 +100,11 @@
           "name": "sum",
           "line": 16,
           "hit": 1
+        },
+        {
+          "name": "(anonymous_17_20)",
+          "line": 17,
+          "hit": 4
         }
       ]
     },
@@ -590,9 +595,14 @@
       ]
     },
     "functions": {
-      "hit": 12,
-      "found": 12,
+      "hit": 13,
+      "found": 13,
       "details": [
+        {
+          "name": "(anonymous_1_0)",
+          "line": 1,
+          "hit": 1
+        },
         {
           "name": "firstNonEmpty",
           "line": 3,

@@ -13,8 +13,8 @@
       "pct": 83.33
     },
     "functions": {
-      "total": 3,
-      "covered": 3,
+      "total": 4,
+      "covered": 4,
       "skipped": 0,
       "pct": 100
     },
@@ -39,8 +39,8 @@
       "pct": 100
     },
     "functions": {
-      "total": 12,
-      "covered": 12,
+      "total": 13,
+      "covered": 13,
       "skipped": 0,
       "pct": 100
     },
@@ -143,10 +143,10 @@
       "pct": 92.11
     },
     "functions": {
-      "total": 27,
-      "covered": 26,
+      "total": 29,
+      "covered": 28,
       "skipped": 0,
-      "pct": 96.3
+      "pct": 96.55
     },
     "lines": {
       "total": 142,
