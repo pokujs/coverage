@@ -1,0 +1,649 @@
+{
+  "?xml": {
+    "@_version": "1.0",
+    "@_encoding": "UTF-8"
+  },
+  "coverage": {
+    "project": {
+      "metrics": {
+        "@_statements": "99",
+        "@_coveredstatements": "76",
+        "@_conditionals": "0",
+        "@_coveredconditionals": "0",
+        "@_methods": "28",
+        "@_coveredmethods": "27",
+        "@_elements": "127",
+        "@_coveredelements": "103",
+        "@_complexity": "0",
+        "@_loc": "99",
+        "@_ncloc": "99",
+        "@_packages": "2",
+        "@_files": "7",
+        "@_classes": "7"
+      },
+      "package": [
+        {
+          "metrics": {
+            "@_statements": "83",
+            "@_coveredstatements": "76",
+            "@_conditionals": "0",
+            "@_coveredconditionals": "0",
+            "@_methods": "28",
+            "@_coveredmethods": "27"
+          },
+          "file": [
+            {
+              "metrics": {
+                "@_statements": "13",
+                "@_coveredstatements": "12",
+                "@_conditionals": "0",
+                "@_coveredconditionals": "0",
+                "@_methods": "4",
+                "@_coveredmethods": "4"
+              },
+              "line": [
+                {
+                  "@_num": "1",
+                  "@_count": "14",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "2",
+                  "@_count": "32",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "5",
+                  "@_count": "20",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "6",
+                  "@_count": "14",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "7",
+                  "@_count": "0",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "8",
+                  "@_count": "2",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "9",
+                  "@_count": "20",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "10",
+                  "@_count": "46",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "11",
+                  "@_count": "38",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "12",
+                  "@_count": "2",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "13",
+                  "@_count": "14",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "16",
+                  "@_count": "14",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "17",
+                  "@_count": "39",
+                  "@_type": "stmt"
+                }
+              ],
+              "@_name": "collections.js",
+              "@_path": "src/collections.js"
+            },
+            {
+              "metrics": {
+                "@_statements": "3",
+                "@_coveredstatements": "0",
+                "@_conditionals": "0",
+                "@_coveredconditionals": "0",
+                "@_methods": "0",
+                "@_coveredmethods": "0"
+              },
+              "line": [
+                {
+                  "@_num": "1",
+                  "@_count": "0",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "2",
+                  "@_count": "0",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "3",
+                  "@_count": "0",
+                  "@_type": "stmt"
+                }
+              ],
+              "@_name": "index.js",
+              "@_path": "src/index.js"
+            },
+            {
+              "metrics": {
+                "@_statements": "37",
+                "@_coveredstatements": "37",
+                "@_conditionals": "0",
+                "@_coveredconditionals": "0",
+                "@_methods": "12",
+                "@_coveredmethods": "12"
+              },
+              "line": [
+                {
+                  "@_num": "1",
+                  "@_count": "61",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "3",
+                  "@_count": "18",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "4",
+                  "@_count": "34",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "7",
+                  "@_count": "18",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "8",
+                  "@_count": "33",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "11",
+                  "@_count": "18",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "12",
+                  "@_count": "19",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "15",
+                  "@_count": "16",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "16",
+                  "@_count": "60",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "19",
+                  "@_count": "16",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "20",
+                  "@_count": "20",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "21",
+                  "@_count": "8",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "22",
+                  "@_count": "13",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "23",
+                  "@_count": "7",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "24",
+                  "@_count": "11",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "25",
+                  "@_count": "8",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "26",
+                  "@_count": "10",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "29",
+                  "@_count": "15",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "30",
+                  "@_count": "12",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "31",
+                  "@_count": "36",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "32",
+                  "@_count": "39",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "33",
+                  "@_count": "35",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "34",
+                  "@_count": "2",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "37",
+                  "@_count": "25",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "38",
+                  "@_count": "51",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "41",
+                  "@_count": "16",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "42",
+                  "@_count": "69",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "45",
+                  "@_count": "19",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "46",
+                  "@_count": "43",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "47",
+                  "@_count": "20",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "50",
+                  "@_count": "26",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "51",
+                  "@_count": "26",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "52",
+                  "@_count": "44",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "55",
+                  "@_count": "16",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "57",
+                  "@_count": "26",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "60",
+                  "@_count": "16",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "65",
+                  "@_count": "43",
+                  "@_type": "stmt"
+                }
+              ],
+              "@_name": "logic.js",
+              "@_path": "src/logic.js"
+            },
+            {
+              "metrics": {
+                "@_statements": "11",
+                "@_coveredstatements": "11",
+                "@_conditionals": "0",
+                "@_coveredconditionals": "0",
+                "@_methods": "4",
+                "@_coveredmethods": "4"
+              },
+              "line": [
+                {
+                  "@_num": "1",
+                  "@_count": "15",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "2",
+                  "@_count": "13",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "5",
+                  "@_count": "15",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "6",
+                  "@_count": "13",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "9",
+                  "@_count": "15",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "10",
+                  "@_count": "13",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "13",
+                  "@_count": "15",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "14",
+                  "@_count": "17",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "15",
+                  "@_count": "40",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "16",
+                  "@_count": "2",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "17",
+                  "@_count": "12",
+                  "@_type": "stmt"
+                }
+              ],
+              "@_name": "math.js",
+              "@_path": "src/math.js"
+            },
+            {
+              "metrics": {
+                "@_statements": "10",
+                "@_coveredstatements": "10",
+                "@_conditionals": "0",
+                "@_coveredconditionals": "0",
+                "@_methods": "5",
+                "@_coveredmethods": "5"
+              },
+              "line": [
+                {
+                  "@_num": "1",
+                  "@_count": "16",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "2",
+                  "@_count": "27",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "5",
+                  "@_count": "16",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "6",
+                  "@_count": "27",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "9",
+                  "@_count": "15",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "10",
+                  "@_count": "14",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "13",
+                  "@_count": "18",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "14",
+                  "@_count": "32",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "17",
+                  "@_count": "15",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "18",
+                  "@_count": "26",
+                  "@_type": "stmt"
+                }
+              ],
+              "@_name": "partial.js",
+              "@_path": "src/partial.js"
+            },
+            {
+              "metrics": {
+                "@_statements": "9",
+                "@_coveredstatements": "6",
+                "@_conditionals": "0",
+                "@_coveredconditionals": "0",
+                "@_methods": "3",
+                "@_coveredmethods": "2"
+              },
+              "line": [
+                {
+                  "@_num": "1",
+                  "@_count": "14",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "3",
+                  "@_count": "48",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "4",
+                  "@_count": "0",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "5",
+                  "@_count": "2",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "6",
+                  "@_count": "43",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "9",
+                  "@_count": "14",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "10",
+                  "@_count": "40",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "13",
+                  "@_count": "0",
+                  "@_type": "stmt"
+                },
+                {
+                  "@_num": "14",
+                  "@_count": "0",
+                  "@_type": "stmt"
+                }
+              ],
+              "@_name": "strings.js",
+              "@_path": "src/strings.js"
+            }
+          ],
+          "@_name": "src"
+        },
+        {
+          "metrics": {
+            "@_statements": "16",
+            "@_coveredstatements": "0",
+            "@_conditionals": "0",
+            "@_coveredconditionals": "0",
+            "@_methods": "0",
+            "@_coveredmethods": "0"
+          },
+          "file": {
+            "metrics": {
+              "@_statements": "16",
+              "@_coveredstatements": "0",
+              "@_conditionals": "0",
+              "@_coveredconditionals": "0",
+              "@_methods": "0",
+              "@_coveredmethods": "0"
+            },
+            "line": [
+              {
+                "@_num": "1",
+                "@_count": "0",
+                "@_type": "stmt"
+              },
+              {
+                "@_num": "2",
+                "@_count": "0",
+                "@_type": "stmt"
+              },
+              {
+                "@_num": "3",
+                "@_count": "0",
+                "@_type": "stmt"
+              },
+              {
+                "@_num": "4",
+                "@_count": "0",
+                "@_type": "stmt"
+              },
+              {
+                "@_num": "5",
+                "@_count": "0",
+                "@_type": "stmt"
+              },
+              {
+                "@_num": "6",
+                "@_count": "0",
+                "@_type": "stmt"
+              },
+              {
+                "@_num": "7",
+                "@_count": "0",
+                "@_type": "stmt"
+              },
+              {
+                "@_num": "8",
+                "@_count": "0",
+                "@_type": "stmt"
+              },
+              {
+                "@_num": "9",
+                "@_count": "0",
+                "@_type": "stmt"
+              },
+              {
+                "@_num": "11",
+                "@_count": "0",
+                "@_type": "stmt"
+              },
+              {
+                "@_num": "12",
+                "@_count": "0",
+                "@_type": "stmt"
+              },
+              {
+                "@_num": "13",
+                "@_count": "0",
+                "@_type": "stmt"
+              },
+              {
+                "@_num": "14",
+                "@_count": "0",
+                "@_type": "stmt"
+              },
+              {
+                "@_num": "15",
+                "@_count": "0",
+                "@_type": "stmt"
+              },
+              {
+                "@_num": "16",
+                "@_count": "0",
+                "@_type": "stmt"
+              },
+              {
+                "@_num": "17",
+                "@_count": "0",
+                "@_type": "stmt"
+              }
+            ],
+            "@_name": "format.js",
+            "@_path": "src/helpers/format.js"
+          },
+          "@_name": "src.helpers"
+        }
+      ],
+      "@_timestamp": "<timestamp>",
+      "@_name": "All files"
+    },
+    "@_generated": "<generated>",
+    "@_clover": "3.2.0"
+  }
+}

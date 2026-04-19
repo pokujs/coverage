@@ -1,0 +1,142 @@
+{
+  "?xml": {
+    "@_version": "1.0"
+  },
+  "coverage": {
+    "sources": {
+      "source": "<fixtureRoot>"
+    },
+    "packages": {
+      "package": {
+        "classes": {
+          "class": [
+            {
+              "methods": {
+                "method": [
+                  {
+                    "lines": {
+                      "line": {
+                        "@_number": "1",
+                        "@_hits": "1"
+                      }
+                    },
+                    "@_name": "identity",
+                    "@_hits": "1",
+                    "@_signature": "()V"
+                  },
+                  {
+                    "lines": {
+                      "line": {
+                        "@_number": "5",
+                        "@_hits": "1"
+                      }
+                    },
+                    "@_name": "twice",
+                    "@_hits": "1",
+                    "@_signature": "()V"
+                  }
+                ]
+              },
+              "lines": {
+                "line": [
+                  {
+                    "@_number": "1",
+                    "@_hits": "1",
+                    "@_branch": "true",
+                    "@_condition-coverage": "100% (1/1)"
+                  },
+                  {
+                    "@_number": "2",
+                    "@_hits": "1",
+                    "@_branch": "false"
+                  },
+                  {
+                    "@_number": "3",
+                    "@_hits": "1",
+                    "@_branch": "false"
+                  },
+                  {
+                    "@_number": "4",
+                    "@_hits": "1",
+                    "@_branch": "false"
+                  },
+                  {
+                    "@_number": "5",
+                    "@_hits": "1",
+                    "@_branch": "true",
+                    "@_condition-coverage": "100% (1/1)"
+                  },
+                  {
+                    "@_number": "6",
+                    "@_hits": "1",
+                    "@_branch": "false"
+                  },
+                  {
+                    "@_number": "7",
+                    "@_hits": "1",
+                    "@_branch": "false"
+                  }
+                ]
+              },
+              "@_name": "original.ts",
+              "@_filename": "src/original.ts",
+              "@_line-rate": "1",
+              "@_branch-rate": "1"
+            },
+            {
+              "methods": {
+                "method": {
+                  "lines": {
+                    "line": {
+                      "@_number": "1",
+                      "@_hits": "1"
+                    }
+                  },
+                  "@_name": "greet",
+                  "@_hits": "1",
+                  "@_signature": "()V"
+                }
+              },
+              "lines": {
+                "line": [
+                  {
+                    "@_number": "1",
+                    "@_hits": "1",
+                    "@_branch": "true",
+                    "@_condition-coverage": "100% (1/1)"
+                  },
+                  {
+                    "@_number": "2",
+                    "@_hits": "1",
+                    "@_branch": "false"
+                  },
+                  {
+                    "@_number": "3",
+                    "@_hits": "1",
+                    "@_branch": "false"
+                  }
+                ]
+              },
+              "@_name": "survivor.js",
+              "@_filename": "src/survivor.js",
+              "@_line-rate": "1",
+              "@_branch-rate": "1"
+            }
+          ]
+        },
+        "@_name": "src",
+        "@_line-rate": "1",
+        "@_branch-rate": "1"
+      }
+    },
+    "@_lines-valid": "10",
+    "@_lines-covered": "10",
+    "@_line-rate": "1",
+    "@_branches-valid": "3",
+    "@_branches-covered": "3",
+    "@_branch-rate": "1",
+    "@_timestamp": "<timestamp>",
+    "@_complexity": "0",
+    "@_version": "0.1"
+  }
+}

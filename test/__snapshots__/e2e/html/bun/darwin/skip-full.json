@@ -1,0 +1,24 @@
+{
+  "summary": {
+    "statements": "95.00 %",
+    "branches": "-",
+    "functions": "96.43 %",
+    "lines": "95.00 %"
+  },
+  "files": {
+    "src/collections.js": {
+      "statements": "92.31 %",
+      "branches": "-",
+      "functions": "100.00 %",
+      "lines": "92.31 %",
+      "uncoveredLines": "7"
+    },
+    "src/strings.js": {
+      "statements": "66.67 %",
+      "branches": "-",
+      "functions": "66.67 %",
+      "lines": "66.67 %",
+      "uncoveredLines": "4,13-14"
+    }
+  }
+}

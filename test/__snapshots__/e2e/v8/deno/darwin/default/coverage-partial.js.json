@@ -1,0 +1,100 @@
+{
+  "result": [
+    {
+      "url": "file://<fixtureRoot>/src/partial.js",
+      "functions": [
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 0,
+              "endOffset": 351,
+              "count": "<count>"
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "chooseFirst",
+          "ranges": [
+            {
+              "startOffset": 211,
+              "endOffset": 279,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 254,
+              "endOffset": 258,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 259,
+              "endOffset": 263,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 264,
+              "endOffset": 276,
+              "count": "<count>"
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "ensureBoth",
+          "ranges": [
+            {
+              "startOffset": 156,
+              "endOffset": 202,
+              "count": "<count>"
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "guardedLength",
+          "ranges": [
+            {
+              "startOffset": 288,
+              "endOffset": 350,
+              "count": "<count>"
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "withFallback",
+          "ranges": [
+            {
+              "startOffset": 7,
+              "endOffset": 69,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 53,
+              "endOffset": 66,
+              "count": "<count>"
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "withNullishFallback",
+          "ranges": [
+            {
+              "startOffset": 78,
+              "endOffset": 147,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 131,
+              "endOffset": 144,
+              "count": "<count>"
+            }
+          ],
+          "isBlockCoverage": true
+        }
+      ]
+    }
+  ]
+}

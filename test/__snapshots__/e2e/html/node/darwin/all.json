@@ -1,0 +1,59 @@
+{
+  "summary": {
+    "statements": "84.62 %",
+    "branches": "91.18 %",
+    "functions": "96.30 %",
+    "lines": "84.62 %"
+  },
+  "files": {
+    "src/collections.js": {
+      "statements": "88.89 %",
+      "branches": "83.33 %",
+      "functions": "100.00 %",
+      "lines": "88.89 %",
+      "uncoveredLines": "7-8"
+    },
+    "src/helpers/format.js": {
+      "statements": "0.00 %",
+      "branches": "-",
+      "functions": "-",
+      "lines": "0.00 %",
+      "uncoveredLines": "1-9,11-17"
+    },
+    "src/index.js": {
+      "statements": "0.00 %",
+      "branches": "-",
+      "functions": "-",
+      "lines": "0.00 %",
+      "uncoveredLines": "1-3"
+    },
+    "src/logic.js": {
+      "statements": "100.00 %",
+      "branches": "100.00 %",
+      "functions": "100.00 %",
+      "lines": "100.00 %",
+      "uncoveredLines": ""
+    },
+    "src/math.js": {
+      "statements": "100.00 %",
+      "branches": "100.00 %",
+      "functions": "100.00 %",
+      "lines": "100.00 %",
+      "uncoveredLines": ""
+    },
+    "src/partial.js": {
+      "statements": "100.00 %",
+      "branches": "50.00 %",
+      "functions": "100.00 %",
+      "lines": "100.00 %",
+      "uncoveredLines": ""
+    },
+    "src/strings.js": {
+      "statements": "81.25 %",
+      "branches": "100.00 %",
+      "functions": "66.67 %",
+      "lines": "81.25 %",
+      "uncoveredLines": "14-16"
+    }
+  }
+}

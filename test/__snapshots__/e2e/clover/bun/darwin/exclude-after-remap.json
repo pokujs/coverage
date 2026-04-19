@@ -1,0 +1,65 @@
+{
+  "?xml": {
+    "@_version": "1.0",
+    "@_encoding": "UTF-8"
+  },
+  "coverage": {
+    "project": {
+      "metrics": {
+        "@_statements": "2",
+        "@_coveredstatements": "2",
+        "@_conditionals": "0",
+        "@_coveredconditionals": "0",
+        "@_methods": "1",
+        "@_coveredmethods": "1",
+        "@_elements": "3",
+        "@_coveredelements": "3",
+        "@_complexity": "0",
+        "@_loc": "2",
+        "@_ncloc": "2",
+        "@_packages": "1",
+        "@_files": "1",
+        "@_classes": "1"
+      },
+      "package": {
+        "metrics": {
+          "@_statements": "2",
+          "@_coveredstatements": "2",
+          "@_conditionals": "0",
+          "@_coveredconditionals": "0",
+          "@_methods": "1",
+          "@_coveredmethods": "1"
+        },
+        "file": {
+          "metrics": {
+            "@_statements": "2",
+            "@_coveredstatements": "2",
+            "@_conditionals": "0",
+            "@_coveredconditionals": "0",
+            "@_methods": "1",
+            "@_coveredmethods": "1"
+          },
+          "line": [
+            {
+              "@_num": "1",
+              "@_count": "15",
+              "@_type": "stmt"
+            },
+            {
+              "@_num": "2",
+              "@_count": "23",
+              "@_type": "stmt"
+            }
+          ],
+          "@_name": "survivor.js",
+          "@_path": "src/survivor.js"
+        },
+        "@_name": "src"
+      },
+      "@_timestamp": "<timestamp>",
+      "@_name": "All files"
+    },
+    "@_generated": "<generated>",
+    "@_clover": "3.2.0"
+  }
+}

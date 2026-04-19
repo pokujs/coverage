@@ -1,0 +1,127 @@
+{
+  "?xml": {
+    "@_version": "1.0",
+    "@_encoding": "UTF-8"
+  },
+  "coverage": {
+    "project": {
+      "metrics": {
+        "@_statements": "10",
+        "@_coveredstatements": "10",
+        "@_conditionals": "3",
+        "@_coveredconditionals": "3",
+        "@_methods": "3",
+        "@_coveredmethods": "3",
+        "@_elements": "16",
+        "@_coveredelements": "16",
+        "@_complexity": "0",
+        "@_loc": "10",
+        "@_ncloc": "10",
+        "@_packages": "1",
+        "@_files": "2",
+        "@_classes": "2"
+      },
+      "package": {
+        "metrics": {
+          "@_statements": "10",
+          "@_coveredstatements": "10",
+          "@_conditionals": "3",
+          "@_coveredconditionals": "3",
+          "@_methods": "3",
+          "@_coveredmethods": "3"
+        },
+        "file": [
+          {
+            "metrics": {
+              "@_statements": "7",
+              "@_coveredstatements": "7",
+              "@_conditionals": "2",
+              "@_coveredconditionals": "2",
+              "@_methods": "2",
+              "@_coveredmethods": "2"
+            },
+            "line": [
+              {
+                "@_num": "1",
+                "@_count": "1",
+                "@_type": "cond",
+                "@_truecount": "1",
+                "@_falsecount": "0"
+              },
+              {
+                "@_num": "2",
+                "@_count": "1",
+                "@_type": "stmt"
+              },
+              {
+                "@_num": "3",
+                "@_count": "1",
+                "@_type": "stmt"
+              },
+              {
+                "@_num": "4",
+                "@_count": "1",
+                "@_type": "stmt"
+              },
+              {
+                "@_num": "5",
+                "@_count": "1",
+                "@_type": "cond",
+                "@_truecount": "1",
+                "@_falsecount": "0"
+              },
+              {
+                "@_num": "6",
+                "@_count": "1",
+                "@_type": "stmt"
+              },
+              {
+                "@_num": "7",
+                "@_count": "1",
+                "@_type": "stmt"
+              }
+            ],
+            "@_name": "original.ts",
+            "@_path": "src/original.ts"
+          },
+          {
+            "metrics": {
+              "@_statements": "3",
+              "@_coveredstatements": "3",
+              "@_conditionals": "1",
+              "@_coveredconditionals": "1",
+              "@_methods": "1",
+              "@_coveredmethods": "1"
+            },
+            "line": [
+              {
+                "@_num": "1",
+                "@_count": "1",
+                "@_type": "cond",
+                "@_truecount": "1",
+                "@_falsecount": "0"
+              },
+              {
+                "@_num": "2",
+                "@_count": "1",
+                "@_type": "stmt"
+              },
+              {
+                "@_num": "3",
+                "@_count": "1",
+                "@_type": "stmt"
+              }
+            ],
+            "@_name": "survivor.js",
+            "@_path": "src/survivor.js"
+          }
+        ],
+        "@_name": "src"
+      },
+      "@_timestamp": "<timestamp>",
+      "@_name": "All files"
+    },
+    "@_generated": "<generated>",
+    "@_clover": "3.2.0"
+  }
+}

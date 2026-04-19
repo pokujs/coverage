@@ -1,0 +1,107 @@
+[
+  {
+    "lines": {
+      "found": 8,
+      "hit": 8,
+      "details": [
+        {
+          "line": 1,
+          "hit": 1
+        },
+        {
+          "line": 2,
+          "hit": 1
+        },
+        {
+          "line": 3,
+          "hit": 1
+        },
+        {
+          "line": 4,
+          "hit": 1
+        },
+        {
+          "line": 5,
+          "hit": 1
+        },
+        {
+          "line": 6,
+          "hit": 1
+        },
+        {
+          "line": 7,
+          "hit": 1
+        },
+        {
+          "line": 8,
+          "hit": 1
+        }
+      ]
+    },
+    "functions": {
+      "hit": 2,
+      "found": 2,
+      "details": [
+        {
+          "name": "identity",
+          "line": 1,
+          "hit": 1
+        },
+        {
+          "name": "twice",
+          "line": 5,
+          "hit": 1
+        }
+      ]
+    },
+    "branches": {
+      "hit": 0,
+      "found": 0,
+      "details": []
+    },
+    "title": "",
+    "file": "src/original.ts"
+  },
+  {
+    "lines": {
+      "found": 4,
+      "hit": 4,
+      "details": [
+        {
+          "line": 1,
+          "hit": 1
+        },
+        {
+          "line": 2,
+          "hit": 1
+        },
+        {
+          "line": 3,
+          "hit": 1
+        },
+        {
+          "line": 4,
+          "hit": 1
+        }
+      ]
+    },
+    "functions": {
+      "hit": 1,
+      "found": 1,
+      "details": [
+        {
+          "name": "greet",
+          "line": 1,
+          "hit": 1
+        }
+      ]
+    },
+    "branches": {
+      "hit": 0,
+      "found": 0,
+      "details": []
+    },
+    "title": "",
+    "file": "src/survivor.js"
+  }
+]

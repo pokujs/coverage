@@ -1,0 +1,118 @@
+{
+  "file": "",
+  "isEmpty": false,
+  "metrics": {
+    "statements": {
+      "total": 2,
+      "covered": 2,
+      "missed": 0,
+      "skipped": 0,
+      "pct": 100,
+      "classForPercent": "high"
+    },
+    "branches": {
+      "total": 0,
+      "covered": 0,
+      "missed": 0,
+      "skipped": 0,
+      "pct": 100,
+      "classForPercent": "empty"
+    },
+    "functions": {
+      "total": 1,
+      "covered": 1,
+      "missed": 0,
+      "skipped": 0,
+      "pct": 100,
+      "classForPercent": "high"
+    },
+    "lines": {
+      "total": 2,
+      "covered": 2,
+      "missed": 0,
+      "skipped": 0,
+      "pct": 100,
+      "classForPercent": "high"
+    }
+  },
+  "children": [
+    {
+      "file": "src",
+      "isEmpty": false,
+      "metrics": {
+        "statements": {
+          "total": 2,
+          "covered": 2,
+          "missed": 0,
+          "skipped": 0,
+          "pct": 100,
+          "classForPercent": "high"
+        },
+        "branches": {
+          "total": 0,
+          "covered": 0,
+          "missed": 0,
+          "skipped": 0,
+          "pct": 100,
+          "classForPercent": "empty"
+        },
+        "functions": {
+          "total": 1,
+          "covered": 1,
+          "missed": 0,
+          "skipped": 0,
+          "pct": 100,
+          "classForPercent": "high"
+        },
+        "lines": {
+          "total": 2,
+          "covered": 2,
+          "missed": 0,
+          "skipped": 0,
+          "pct": 100,
+          "classForPercent": "high"
+        }
+      },
+      "children": [
+        {
+          "file": "survivor.js",
+          "isEmpty": false,
+          "metrics": {
+            "statements": {
+              "total": 2,
+              "covered": 2,
+              "missed": 0,
+              "skipped": 0,
+              "pct": 100,
+              "classForPercent": "high"
+            },
+            "branches": {
+              "total": 0,
+              "covered": 0,
+              "missed": 0,
+              "skipped": 0,
+              "pct": 100,
+              "classForPercent": "empty"
+            },
+            "functions": {
+              "total": 1,
+              "covered": 1,
+              "missed": 0,
+              "skipped": 0,
+              "pct": 100,
+              "classForPercent": "high"
+            },
+            "lines": {
+              "total": 2,
+              "covered": 2,
+              "missed": 0,
+              "skipped": 0,
+              "pct": 100,
+              "classForPercent": "high"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "src/collections.js": {
+    "statements": {
+      "total": 13,
+      "covered": 12,
+      "skipped": 0,
+      "pct": 92.31
+    },
+    "branches": {
+      "total": 0,
+      "covered": 0,
+      "skipped": 0,
+      "pct": 100
+    },
+    "functions": {
+      "total": 4,
+      "covered": 4,
+      "skipped": 0,
+      "pct": 100
+    },
+    "lines": {
+      "total": 13,
+      "covered": 12,
+      "skipped": 0,
+      "pct": 92.31
+    }
+  },
+  "src/logic.js": {
+    "statements": {
+      "total": 37,
+      "covered": 37,
+      "skipped": 0,
+      "pct": 100
+    },
+    "branches": {
+      "total": 0,
+      "covered": 0,
+      "skipped": 0,
+      "pct": 100
+    },
+    "functions": {
+      "total": 12,
+      "covered": 12,
+      "skipped": 0,
+      "pct": 100
+    },
+    "lines": {
+      "total": 37,
+      "covered": 37,
+      "skipped": 0,
+      "pct": 100
+    }
+  },
+  "src/math.js": {
+    "statements": {
+      "total": 11,
+      "covered": 11,
+      "skipped": 0,
+      "pct": 100
+    },
+    "branches": {
+      "total": 0,
+      "covered": 0,
+      "skipped": 0,
+      "pct": 100
+    },
+    "functions": {
+      "total": 4,
+      "covered": 4,
+      "skipped": 0,
+      "pct": 100
+    },
+    "lines": {
+      "total": 11,
+      "covered": 11,
+      "skipped": 0,
+      "pct": 100
+    }
+  },
+  "src/partial.js": {
+    "statements": {
+      "total": 10,
+      "covered": 10,
+      "skipped": 0,
+      "pct": 100
+    },
+    "branches": {
+      "total": 0,
+      "covered": 0,
+      "skipped": 0,
+      "pct": 100
+    },
+    "functions": {
+      "total": 5,
+      "covered": 5,
+      "skipped": 0,
+      "pct": 100
+    },
+    "lines": {
+      "total": 10,
+      "covered": 10,
+      "skipped": 0,
+      "pct": 100
+    }
+  },
+  "src/strings.js": {
+    "statements": {
+      "total": 9,
+      "covered": 6,
+      "skipped": 0,
+      "pct": 66.67
+    },
+    "branches": {
+      "total": 0,
+      "covered": 0,
+      "skipped": 0,
+      "pct": 100
+    },
+    "functions": {
+      "total": 3,
+      "covered": 2,
+      "skipped": 0,
+      "pct": 66.67
+    },
+    "lines": {
+      "total": 9,
+      "covered": 6,
+      "skipped": 0,
+      "pct": 66.67
+    }
+  },
+  "total": {
+    "statements": {
+      "total": 80,
+      "covered": 76,
+      "skipped": 0,
+      "pct": 95
+    },
+    "branches": {
+      "total": 0,
+      "covered": 0,
+      "skipped": 0,
+      "pct": 100
+    },
+    "functions": {
+      "total": 28,
+      "covered": 27,
+      "skipped": 0,
+      "pct": 96.43
+    },
+    "lines": {
+      "total": 80,
+      "covered": 76,
+      "skipped": 0,
+      "pct": 95
+    }
+  }
+}

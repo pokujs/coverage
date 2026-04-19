@@ -1,0 +1,123 @@
+{
+  "result": [
+    {
+      "url": "file://<fixtureRoot>/src/collections.js",
+      "functions": [
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 0,
+              "endOffset": 388,
+              "count": "<count>"
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 361,
+              "endOffset": 380,
+              "count": "<count>"
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "chunk",
+          "ranges": [
+            {
+              "startOffset": 75,
+              "endOffset": 312,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 120,
+              "endOffset": 180,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 247,
+              "endOffset": 293,
+              "count": "<count>"
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "sum",
+          "ranges": [
+            {
+              "startOffset": 321,
+              "endOffset": 387,
+              "count": "<count>"
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "unique",
+          "ranges": [
+            {
+              "startOffset": 7,
+              "endOffset": 66,
+              "count": "<count>"
+            }
+          ],
+          "isBlockCoverage": true
+        }
+      ]
+    },
+    {
+      "url": "file://<fixtureRoot>/test/collections.test.js",
+      "functions": [
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 0,
+              "endOffset": 497,
+              "count": "<count>"
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 142,
+              "endOffset": 207,
+              "count": "<count>"
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 253,
+              "endOffset": 332,
+              "count": "<count>"
+            }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            {
+              "startOffset": 377,
+              "endOffset": 425,
+              "count": "<count>"
+            }
+          ],
+          "isBlockCoverage": true
+        }
+      ]
+    }
+  ]
+}

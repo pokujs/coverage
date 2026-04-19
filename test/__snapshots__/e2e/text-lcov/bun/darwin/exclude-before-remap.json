@@ -1,0 +1,30 @@
+[
+  {
+    "lines": {
+      "found": 2,
+      "hit": 2,
+      "details": [
+        {
+          "line": 1,
+          "hit": 15
+        },
+        {
+          "line": 2,
+          "hit": 23
+        }
+      ]
+    },
+    "functions": {
+      "hit": 1,
+      "found": 1,
+      "details": []
+    },
+    "branches": {
+      "hit": 0,
+      "found": 0,
+      "details": []
+    },
+    "title": "",
+    "file": "src/survivor.js"
+  }
+]

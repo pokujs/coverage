@@ -1,0 +1,49 @@
+{
+  "?xml": {
+    "@_version": "1.0"
+  },
+  "coverage": {
+    "sources": {
+      "source": "<fixtureRoot>"
+    },
+    "packages": {
+      "package": {
+        "classes": {
+          "class": {
+            "methods": "",
+            "lines": {
+              "line": [
+                {
+                  "@_number": "1",
+                  "@_hits": "15",
+                  "@_branch": "false"
+                },
+                {
+                  "@_number": "2",
+                  "@_hits": "23",
+                  "@_branch": "false"
+                }
+              ]
+            },
+            "@_name": "survivor.js",
+            "@_filename": "src/survivor.js",
+            "@_line-rate": "1",
+            "@_branch-rate": "1"
+          }
+        },
+        "@_name": "src",
+        "@_line-rate": "1",
+        "@_branch-rate": "1"
+      }
+    },
+    "@_lines-valid": "2",
+    "@_lines-covered": "2",
+    "@_line-rate": "1",
+    "@_branches-valid": "0",
+    "@_branches-covered": "0",
+    "@_branch-rate": "1",
+    "@_timestamp": "<timestamp>",
+    "@_complexity": "0",
+    "@_version": "0.1"
+  }
+}

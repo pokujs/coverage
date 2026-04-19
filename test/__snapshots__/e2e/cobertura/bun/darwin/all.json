@@ -1,0 +1,611 @@
+{
+  "?xml": {
+    "@_version": "1.0"
+  },
+  "coverage": {
+    "sources": {
+      "source": "<fixtureRoot>"
+    },
+    "packages": {
+      "package": [
+        {
+          "classes": {
+            "class": [
+              {
+                "methods": "",
+                "lines": {
+                  "line": [
+                    {
+                      "@_number": "1",
+                      "@_hits": "14",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "2",
+                      "@_hits": "32",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "5",
+                      "@_hits": "20",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "6",
+                      "@_hits": "14",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "7",
+                      "@_hits": "0",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "8",
+                      "@_hits": "2",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "9",
+                      "@_hits": "20",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "10",
+                      "@_hits": "46",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "11",
+                      "@_hits": "38",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "12",
+                      "@_hits": "2",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "13",
+                      "@_hits": "14",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "16",
+                      "@_hits": "14",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "17",
+                      "@_hits": "39",
+                      "@_branch": "false"
+                    }
+                  ]
+                },
+                "@_name": "collections.js",
+                "@_filename": "src/collections.js",
+                "@_line-rate": "0.9231",
+                "@_branch-rate": "1"
+              },
+              {
+                "methods": "",
+                "lines": {
+                  "line": [
+                    {
+                      "@_number": "1",
+                      "@_hits": "0",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "2",
+                      "@_hits": "0",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "3",
+                      "@_hits": "0",
+                      "@_branch": "false"
+                    }
+                  ]
+                },
+                "@_name": "index.js",
+                "@_filename": "src/index.js",
+                "@_line-rate": "0",
+                "@_branch-rate": "1"
+              },
+              {
+                "methods": "",
+                "lines": {
+                  "line": [
+                    {
+                      "@_number": "1",
+                      "@_hits": "61",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "3",
+                      "@_hits": "18",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "4",
+                      "@_hits": "34",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "7",
+                      "@_hits": "18",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "8",
+                      "@_hits": "33",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "11",
+                      "@_hits": "18",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "12",
+                      "@_hits": "19",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "15",
+                      "@_hits": "16",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "16",
+                      "@_hits": "60",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "19",
+                      "@_hits": "16",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "20",
+                      "@_hits": "20",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "21",
+                      "@_hits": "8",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "22",
+                      "@_hits": "13",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "23",
+                      "@_hits": "7",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "24",
+                      "@_hits": "11",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "25",
+                      "@_hits": "8",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "26",
+                      "@_hits": "10",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "29",
+                      "@_hits": "15",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "30",
+                      "@_hits": "12",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "31",
+                      "@_hits": "36",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "32",
+                      "@_hits": "39",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "33",
+                      "@_hits": "35",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "34",
+                      "@_hits": "2",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "37",
+                      "@_hits": "25",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "38",
+                      "@_hits": "51",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "41",
+                      "@_hits": "16",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "42",
+                      "@_hits": "69",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "45",
+                      "@_hits": "19",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "46",
+                      "@_hits": "43",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "47",
+                      "@_hits": "20",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "50",
+                      "@_hits": "26",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "51",
+                      "@_hits": "26",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "52",
+                      "@_hits": "44",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "55",
+                      "@_hits": "16",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "57",
+                      "@_hits": "26",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "60",
+                      "@_hits": "16",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "65",
+                      "@_hits": "43",
+                      "@_branch": "false"
+                    }
+                  ]
+                },
+                "@_name": "logic.js",
+                "@_filename": "src/logic.js",
+                "@_line-rate": "1",
+                "@_branch-rate": "1"
+              },
+              {
+                "methods": "",
+                "lines": {
+                  "line": [
+                    {
+                      "@_number": "1",
+                      "@_hits": "15",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "2",
+                      "@_hits": "13",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "5",
+                      "@_hits": "15",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "6",
+                      "@_hits": "13",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "9",
+                      "@_hits": "15",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "10",
+                      "@_hits": "13",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "13",
+                      "@_hits": "15",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "14",
+                      "@_hits": "17",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "15",
+                      "@_hits": "40",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "16",
+                      "@_hits": "2",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "17",
+                      "@_hits": "12",
+                      "@_branch": "false"
+                    }
+                  ]
+                },
+                "@_name": "math.js",
+                "@_filename": "src/math.js",
+                "@_line-rate": "1",
+                "@_branch-rate": "1"
+              },
+              {
+                "methods": "",
+                "lines": {
+                  "line": [
+                    {
+                      "@_number": "1",
+                      "@_hits": "16",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "2",
+                      "@_hits": "27",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "5",
+                      "@_hits": "16",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "6",
+                      "@_hits": "27",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "9",
+                      "@_hits": "15",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "10",
+                      "@_hits": "14",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "13",
+                      "@_hits": "18",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "14",
+                      "@_hits": "32",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "17",
+                      "@_hits": "15",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "18",
+                      "@_hits": "26",
+                      "@_branch": "false"
+                    }
+                  ]
+                },
+                "@_name": "partial.js",
+                "@_filename": "src/partial.js",
+                "@_line-rate": "1",
+                "@_branch-rate": "1"
+              },
+              {
+                "methods": "",
+                "lines": {
+                  "line": [
+                    {
+                      "@_number": "1",
+                      "@_hits": "14",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "3",
+                      "@_hits": "48",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "4",
+                      "@_hits": "0",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "5",
+                      "@_hits": "2",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "6",
+                      "@_hits": "43",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "9",
+                      "@_hits": "14",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "10",
+                      "@_hits": "40",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "13",
+                      "@_hits": "0",
+                      "@_branch": "false"
+                    },
+                    {
+                      "@_number": "14",
+                      "@_hits": "0",
+                      "@_branch": "false"
+                    }
+                  ]
+                },
+                "@_name": "strings.js",
+                "@_filename": "src/strings.js",
+                "@_line-rate": "0.6667",
+                "@_branch-rate": "1"
+              }
+            ]
+          },
+          "@_name": "src",
+          "@_line-rate": "0.9157",
+          "@_branch-rate": "1"
+        },
+        {
+          "classes": {
+            "class": {
+              "methods": "",
+              "lines": {
+                "line": [
+                  {
+                    "@_number": "1",
+                    "@_hits": "0",
+                    "@_branch": "false"
+                  },
+                  {
+                    "@_number": "2",
+                    "@_hits": "0",
+                    "@_branch": "false"
+                  },
+                  {
+                    "@_number": "3",
+                    "@_hits": "0",
+                    "@_branch": "false"
+                  },
+                  {
+                    "@_number": "4",
+                    "@_hits": "0",
+                    "@_branch": "false"
+                  },
+                  {
+                    "@_number": "5",
+                    "@_hits": "0",
+                    "@_branch": "false"
+                  },
+                  {
+                    "@_number": "6",
+                    "@_hits": "0",
+                    "@_branch": "false"
+                  },
+                  {
+                    "@_number": "7",
+                    "@_hits": "0",
+                    "@_branch": "false"
+                  },
+                  {
+                    "@_number": "8",
+                    "@_hits": "0",
+                    "@_branch": "false"
+                  },
+                  {
+                    "@_number": "9",
+                    "@_hits": "0",
+                    "@_branch": "false"
+                  },
+                  {
+                    "@_number": "11",
+                    "@_hits": "0",
+                    "@_branch": "false"
+                  },
+                  {
+                    "@_number": "12",
+                    "@_hits": "0",
+                    "@_branch": "false"
+                  },
+                  {
+                    "@_number": "13",
+                    "@_hits": "0",
+                    "@_branch": "false"
+                  },
+                  {
+                    "@_number": "14",
+                    "@_hits": "0",
+                    "@_branch": "false"
+                  },
+                  {
+                    "@_number": "15",
+                    "@_hits": "0",
+                    "@_branch": "false"
+                  },
+                  {
+                    "@_number": "16",
+                    "@_hits": "0",
+                    "@_branch": "false"
+                  },
+                  {
+                    "@_number": "17",
+                    "@_hits": "0",
+                    "@_branch": "false"
+                  }
+                ]
+              },
+              "@_name": "format.js",
+              "@_filename": "src/helpers/format.js",
+              "@_line-rate": "0",
+              "@_branch-rate": "1"
+            }
+          },
+          "@_name": "src.helpers",
+          "@_line-rate": "0",
+          "@_branch-rate": "1"
+        }
+      ]
+    },
+    "@_lines-valid": "99",
+    "@_lines-covered": "76",
+    "@_line-rate": "0.7677",
+    "@_branches-valid": "0",
+    "@_branches-covered": "0",
+    "@_branch-rate": "1",
+    "@_timestamp": "<timestamp>",
+    "@_complexity": "0",
+    "@_version": "0.1"
+  }
+}

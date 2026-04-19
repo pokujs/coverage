@@ -1,0 +1,72 @@
+{
+  "?xml": {
+    "@_version": "1.0",
+    "@_encoding": "UTF-8"
+  },
+  "coverage": {
+    "project": {
+      "metrics": {
+        "@_statements": "3",
+        "@_coveredstatements": "3",
+        "@_conditionals": "1",
+        "@_coveredconditionals": "1",
+        "@_methods": "1",
+        "@_coveredmethods": "1",
+        "@_elements": "5",
+        "@_coveredelements": "5",
+        "@_complexity": "0",
+        "@_loc": "3",
+        "@_ncloc": "3",
+        "@_packages": "1",
+        "@_files": "1",
+        "@_classes": "1"
+      },
+      "package": {
+        "metrics": {
+          "@_statements": "3",
+          "@_coveredstatements": "3",
+          "@_conditionals": "1",
+          "@_coveredconditionals": "1",
+          "@_methods": "1",
+          "@_coveredmethods": "1"
+        },
+        "file": {
+          "metrics": {
+            "@_statements": "3",
+            "@_coveredstatements": "3",
+            "@_conditionals": "1",
+            "@_coveredconditionals": "1",
+            "@_methods": "1",
+            "@_coveredmethods": "1"
+          },
+          "line": [
+            {
+              "@_num": "1",
+              "@_count": "1",
+              "@_type": "cond",
+              "@_truecount": "1",
+              "@_falsecount": "0"
+            },
+            {
+              "@_num": "2",
+              "@_count": "1",
+              "@_type": "stmt"
+            },
+            {
+              "@_num": "3",
+              "@_count": "1",
+              "@_type": "stmt"
+            }
+          ],
+          "@_name": "survivor.js",
+          "@_path": "src/survivor.js"
+        },
+        "@_name": "src"
+      },
+      "@_timestamp": "<timestamp>",
+      "@_name": "All files"
+    },
+    "@_generated": "<generated>",
+    "@_clover": "3.2.0"
+  }
+}
