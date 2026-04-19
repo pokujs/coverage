@@ -10,13 +10,14 @@ for (const runtime of runtimesFor('html')) {
     reporter: 'html',
     runtime,
     name: 'skip-empty',
+    extension: 'json',
   };
 
   await test(`${runtime}: ${testCase.name}`, async () => {
     const result = await fixture.run(testCase);
 
-    snapshot.matchTree(
-      html.read(result.fixtureRoot),
+    snapshot.matchJson(
+      html.extract(result.fixtureRoot),
       testCase,
       'Hides files with no executable code from summary rows when skipEmpty is true'
     );

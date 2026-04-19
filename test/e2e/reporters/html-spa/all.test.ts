@@ -1,7 +1,7 @@
 import type { TestCase } from '../../../../src/@types/tests.ts';
 import { test } from 'poku';
 import { fixture } from '../../../__utils__/fixture.ts';
-import { html } from '../../../__utils__/readers/html.ts';
+import { htmlSpa } from '../../../__utils__/readers/html-spa.ts';
 import { runtimesFor } from '../../../__utils__/runtime.ts';
 import { snapshot } from '../../../__utils__/snapshot.ts';
 
@@ -10,13 +10,14 @@ for (const runtime of runtimesFor('html-spa')) {
     reporter: 'html-spa',
     runtime,
     name: 'all',
+    extension: 'json',
   };
 
   await test(`${runtime}: ${testCase.name}`, async () => {
     const result = await fixture.run(testCase);
 
-    snapshot.matchTree(
-      html.read(result.fixtureRoot),
+    snapshot.matchJson(
+      htmlSpa.extract(result.fixtureRoot),
       testCase,
       'Covers all files included and excludes explicit ones'
     );

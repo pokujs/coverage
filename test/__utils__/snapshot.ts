@@ -113,9 +113,18 @@ const matchTree = (
   strict.deepEqual(actual, expected, message);
 };
 
+const matchJson = (
+  actual: unknown,
+  target: TestCase,
+  message?: string
+): void => {
+  match(`${JSON.stringify(actual, null, 2)}\n`, target, message);
+};
+
 export const snapshot = {
   read,
   write,
   match,
+  matchJson,
   matchTree,
 } as const;

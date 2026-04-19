@@ -10,13 +10,14 @@ for (const runtime of runtimesFor('html')) {
     reporter: 'html',
     runtime,
     name: 'skip-full',
+    extension: 'json',
   };
 
   await test(`${runtime}: ${testCase.name}`, async () => {
     const result = await fixture.run(testCase);
 
-    snapshot.matchTree(
-      html.read(result.fixtureRoot),
+    snapshot.matchJson(
+      html.extract(result.fixtureRoot),
       testCase,
       'Hides fully-covered files from summary rows when skipFull is true'
     );

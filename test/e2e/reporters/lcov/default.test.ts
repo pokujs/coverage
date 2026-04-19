@@ -27,9 +27,14 @@ for (const runtime of runtimesFor('lcov')) {
 
     strict.equal(existsSync(reportDir), true, 'lcov-report/ must be created');
 
-    snapshot.matchTree(
-      html.read(result.fixtureRoot, 'lcov-report'),
-      testCase,
+    const reportTestCase: TestCase = {
+      ...testCase,
+      name: `${testCase.name}.html`,
+    };
+
+    snapshot.matchJson(
+      html.extract(result.fixtureRoot, 'lcov-report'),
+      reportTestCase,
       'Emits lcov-report/ html tree via delegated html reporter'
     );
   });
