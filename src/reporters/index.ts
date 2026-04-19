@@ -41,8 +41,6 @@ const defaultReporter: ReporterName = 'text';
 const BUN_UNSUPPORTED_REASONS: Record<string, string> = {
   v8: '[@pokujs/coverage] reporter "v8" is not supported on Bun (JavaScriptCore does not expose V8 coverage profiles). Falling back to "lcov" for a portable output.',
   json: '[@pokujs/coverage] reporter "json" is not supported on Bun (requires V8 coverage profiles, which JavaScriptCore does not expose). Falling back to "lcov" for a portable output.',
-  'html-spa':
-    '[@pokujs/coverage] reporter "html-spa" is not supported on Bun (requires V8 coverage profiles, which JavaScriptCore does not expose). Falling back to "lcov" for a portable output.',
 };
 
 const isBunUnsupported = (reporterName: string): boolean =>

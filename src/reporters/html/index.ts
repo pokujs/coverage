@@ -18,16 +18,12 @@ import {
   metricsForFile,
   metricsForSubtree,
 } from '../shared/html/row-metrics.js';
+import { htmlRuntimes } from '../shared/html/runtimes/index.js';
 import { computeWatermarkClasses } from '../shared/html/watermark-classes.js';
 import { shouldHideFileRow } from '../shared/skip.js';
 import { buildTree } from '../shared/tree.js';
 import { copyAssets } from './copy-assets.js';
 import { renderSummaryPage } from './render-summary.js';
-import { bun } from './runtimes/bun.js';
-import { deno } from './runtimes/deno.js';
-import { node } from './runtimes/node.js';
-
-const runtimes = { node, deno, bun };
 
 const childRelativePath = (
   directoryRelativePath: string,
@@ -147,7 +143,7 @@ const walkDirectory = (
 };
 
 const report: Reporter = (context) => {
-  const projectedCoverage = runtimes[context.runtime].project(context);
+  const projectedCoverage = htmlRuntimes[context.runtime].project(context);
   if (projectedCoverage === null) return;
 
   const { model, byPath } = projectedCoverage;
@@ -194,4 +190,4 @@ const report: Reporter = (context) => {
   });
 };
 
-export const html: HtmlHandler = { runtimes, report };
+export const html: HtmlHandler = { runtimes: htmlRuntimes, report };

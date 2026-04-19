@@ -1,6 +1,6 @@
-import type { HtmlRuntimeHandler } from '../../../@types/reporters.js';
-import { lcovonly } from '../../lcovonly/index.js';
-import { projectLcovModel } from '../../shared/html/project-lcov-model.js';
+import type { HtmlRuntimeHandler } from '../../../../@types/reporters.js';
+import { lcovonly } from '../../../lcovonly/index.js';
+import { projectLcovModel } from '../project-lcov-model.js';
 
 export const bun: HtmlRuntimeHandler = {
   project: (context) => {

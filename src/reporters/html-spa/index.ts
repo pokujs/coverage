@@ -1,29 +1,29 @@
 import type { HtmlSpaMetricName } from '../../@types/html.js';
-import type { HtmlSpaHandler, Reporter } from '../../@types/reporters.js';
+import type {
+  HtmlSpaHandler,
+  Reporter,
+  Runtime,
+} from '../../@types/reporters.js';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { formatDatetime } from '../../utils/datetime.js';
 import { emitDetailPages } from '../shared/html/emit-details.js';
-import { projectCoverageMap } from '../shared/html/project-coverage-map.js';
+import { htmlRuntimes } from '../shared/html/runtimes/index.js';
 import { buildTree } from '../shared/tree.js';
 import { buildHtmlSpaNode } from './build-data.js';
 import { copyAssets } from './copy-assets.js';
 import { renderShell } from './render-shell.js';
 
-const METRICS_TO_SHOW: readonly HtmlSpaMetricName[] = [
-  'lines',
-  'branches',
-  'functions',
-];
+const metricsFor = (runtime: Runtime): readonly HtmlSpaMetricName[] =>
+  runtime === 'bun'
+    ? ['lines', 'functions']
+    : ['lines', 'branches', 'functions'];
 
 const report: Reporter = (context) => {
-  const coverageMap = context.produceCoverageMap();
-  if (coverageMap === null) return;
+  const projectedCoverage = htmlRuntimes[context.runtime].project(context);
+  if (projectedCoverage === null) return;
 
-  const entries = Object.keys(coverageMap);
-  if (entries.length === 0) return;
-
-  const { model, byPath } = projectCoverageMap(coverageMap);
+  const { model, byPath } = projectedCoverage;
   if (model.length === 0) return;
 
   const tree = buildTree(model, context.cwd);
@@ -59,10 +59,10 @@ const report: Reporter = (context) => {
   const shell = renderShell({
     data,
     datetime,
-    metricsToShow: METRICS_TO_SHOW,
+    metricsToShow: metricsFor(context.runtime),
   });
 
   writeFileSync(join(context.reportsDir, 'index.html'), shell);
 };
 
-export const htmlSpa: HtmlSpaHandler = { report };
+export const htmlSpa: HtmlSpaHandler = { runtimes: htmlRuntimes, report };

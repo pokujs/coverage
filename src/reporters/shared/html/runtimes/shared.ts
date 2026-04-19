@@ -1,5 +1,5 @@
-import type { HtmlRuntimeHandler } from '../../../@types/reporters.js';
-import { projectCoverageMap } from '../../shared/html/project-coverage-map.js';
+import type { HtmlRuntimeHandler } from '../../../../@types/reporters.js';
+import { projectCoverageMap } from '../project-coverage-map.js';
 
 export const viaV8Istanbul: HtmlRuntimeHandler = {
   project: (context) => {

@@ -69,6 +69,7 @@ export type HtmlHandler = {
 };
 
 export type HtmlSpaHandler = {
+  runtimes: Record<Runtime, HtmlRuntimeHandler>;
   report: Reporter;
 };
 
