@@ -1,4 +1,4 @@
-import type { Platform, TestCase } from '../../src/@types/tests.ts';
+import type { TestCase } from '../../src/@types/tests.ts';
 import {
   existsSync,
   mkdirSync,
@@ -16,14 +16,13 @@ const snapshotsRoot = fileURLToPath(
   new URL('../__snapshots__/e2e/', import.meta.url)
 );
 
-const platformOf = (target: TestCase): Platform =>
-  target.platform ?? (currentPlatform as Platform);
+const runtimePlatform = currentPlatform;
 
 const resolveSnapshotPath = (target: TestCase): string =>
-  `${snapshotsRoot}${target.reporter}/${target.runtime}/${platformOf(target)}/${target.name}.${target.extension}`;
+  `${snapshotsRoot}${target.reporter}/${target.runtime}/${runtimePlatform}/${target.name}.${target.extension}`;
 
 const resolveSnapshotTreeRoot = (target: TestCase): string =>
-  `${snapshotsRoot}${target.reporter}/${target.runtime}/${platformOf(target)}/${target.name}`;
+  `${snapshotsRoot}${target.reporter}/${target.runtime}/${runtimePlatform}/${target.name}`;
 
 const read = (target: TestCase): string =>
   readFileSync(resolveSnapshotPath(target), 'utf8');
