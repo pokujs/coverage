@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.2.1](https://github.com/pokujs/coverage/compare/v0.2.0...v0.2.1) (2026-04-19)
+
+
+### Bug Fixes
+
+* enhance AST for `Functions` metric ([#7](https://github.com/pokujs/coverage/issues/7)) ([8c09ac3](https://github.com/pokujs/coverage/commit/8c09ac378d966d683438c3b86dfb8a24d57f62f1))
+* improve branches consistency via AST ([#5](https://github.com/pokujs/coverage/issues/5)) ([5546f27](https://github.com/pokujs/coverage/commit/5546f272b973e3acb561529a9fb8473c66c3e59e))
+* prevent undefined branch map entries when merging V8 scripts ([7d9729e](https://github.com/pokujs/coverage/commit/7d9729e6e75401763d6054bff3f591d5e7cd73e4))
+
 ## [0.2.0](https://github.com/pokujs/coverage/compare/v0.1.9...v0.2.0) (2026-04-19)
 
 
