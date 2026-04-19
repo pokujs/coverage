@@ -58,13 +58,15 @@ export default defineConfig({
       setup: async () => {
         await clearRuntimeCaches();
 
-        console.log('› Deleting previous coverage reports...');
+        console.log('› Deleting previous coverage reports and fixtures...');
         await clean();
         console.log('');
       },
       teardown: () => {
         console.log('');
-        console.log('› Coverage reports are preserved for debugging purposes.');
+        console.log(
+          '› Coverage reports and fixtures are preserved for debugging purposes.'
+        );
       },
     },
     coverage({

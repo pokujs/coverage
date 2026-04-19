@@ -1,8 +1,0 @@
-function identity(value) {
-  return value;
-}
-function twice(value) {
-  return value + value;
-}
-export { identity, twice };
-//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsib3JpZ2luYWwudHMiXSwKICAic291cmNlc0NvbnRlbnQiOiBbImV4cG9ydCBmdW5jdGlvbiBpZGVudGl0eTxUPih2YWx1ZTogVCk6IFQge1xuICByZXR1cm4gdmFsdWU7XG59XG5cbmV4cG9ydCBmdW5jdGlvbiB0d2ljZSh2YWx1ZTogbnVtYmVyKTogbnVtYmVyIHtcbiAgcmV0dXJuIHZhbHVlICsgdmFsdWU7XG59XG4iXSwKICAibWFwcGluZ3MiOiAiQUFBTyxTQUFTLFNBQVksT0FBYTtBQUN2QyxTQUFPO0FBQ1Q7QUFFTyxTQUFTLE1BQU0sT0FBdUI7QUFDM0MsU0FBTyxRQUFRO0FBQ2pCOyIsCiAgIm5hbWVzIjogW10KfQo=
