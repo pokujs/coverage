@@ -1,18 +1,28 @@
 // @ts-check
 
-import { readdir, rm } from 'node:fs/promises';
+import { cp, readdir, rm } from 'node:fs/promises';
 import { homedir, platform } from 'node:os';
-import { join } from 'node:path';
+import { basename, join } from 'node:path';
 import { env } from 'node:process';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'poku';
 import { coverage } from './lib/index.js';
 
-const clean = async (
-  directory = fileURLToPath(
-    new URL('./test/__fixtures__/e2e/', import.meta.url)
-  )
-) => {
+const fixturesRoot = fileURLToPath(
+  new URL('./test/__fixtures__/e2e/', import.meta.url)
+);
+
+const reportersResourcesRoot = fileURLToPath(
+  new URL('./test/__resources__/e2e/reporters/', import.meta.url)
+);
+
+const reportersResourceByCase = new Map([
+  ['exclude-after-remap', 'exclude-remap'],
+  ['exclude-before-remap', 'exclude-remap'],
+  ['skip-empty', 'skip-empty'],
+]);
+
+const clean = async (directory = fixturesRoot) => {
   const entries = await readdir(directory, { withFileTypes: true });
 
   await Promise.all(
@@ -21,11 +31,38 @@ const clean = async (
 
       const entryPath = join(directory, entry.name);
 
-      if (entry.name === 'coverage') {
+      if (
+        entry.name === 'coverage' ||
+        entry.name === 'src' ||
+        entry.name === 'test'
+      ) {
         return rm(entryPath, { recursive: true, force: true });
       }
 
       return clean(entryPath);
+    })
+  );
+};
+
+const hydrate = async (directory = fixturesRoot) => {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const hasPokuConfig = entries.some(
+    (entry) => entry.isFile() && entry.name === 'poku.config.js'
+  );
+
+  if (hasPokuConfig) {
+    const caseName = basename(directory);
+    const resourceName = reportersResourceByCase.get(caseName) ?? 'base';
+    const resourceDirectory = join(reportersResourcesRoot, resourceName);
+
+    await cp(resourceDirectory, directory, { recursive: true, force: true });
+    return;
+  }
+
+  await Promise.all(
+    entries.map((entry) => {
+      if (!entry.isDirectory()) return;
+      return hydrate(join(directory, entry.name));
     })
   );
 };
@@ -60,6 +97,9 @@ export default defineConfig({
 
         console.log('› Deleting previous coverage reports and fixtures...');
         await clean();
+
+        console.log('› Hydrating fixtures from resources...');
+        await hydrate();
         console.log('');
       },
       teardown: () => {

@@ -65,11 +65,12 @@ End-to-end tests live under [test/](test/). Open the directory to see the curren
 
 - **Follow established patterns before inventing a new one.** Look for a similar structure in the project and replicate it.
   - If the existing pattern does not fit, understand why before diverging.
-- **Directories that do not hold actual tests carry the `__` prefix and suffix** (`__utils__`, `__fixtures__`, `__snapshots__`). Visual signal: "this is infrastructure, not a test".
+- **Directories that do not hold actual tests carry the `__` prefix and suffix** (`__utils__`, `__fixtures__`, `__resources__`, `__snapshots__`). Visual signal: "this is infrastructure, not a test".
 - **One test file per `(reporter, case)` pair.** Runtime is not a filename segment. It is the iteration axis inside the file. The test iterates the runtimes list and opens a `test` block per runtime. The runtime prefix in the title is the filter point for `npm run test:<runtime>`.
 - **Case is always its own path segment** in tests, in fixtures, in snapshots. Never flatten it into the filename. The three artifacts share the same `<case>` name so they can be located from one another by substitution.
 - **Runtime-agnostic test body.** Resolve fixture, run poku, compare against snapshot. Legitimate divergence between runtimes lives in the snapshot, never in the test.
-- **Fixtures are self-contained.** Each `<reporter>/<runtime>/<case>/` directory holds real `poku.config.js`, `src/` and `test/` plus its own runtime-generated `coverage/` output dir.
+- **Fixtures are hydrated at setup time.** Each `<reporter>/<runtime>/<case>/` directory versions only its `poku.config.js`. `src/` and `test/` are copied in from [test/\_\_resources\_\_/](test/__resources__/) by the `hydrate()` step in [poku.config.js](poku.config.js).
+- **Fixture source of truth lives under [test/\_\_resources\_\_/](test/__resources__/).** Pattern resolution is done by a Map in [poku.config.js](poku.config.js).
 - **Test helpers follow the typed-object export pattern**, same rule as `src/`. Helper types live under `@types/` like any other domain.
 - **Snapshots are stored per platform: `<reporter>/<runtime>/<platform>/<case>.<ext>`** where `<platform>` is one of `darwin`, `linux`, `win32`. There is no "shared" snapshot. Every OS carries its own copy, even when content is identical.
 - **Regenerate snapshots via tooling, never by hand.**
