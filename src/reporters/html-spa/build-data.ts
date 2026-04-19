@@ -29,8 +29,7 @@ const metricData = (
   const covered = metric.hit ?? 0;
   const isEmpty = total === 0;
   const percentage = pctValue(metric);
-
-  const pct = isEmpty || percentage === null ? 0 : round2(percentage);
+  const pct = isEmpty || percentage === null ? 100 : round2(percentage);
 
   const classForPercent: WatermarkLevel | 'empty' = isEmpty
     ? 'empty'

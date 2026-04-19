@@ -56,10 +56,10 @@ export const buildFromCoverageMap = (
   builder.openTag('coverage', {
     'lines-valid': metricTotal(rootStatements),
     'lines-covered': metricCovered(rootStatements),
-    'line-rate': metricRate(rootStatements),
+    'line-rate': metricRate(rootStatements) ?? 1,
     'branches-valid': metricTotal(rootBranches),
     'branches-covered': metricCovered(rootBranches),
-    'branch-rate': metricRate(rootBranches),
+    'branch-rate': metricRate(rootBranches) ?? 1,
     timestamp: Date.now(),
     complexity: 0,
     version: '0.1',
@@ -80,8 +80,8 @@ export const buildFromCoverageMap = (
 
     builder.openTag('package', {
       name: group.packageName,
-      'line-rate': metricRate(groupStatements),
-      'branch-rate': metricRate(groupBranches),
+      'line-rate': metricRate(groupStatements) ?? 1,
+      'branch-rate': metricRate(groupBranches) ?? 1,
     });
 
     builder.openTag('classes');
@@ -94,8 +94,8 @@ export const buildFromCoverageMap = (
       builder.openTag('class', {
         name: basename(fileCoverage.path),
         filename: toPosix(relativize(fileCoverage.path, context.cwd)),
-        'line-rate': metricRate(fileStatements),
-        'branch-rate': metricRate(fileBranches),
+        'line-rate': metricRate(fileStatements) ?? 1,
+        'branch-rate': metricRate(fileBranches) ?? 1,
       });
 
       builder.openTag('methods');

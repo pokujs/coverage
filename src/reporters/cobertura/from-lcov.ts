@@ -43,10 +43,10 @@ export const buildFromLcov = (context: ReporterContext): string | undefined => {
   builder.openTag('coverage', {
     'lines-valid': metricTotal(rootLines),
     'lines-covered': metricCovered(rootLines),
-    'line-rate': metricRate(rootLines),
+    'line-rate': metricRate(rootLines) ?? 1,
     'branches-valid': metricTotal(rootBranches),
     'branches-covered': metricCovered(rootBranches),
-    'branch-rate': metricRate(rootBranches),
+    'branch-rate': metricRate(rootBranches) ?? 1,
     timestamp: Date.now(),
     complexity: 0,
     version: '0.1',
@@ -67,8 +67,8 @@ export const buildFromLcov = (context: ReporterContext): string | undefined => {
 
     builder.openTag('package', {
       name: group.packageName,
-      'line-rate': metricRate(groupLines),
-      'branch-rate': metricRate(groupBranches),
+      'line-rate': metricRate(groupLines) ?? 1,
+      'branch-rate': metricRate(groupBranches) ?? 1,
     });
 
     builder.openTag('classes');
@@ -79,8 +79,8 @@ export const buildFromLcov = (context: ReporterContext): string | undefined => {
       builder.openTag('class', {
         name: basename(lcovFile.file),
         filename: toPosix(relativize(lcovFile.file, context.cwd)),
-        'line-rate': metricRate(fileLines),
-        'branch-rate': metricRate(lcovFile.branches),
+        'line-rate': metricRate(fileLines) ?? 1,
+        'branch-rate': metricRate(lcovFile.branches) ?? 1,
       });
 
       builder.openTag('methods');

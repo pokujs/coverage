@@ -28,11 +28,13 @@ export type SubRangeEntry = {
 
 export type FunctionEntry = {
   line: number;
+  column: number;
   name: string;
   startOffset: number;
   endOffset: number;
   outerCount: number;
   isBlockCoverage: boolean;
+  isModuleFunction: boolean;
   subRanges: Map<string, SubRangeEntry>;
   blocks: BranchBlockEntry[];
 };

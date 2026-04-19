@@ -11,23 +11,22 @@ export const serializeFileRecord = (
   record.push('TN:');
   record.push(`SF:${toPosix(relativize(filePath, cwd))}`);
 
-  const namedFunctions = Array.from(aggregation.functions.values())
-    .filter((functionEntry) => functionEntry.name !== '')
+  const userFunctions = Array.from(aggregation.functions.values())
+    .filter((functionEntry) => !functionEntry.isModuleFunction)
     .sort((left, right) => left.line - right.line);
 
-  for (const namedFunction of namedFunctions)
-    record.push(`FN:${namedFunction.line},${namedFunction.name}`);
+  for (const userFunction of userFunctions)
+    record.push(`FN:${userFunction.line},${userFunction.name}`);
 
-  record.push(`FNF:${namedFunctions.length}`);
+  record.push(`FNF:${userFunctions.length}`);
   record.push(
     `FNH:${
-      namedFunctions.filter((namedFunction) => namedFunction.outerCount > 0)
-        .length
+      userFunctions.filter((userFunction) => userFunction.outerCount > 0).length
     }`
   );
 
-  for (const namedFunction of namedFunctions)
-    record.push(`FNDA:${namedFunction.outerCount},${namedFunction.name}`);
+  for (const userFunction of userFunctions)
+    record.push(`FNDA:${userFunction.outerCount},${userFunction.name}`);
 
   const sortedLines = Array.from(aggregation.lineHits.entries()).sort(
     (left, right) => left[0] - right[0]

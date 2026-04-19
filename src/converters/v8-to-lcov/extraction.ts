@@ -87,7 +87,8 @@ export const mergeLineHits = (
 export const absorbFunctions = (
   fileAggregation: FileAggregation,
   script: V8ScriptCoverage,
-  lineStarts: number[]
+  lineStarts: number[],
+  sourceLength: number
 ): void => {
   for (const scriptFunction of script.functions) {
     if (scriptFunction.ranges.length === 0) continue;
@@ -98,21 +99,25 @@ export const absorbFunctions = (
     let functionEntry = fileAggregation.functions.get(functionKey);
 
     if (!functionEntry) {
-      const [line] = offsets.rangeLines(
-        outerRange.startOffset,
-        outerRange.endOffset,
-        lineStarts
-      );
+      const location = offsets.toLocation(outerRange.startOffset, lineStarts);
+      const isModuleFunction =
+        scriptFunction.functionName === '' &&
+        outerRange.startOffset === 0 &&
+        outerRange.endOffset === sourceLength;
+
       functionEntry = {
-        line,
+        line: location.line,
+        column: location.column,
         name: scriptFunction.functionName,
         startOffset: outerRange.startOffset,
         endOffset: outerRange.endOffset,
         outerCount: 0,
         isBlockCoverage: scriptFunction.isBlockCoverage,
+        isModuleFunction,
         subRanges: new Map(),
         blocks: [],
       };
+
       fileAggregation.functions.set(functionKey, functionEntry);
     } else if (
       functionEntry.name === '' &&

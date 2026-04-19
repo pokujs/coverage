@@ -9,11 +9,12 @@ export const metricTotal = (metric: Metric): number => metric.total ?? 0;
 
 export const metricCovered = (metric: Metric): number => metric.hit ?? 0;
 
-/** Istanbul convention */
-export const metricRate = (metric: Metric): number => {
+export const metricRate = (metric: Metric): number | null => {
   const total = metric.total ?? 0;
-  if (total === 0) return 1;
+  if (total === 0) return null;
+
   const hit = metric.hit ?? 0;
+
   return Math.round((hit / total) * 10000) / 10000;
 };
 
@@ -29,7 +30,7 @@ export const linesMetric = (lineHits: Map<number, number>): Metric => {
 
 export const pctValue = (metric: Metric): number | null => {
   if (metric.total === null || metric.hit === null) return null;
-  if (metric.total === 0) return 100;
+  if (metric.total === 0) return null;
   return (metric.hit / metric.total) * 100;
 };
 
@@ -42,7 +43,7 @@ export const resolveDisplayPct = (
 
   if (percentage !== null) return percentage;
   if (runtime === 'bun' && metricName === 'branches') return null;
-  return 0;
+  return null;
 };
 
 export const formatPct = (value: number | null): string =>

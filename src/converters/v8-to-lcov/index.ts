@@ -10,6 +10,7 @@ import { offsets } from '../../utils/offsets.js';
 import { traceMap } from '../../utils/source-map/index.js';
 import { astCache } from '../shared/ast-cache.js';
 import { branchBlocks } from '../shared/branch-blocks.js';
+import { functionNames } from '../shared/function-names.js';
 import { ignoreDirectives } from '../shared/ignore-directives.js';
 import { passesPreRemapFilter } from '../shared/pre-remap-filter.js';
 import { sourceMapRemap } from '../shared/remap.js';
@@ -45,9 +46,10 @@ const mergeIntoAggregation = (
   sourceByPath.set(filePath, source);
 
   const lineStartTable = offsets.lineStarts(source);
+  const sourceLength = Buffer.byteLength(source, 'utf8');
 
   mergeLineHits(aggregation.lineHits, computeLineHits(source, script));
-  absorbFunctions(aggregation, script, lineStartTable);
+  absorbFunctions(aggregation, script, lineStartTable, sourceLength);
 
   const ignoredLines = ignoreDirectives.parseSource(source);
   applyIgnoredLines(aggregation.lineHits, ignoredLines);
@@ -66,6 +68,7 @@ const finalizeAggregations = (
 
     branchBlocks.build(aggregation, source, lineStartTable);
     applyIgnoredBranches(aggregation, ignoredLines);
+    functionNames.resolve(aggregation, source);
   }
 };
 
@@ -146,6 +149,7 @@ export const v8ToLcov = (
         sourceMapCache: document.sourceMapCache,
         cwd,
       });
+
       if (resolved === undefined) continue;
 
       if (!passesPreRemapFilter(script, resolved, preRemapFilter, cwd))

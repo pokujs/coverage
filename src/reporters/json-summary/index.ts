@@ -29,7 +29,7 @@ const metricSummary = (metric: Metric): MetricSummary => {
     total: metric.total ?? 0,
     covered: metric.hit ?? 0,
     skipped: 0,
-    pct: percentage === null ? 0 : Math.round(percentage * 100) / 100,
+    pct: percentage === null ? 100 : Math.round(percentage * 100) / 100,
   };
 };
 
