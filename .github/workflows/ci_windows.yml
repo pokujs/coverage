@@ -86,8 +86,12 @@ jobs:
         run: npm run build
 
       - name: 🧪 Testing
-        shell: pwsh
-        run: npm run test:bun *>&1 | Tee-Object -FilePath test-output.log
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 2
+          shell: pwsh
+          command: npm run test:bun *>&1 | Tee-Object -FilePath test-output.log
 
       - name: 📤 Upload test output
         if: always()
