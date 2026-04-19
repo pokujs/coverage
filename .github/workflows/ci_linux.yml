@@ -23,7 +23,9 @@ jobs:
     timeout-minutes: 10
     strategy:
       fail-fast: false
-    name: Node.js
+      matrix:
+        node-version: [18, 20, 22, 24, 25]
+    name: Node.js ${{ matrix.node-version }}
     steps:
       - name: ➕ Actions - Checkout
         uses: actions/checkout@v4
@@ -32,7 +34,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           check-latest: true
-          node-version: lts/*
+          node-version: ${{ matrix.node-version }}
 
       - name: ➕ Cache dependencies
         uses: actions/cache@v4
@@ -55,7 +57,7 @@ jobs:
         continue-on-error: true
         uses: actions/upload-artifact@v7
         with:
-          name: test-output-linux-node
+          name: test-output-linux-node-${{ matrix.node-version }}
           path: |
             test-output.log
             test/__fixtures__/e2e/**/coverage/
