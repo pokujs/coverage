@@ -11,8 +11,6 @@ import { lcovonly } from '../lcovonly/index.js';
 const report: Reporter = (context) => {
   lcovonly.report(context);
 
-  if (context.runtime === 'bun') return;
-
   html.report({
     ...context,
     reportsDir: join(context.reportsDir, 'lcov-report'),
