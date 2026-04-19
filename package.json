@@ -1,7 +1,7 @@
 {
   "name": "@pokujs/coverage",
   "private": false,
-  "version": "0.1.9",
+  "version": "0.2.0",
   "description": "☔️ The world's first coverage tool to generate reports for Node.js, Bun, Deno, and TypeScript at the same time.",
   "type": "module",
   "main": "./lib/index.js",

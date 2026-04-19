@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/pokujs/coverage/compare/v0.1.9...v0.2.0) (2026-04-19)
+
+
+### Features
+
+* support "html" and "html-spa" reporter with Bun ([#2](https://github.com/pokujs/coverage/issues/2)) ([67c0307](https://github.com/pokujs/coverage/commit/67c030785b3ff25676080db8ab3eef35f0da0928))
+
 ## 0.1.9 (2026-04-18)
 
 
