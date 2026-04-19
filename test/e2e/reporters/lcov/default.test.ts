@@ -25,20 +25,7 @@ for (const runtime of runtimesFor('lcov')) {
       'Emits lcov.info via delegated lcovonly reporter'
     );
 
-    if (runtime === 'bun') {
-      strict.equal(
-        existsSync(reportDir),
-        false,
-        'lcov-report/ must not be created on Bun'
-      );
-      return;
-    }
-
-    strict.equal(
-      existsSync(reportDir),
-      true,
-      'lcov-report/ must be created on Node and Deno'
-    );
+    strict.equal(existsSync(reportDir), true, 'lcov-report/ must be created');
 
     snapshot.matchTree(
       html.read(result.fixtureRoot, 'lcov-report'),
