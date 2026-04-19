@@ -44,6 +44,7 @@ const bunSupports = new Set<ReporterName>([
   'clover',
   'none',
   'html',
+  'html-spa',
 ]);
 
 export const runtimesFor = (reporter: ReporterName): Runtime[] =>
