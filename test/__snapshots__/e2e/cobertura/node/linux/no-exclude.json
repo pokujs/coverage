@@ -1,18 +1,1 @@
-{
-  "reporter": "cobertura",
-  "totals": {
-    "lines": {
-      "total": 168,
-      "covered": 132,
-      "missed": 36,
-      "pct": "78.57 %"
-    },
-    "branches": {
-      "total": 68,
-      "covered": 62,
-      "missed": 6,
-      "pct": "91.18 %"
-    }
-  },
-  "files": {}
-}
+../../deno/linux/no-exclude.json

@@ -31,6 +31,7 @@
     "build": "tsc",
     "typecheck": "tsc --noEmit && tsc -p test --noEmit",
     "build:snapshots": "UPDATE_SNAPSHOTS=1 npm test",
+    "postbuild:snapshots": "tsx tools/postbuild-snapshots.ts",
     "lint": "prettier --check .",
     "lint:fix": "prettier --write .github/workflows/*.yml .",
     "test": "poku",
