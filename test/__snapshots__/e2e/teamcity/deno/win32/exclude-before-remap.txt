@@ -1,1 +1,10 @@
-exclude-after-remap.txt
+##teamcity[blockOpened name='Code Coverage Summary']
+##teamcity[buildStatisticValue key='CodeCoverageAbsBCovered' value='4']
+##teamcity[buildStatisticValue key='CodeCoverageAbsBTotal' value='4']
+##teamcity[buildStatisticValue key='CodeCoverageAbsRCovered' value='1']
+##teamcity[buildStatisticValue key='CodeCoverageAbsRTotal' value='1']
+##teamcity[buildStatisticValue key='CodeCoverageAbsMCovered' value='1']
+##teamcity[buildStatisticValue key='CodeCoverageAbsMTotal' value='1']
+##teamcity[buildStatisticValue key='CodeCoverageAbsLCovered' value='4']
+##teamcity[buildStatisticValue key='CodeCoverageAbsLTotal' value='4']
+##teamcity[blockClosed name='Code Coverage Summary']

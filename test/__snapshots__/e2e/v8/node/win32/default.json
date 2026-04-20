@@ -1,1 +1,4 @@
-../../deno/win32/default.json
+{
+  "reporter": "v8",
+  "files": {}
+}

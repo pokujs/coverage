@@ -21,7 +21,7 @@
     }
   },
   "files": {
-    "src\\survivor.js": {
+    "src/survivor.js": {
       "lines": {
         "total": 2,
         "covered": 2,
@@ -43,11 +43,17 @@
       "uncoveredLines": "",
       "coveredLines": "1-2",
       "lineHits": {
-        "1": 15,
-        "2": 23
+        "1": 14,
+        "2": 24
       },
       "branchHits": [],
-      "functionHits": []
+      "functionHits": [
+        {
+          "name": "greet",
+          "line": 1,
+          "hit": 1
+        }
+      ]
     }
   }
 }
