@@ -74,10 +74,10 @@ const collectPlatformFiles = (targetPlatform: DedupPlatform): string[] => {
 
 const dedupePlatform = (targetPlatform: DedupPlatform): number => {
   const files = collectPlatformFiles(targetPlatform);
+  const hashGroups = new Map<string, string[]>();
+  let linksCreated = 0;
 
   for (const filePath of files) materialize(filePath);
-
-  const hashGroups = new Map<string, string[]>();
 
   for (const filePath of files) {
     const digest = hashFile(filePath);
@@ -86,8 +86,6 @@ const dedupePlatform = (targetPlatform: DedupPlatform): number => {
     if (existing) existing.push(filePath);
     else hashGroups.set(digest, [filePath]);
   }
-
-  let linksCreated = 0;
 
   for (const group of hashGroups.values()) {
     if (group.length < 2) continue;
