@@ -32,15 +32,12 @@ import type {
 } from '../../@types/v8.js';
 import { readFileSync } from 'node:fs';
 import { traceMap } from '../../utils/source-map/index.js';
+import { istanbulEntries } from '../shared/istanbul-entries.js';
 import { passesPreRemapFilter } from '../shared/pre-remap-filter.js';
 import { sourceMapRemap } from '../shared/remap.js';
 import { sourceCache } from '../shared/source-cache.js';
 import { findV8JsonFiles, parseV8Json } from '../shared/v8-discovery.js';
-import { covBranchToBranchMapEntry, createCovBranch } from './branch.js';
-import { covFunctionToFnMapEntry, createCovFunction } from './function.js';
-import { covLineToStatementMapEntry } from './line.js';
 import { sliceRange } from './range.js';
-import { createCovSource } from './source.js';
 
 const cloneCovSource = (baseSource: CovSource): CovSource => ({
   lines: baseSource.lines.map((covLine): CovLine => ({ ...covLine, count: 0 })),
@@ -87,7 +84,7 @@ const applyScript = (
 
         if (!firstLine.ignore && !isModuleScopeRange) {
           branches.push(
-            createCovBranch(
+            istanbulEntries.createCovBranch(
               firstLine.line,
               rangeStart - firstLine.startColumn,
               lastLine.line,
@@ -99,7 +96,7 @@ const applyScript = (
 
         if (block.functionName && rangeIndex === 0) {
           functions.push(
-            createCovFunction(
+            istanbulEntries.createCovFunction(
               block.functionName,
               firstLine.line,
               rangeStart - firstLine.startColumn,
@@ -111,7 +108,7 @@ const applyScript = (
         }
       } else if (block.functionName) {
         functions.push(
-          createCovFunction(
+          istanbulEntries.createCovFunction(
             block.functionName,
             firstLine.line,
             rangeStart - firstLine.startColumn,
@@ -145,7 +142,7 @@ const buildFileCoverage = (
 
   covSource.lines.forEach((covLine, lineIndex) => {
     const key = String(lineIndex);
-    statementMap[key] = covLineToStatementMapEntry(covLine);
+    statementMap[key] = istanbulEntries.covLineToStatementMapEntry(covLine);
     s[key] = covLine.ignore ? 1 : covLine.count;
   });
 
@@ -163,7 +160,7 @@ const buildFileCoverage = (
 
   sortedFunctions.forEach((covFunction, functionIndex) => {
     const key = String(functionIndex);
-    fnMap[key] = covFunctionToFnMapEntry(covFunction);
+    fnMap[key] = istanbulEntries.covFunctionToFnMapEntry(covFunction);
     f[key] = covFunction.count;
   });
 
@@ -180,7 +177,7 @@ const buildFileCoverage = (
 
   sortedBranches.forEach((covBranch, branchIndex) => {
     const key = String(branchIndex);
-    branchMap[key] = covBranchToBranchMapEntry(covBranch);
+    branchMap[key] = istanbulEntries.covBranchToBranchMapEntry(covBranch);
     b[key] = [covBranch.count];
   });
 
@@ -315,7 +312,7 @@ const buildBaseSource = (
 ): CovSource => {
   let baseSource = baseSourceCache.get(filePath);
   if (baseSource !== undefined) return baseSource;
-  baseSource = createCovSource(sourceText, 0);
+  baseSource = istanbulEntries.createCovSource(sourceText, 0);
   baseSourceCache.set(filePath, baseSource);
   return baseSource;
 };

@@ -80,8 +80,7 @@ export type CoverageOptions = {
   /**
    * Fail the run when coverage drops below the given percentages. Pass a
    * bare number to apply to all four metrics, or an object with per-metric
-   * values and optional `perFile: true`. Branches are skipped on Bun (no
-   * `BRF`/`BRH` in Bun's native LCOV).
+   * values and optional `perFile: true`.
    *
    * @default undefined
    */

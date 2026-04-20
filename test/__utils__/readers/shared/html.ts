@@ -28,7 +28,7 @@ const parseFraction = (text: string): { covered: number; total: number } => {
 };
 
 const extractMetrics = (root: Document | Element): MetricsBundle => {
-  const bundle: MetricsBundle = {};
+  const bundle: MetricsBundle = Object.create(null);
 
   const strongSpans = DomUtils.findAll(
     (node) => node.tagName === 'span' && hasClass(node, 'strong'),
@@ -125,9 +125,10 @@ const isSourceFile = (relativePath: string): boolean =>
 
 const parse = (files: ReadonlyMap<string, string>): CoverageSnapshot => {
   const rootMarkup = files.get('index.html');
-  const totals = rootMarkup ? extractMetrics(parseDocument(rootMarkup)) : {};
-
-  const fileSnapshots: Record<string, FileSnapshot> = {};
+  const fileSnapshots: Record<string, FileSnapshot> = Object.create(null);
+  const totals = rootMarkup
+    ? extractMetrics(parseDocument(rootMarkup))
+    : Object.create(null);
 
   for (const [relativePath, content] of files) {
     if (!isSourceFile(relativePath)) continue;

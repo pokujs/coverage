@@ -18,7 +18,7 @@ const METRICS: readonly SnapshotMetric[] = [
 ];
 
 const buildBundle = (entry: CoverageSummaryEntry): MetricsBundle => {
-  const bundle: MetricsBundle = {};
+  const bundle: MetricsBundle = Object.create(null);
 
   for (const metric of METRICS) {
     const source = entry[metric];
@@ -37,7 +37,7 @@ const parse = (content: string): CoverageSnapshot => {
   const raw = JSON.parse(content) as CoverageSummaryMap;
   const totalsEntry = raw.total;
   const totals = totalsEntry ? buildBundle(totalsEntry) : undefined;
-  const files: Record<string, FileSnapshot> = {};
+  const files: Record<string, FileSnapshot> = Object.create(null);
 
   for (const [path, entry] of Object.entries(raw)) {
     if (path === 'total') continue;

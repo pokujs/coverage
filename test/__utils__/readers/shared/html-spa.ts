@@ -102,7 +102,7 @@ const parse = (files: ReadonlyMap<string, string>): CoverageSnapshot => {
 
   const windowData = extractWindowData(indexHtml);
   const totals = buildMetricsBundle(windowData.metrics);
-  const fileSnapshots: Record<string, FileSnapshot> = {};
+  const fileSnapshots: Record<string, FileSnapshot> = Object.create(null);
 
   flattenLeafFiles(windowData, [], files, fileSnapshots);
 

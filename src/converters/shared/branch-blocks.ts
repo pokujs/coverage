@@ -192,6 +192,7 @@ const startsInside = (
   subRangeStart >= template.nodeStart && subRangeStart <= template.nodeEnd;
 
 const MAX_PREFIX_GAP = 4;
+const MAX_SUFFIX_GAP = 8;
 
 const findArmIndex = (
   template: BlockTemplate,
@@ -204,6 +205,9 @@ const findArmIndex = (
 
     if (startGap < 0 || startGap > MAX_PREFIX_GAP) continue;
     if (subRangeEnd >= arm.armEnd) return armIndex;
+
+    const endGap = arm.armEnd - subRangeEnd;
+    if (endGap >= 0 && endGap <= MAX_SUFFIX_GAP) return armIndex;
   }
 
   return -1;

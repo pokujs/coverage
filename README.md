@@ -60,11 +60,12 @@ npm i -D poku @pokujs/coverage
 
 Available:
 
+- `'text'`
 - `'lcov'`
 - `'lcovonly'`
 - `'text-lcov'`
 - `'v8'`
-- `'text'`
+- `'jsc'`
 - `'text-summary'`
 - `'teamcity'`
 - `'json'`
@@ -75,10 +76,8 @@ Available:
 
 > [!NOTE]
 >
-> Reports not supported by **Bun** will generate `lcov` as a fallback:
->
-> - `v8`
-> - `json` (depends on `v8`)
+> - On **Bun**, `'v8'` falls back to `'jsc'`.
+> - On **Node.js** or **Deno**, `'jsc'` falls back to `'v8'`.
 
 ---
 

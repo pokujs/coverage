@@ -51,7 +51,7 @@ const buildFileSnapshot = (fileCoverage: LcovFile): FileSnapshot => {
     .filter((detail) => detail.hit === 0)
     .map((detail) => detail.line);
 
-  const lineHits: Record<number, number> = {};
+  const lineHits: Record<number, number> = Object.create(null);
   for (const detail of lines.details) lineHits[detail.line] = detail.hit;
 
   const branchHits: BranchHit[] = branches.details.map((detail) => ({
@@ -113,7 +113,7 @@ const build = (
   reporter: ReporterName,
   fixtureRoot: string
 ): CoverageSnapshot => {
-  const files: Record<string, FileSnapshot> = {};
+  const files: Record<string, FileSnapshot> = Object.create(null);
 
   for (const fileCoverage of parsed) {
     const normalizedPath = normalizeFilePath(fileCoverage.file, fixtureRoot);

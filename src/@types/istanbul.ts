@@ -50,6 +50,10 @@ export type FileCoverage = {
   b: BranchCounts;
 };
 
+export type StatementCoverageSlice = Pick<FileCoverage, 'statementMap' | 's'>;
+export type FunctionCoverageSlice = Pick<FileCoverage, 'fnMap' | 'f'>;
+export type BranchCoverageSlice = Pick<FileCoverage, 'branchMap' | 'b'>;
+
 export type CoverageMap = Record<string, FileCoverage>;
 
 export type CoverageSummaryMetric = {

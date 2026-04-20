@@ -24,7 +24,7 @@ const parseConditionCoverage = (
 const buildFileSnapshot = (classNode: CoberturaClass): FileSnapshot => {
   const lineEntries = xmlShared.toArray(classNode.lines?.line);
 
-  const lineHits: Record<number, number> = {};
+  const lineHits: Record<number, number> = Object.create(null);
   const coveredLines: number[] = [];
   const uncoveredLines: number[] = [];
   let branchesTotal = 0;
@@ -95,7 +95,7 @@ const parse = (content: string): CoverageSnapshot => {
   const parsed = xmlShared.parse(content) as CoberturaRoot;
   const coverage = parsed.coverage;
   const classes = xmlShared.toArray(coverage.packages?.package.classes?.class);
-  const files: Record<string, FileSnapshot> = {};
+  const files: Record<string, FileSnapshot> = Object.create(null);
   const totals: MetricsBundle = {
     lines: coverageSnapshot.buildMetricDetail(
       Number(coverage['@_lines-valid']),

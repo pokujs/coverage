@@ -42,15 +42,19 @@ export const coverage = (
 
     runner(command, file) {
       if (!runtime) return command;
+
       const absoluteTestFile = isAbsolute(file)
         ? file
         : resolve(coverageState.cwd, file);
+
       coverageState.testFiles.add(absoluteTestFile);
+
       return runtimes[runtime].runner(command, file, coverageState);
     },
 
     onTestProcess(child, file) {
       if (!runtime) return;
+
       runtimes[runtime].onTestProcess?.(child, file, coverageState);
     },
 

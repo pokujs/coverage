@@ -1,19 +1,18 @@
 import type { ReporterContext } from '../../../@types/reporters.js';
-import { readFileSync } from 'node:fs';
 import { allFiles } from '../../../all-files.js';
+import { converters } from '../../../converters/index.js';
 import { filter } from '../filter.js';
-import { findLcovInfoFiles } from '../finder.js';
 import { writeLcovFile } from '../writer.js';
 
 const produce = (context: ReporterContext): string => {
-  const lcovFiles = findLcovInfoFiles(context.tempDir);
-  const rawLcov =
-    lcovFiles.length === 0
-      ? ''
-      : lcovFiles.map((filePath) => readFileSync(filePath, 'utf8')).join('');
+  const lcov = converters.jscToLcov(
+    context.tempDir,
+    context.cwd,
+    context.preRemapFilter
+  );
 
   const filtered = filter(
-    rawLcov,
+    lcov,
     context.testFiles,
     context.cwd,
     context.fileFilter

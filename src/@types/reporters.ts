@@ -38,6 +38,7 @@ export type KnownReporter =
   | 'lcovonly'
   | 'text-lcov'
   | 'v8'
+  | 'jsc'
   | 'text'
   | 'text-summary'
   | 'teamcity'

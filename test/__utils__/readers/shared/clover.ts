@@ -11,7 +11,7 @@ import { xmlShared } from './xml.ts';
 
 const buildFileSnapshot = (file: CloverFile): FileSnapshot => {
   const lineEntries = xmlShared.toArray(file.line);
-  const lineHits: Record<number, number> = {};
+  const lineHits: Record<number, number> = Object.create(null);
   const coveredLines: number[] = [];
   const uncoveredLines: number[] = [];
   const branchHits: BranchHit[] = [];
@@ -95,7 +95,7 @@ const parse = (content: string): CoverageSnapshot => {
   const methodsTotal = Number(projectMetrics['@_methods']);
   const methodsCovered = Number(projectMetrics['@_coveredmethods']);
   const fileEntries = xmlShared.toArray(project.package.file);
-  const files: Record<string, FileSnapshot> = {};
+  const files: Record<string, FileSnapshot> = Object.create(null);
   const totals: MetricsBundle = {
     statements: coverageSnapshot.buildMetricDetail(
       statementsTotal,

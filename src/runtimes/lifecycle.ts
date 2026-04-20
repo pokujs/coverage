@@ -126,34 +126,37 @@ export const teardown = (
     reporterContext.produceCoverageMap = () => {
       if (cachedCoverageMap !== undefined) return cachedCoverageMap;
 
-      if (runtime === 'bun') {
-        cachedCoverageMap = null;
-        return null;
-      }
+      const coverageMap =
+        runtime === 'bun'
+          ? converters.jscToIstanbul(
+              state.tempDir,
+              context.cwd,
+              reporterContext.preRemapFilter
+            )
+          : converters.v8ToIstanbul(
+              state.tempDir,
+              context.cwd,
+              reporterContext.preRemapFilter
+            );
 
-      const coverageMap = converters.v8ToIstanbul(
-        state.tempDir,
-        context.cwd,
-        reporterContext.preRemapFilter
-      );
       prepareCoverageMap(coverageMap, reporterContext);
+
       cachedCoverageMap = coverageMap;
+
       return coverageMap;
     };
 
     reporterContext.produceBranchDiscoveries = () => {
       if (cachedBranchDiscoveries !== undefined) return cachedBranchDiscoveries;
 
-      if (runtime === 'bun') {
-        cachedBranchDiscoveries = emptyDiscoveries;
-        return cachedBranchDiscoveries;
-      }
-
-      cachedBranchDiscoveries = converters.discoverBranches(
-        state.tempDir,
-        context.cwd,
-        reporterContext.preRemapFilter
-      );
+      cachedBranchDiscoveries =
+        runtime === 'bun'
+          ? emptyDiscoveries
+          : converters.discoverBranches(
+              state.tempDir,
+              context.cwd,
+              reporterContext.preRemapFilter
+            );
 
       return cachedBranchDiscoveries;
     };

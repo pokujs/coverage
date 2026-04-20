@@ -1,7 +1,7 @@
 import type { FileAggregation } from '../../@types/v8.js';
 import { relativize, toPosix } from '../../utils/paths.js';
 
-export const serializeFileRecord = (
+const serializeFileRecord = (
   filePath: string,
   aggregation: FileAggregation,
   cwd: string
@@ -75,7 +75,7 @@ export const serializeFileRecord = (
   return record.join('\n');
 };
 
-export const serializeLcov = (
+const serialize = (
   fileAggregations: Map<string, FileAggregation>,
   cwd: string
 ): string => {
@@ -95,3 +95,5 @@ export const serializeLcov = (
 
   return chunks.length === 0 ? '' : chunks.join('\n') + '\n';
 };
+
+export const lcovSerialize = { serialize } as const;

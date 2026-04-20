@@ -9,6 +9,7 @@ import { clover } from './clover/index.js';
 import { cobertura } from './cobertura/index.js';
 import { htmlSpa } from './html-spa/index.js';
 import { html } from './html/index.js';
+import { jsc } from './jsc/index.js';
 import { jsonSummary } from './json-summary/index.js';
 import { json } from './json/index.js';
 import { lcov } from './lcov/index.js';
@@ -25,6 +26,7 @@ const registry = new Map<ReporterName, Reporter>([
   ['lcovonly', lcovonly.report],
   ['text-lcov', textLcov.report],
   ['v8', v8.report],
+  ['jsc', jsc.report],
   ['text', text.report],
   ['text-summary', textSummary.report],
   ['teamcity', teamcity.report],
@@ -39,14 +41,6 @@ const registry = new Map<ReporterName, Reporter>([
 
 const defaultReporter: ReporterName = 'text';
 
-const BUN_UNSUPPORTED_REASONS: Record<string, string> = {
-  v8: '[@pokujs/coverage] reporter "v8" is not supported on Bun (JavaScriptCore does not expose V8 coverage profiles). Falling back to "lcov" for a portable output.',
-  json: '[@pokujs/coverage] reporter "json" is not supported on Bun (requires V8 coverage profiles, which JavaScriptCore does not expose). Falling back to "lcov" for a portable output.',
-};
-
-const isBunUnsupported = (reporterName: string): boolean =>
-  Object.hasOwn(BUN_UNSUPPORTED_REASONS, reporterName);
-
 const normalize = (
   option: ReporterName | ReporterName[] | undefined,
   runtime: Runtime
@@ -56,22 +50,12 @@ const normalize = (
   const reporterList = Array.isArray(option) ? [...option] : [option];
   if (reporterList.length === 0) return [];
 
-  if (runtime !== 'bun') return reporterList;
+  const native: ReporterName = runtime === 'bun' ? 'jsc' : 'v8';
+  const foreign: ReporterName = native === 'jsc' ? 'v8' : 'jsc';
 
-  const unsupportedFound = reporterList.filter(isBunUnsupported);
-  if (unsupportedFound.length === 0) return reporterList;
-
-  for (const unsupportedName of unsupportedFound)
-    warnOnce(
-      `bun-${unsupportedName}-fallback`,
-      BUN_UNSUPPORTED_REASONS[unsupportedName]
-    );
-
-  const filtered = reporterList.filter(
-    (reporterName) => !isBunUnsupported(reporterName)
+  return reporterList.map((reporterName) =>
+    reporterName === foreign ? native : reporterName
   );
-  if (!filtered.includes('lcov')) filtered.push('lcov');
-  return filtered;
 };
 
 const run = (reporterList: ReporterName[], context: ReporterContext): void => {

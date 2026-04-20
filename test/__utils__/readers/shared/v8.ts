@@ -44,7 +44,7 @@ const buildFileSnapshot = (
 };
 
 const parse = (payloads: ReadonlyMap<string, string>): CoverageSnapshot => {
-  const files: Record<string, FileSnapshot> = {};
+  const files: Record<string, FileSnapshot> = Object.create(null);
 
   for (const [, content] of payloads) {
     const payload: V8NormalizedPayload = JSON.parse(content);

@@ -1,8 +1,10 @@
 # @pokujs/coverage
 
-The first code coverage package that targets Node.js, Bun, and Deno simultaneously. Exclusive plugin for Poku, the only test runner that executes the same test suite natively on the three runtimes.
+The first code coverage package that targets Node.js (V8), Bun (JSC), and Deno (V8) simultaneously. Exclusive plugin for Poku, the only test runner that executes the same test suite natively on the three runtimes.
 
-> Note to the agent: this document is living. If you complete a plan that changes the project structure (extract a shared module, promote a file into a folder, introduce a new grouping pattern), update the rules and examples below in the same commit. Do not let this document drift from repository reality.
+> Note to the agent: this document is living. If you complete a plan that changes the project structure (e.g., extract a shared module, introduce a new group/pattern), update the rules and examples below in the same commit. Do not let this document drift from repository reality.
+>
+> - Always ask before changing this document.
 
 ---
 

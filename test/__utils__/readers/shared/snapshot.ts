@@ -52,7 +52,7 @@ const compressRanges = (lineNumbers: readonly number[]): string => {
 const sortFileEntries = (
   files: Record<string, FileSnapshot>
 ): Record<string, FileSnapshot> => {
-  const sorted: Record<string, FileSnapshot> = {};
+  const sorted: Record<string, FileSnapshot> = Object.create(null);
   const sortedKeys = Object.keys(files).sort((left, right) =>
     left.localeCompare(right)
   );

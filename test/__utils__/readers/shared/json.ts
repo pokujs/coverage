@@ -31,7 +31,7 @@ const buildFileSnapshot = (entry: FileCoverage): FileSnapshot => {
   const linesTotal = lineHitCounts.size;
   const coveredLines: number[] = [];
   const uncoveredLines: number[] = [];
-  const lineHits: Record<number, number> = {};
+  const lineHits: Record<number, number> = Object.create(null);
   let linesCovered = 0;
 
   const sortedLines = [...lineHitCounts.keys()].sort(
@@ -179,7 +179,7 @@ const stripFixtureRoot = (filePath: string): string => {
 
 const parse = (content: string): CoverageSnapshot => {
   const raw = JSON.parse(content) as CoverageMap;
-  const files: Record<string, FileSnapshot> = {};
+  const files: Record<string, FileSnapshot> = Object.create(null);
 
   for (const [path, entry] of Object.entries(raw)) {
     const normalizedPath = stripFixtureRoot(path);

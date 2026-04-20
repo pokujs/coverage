@@ -12,18 +12,13 @@ import { astCache } from '../shared/ast-cache.js';
 import { branchBlocks } from '../shared/branch-blocks.js';
 import { functionNames } from '../shared/function-names.js';
 import { ignoreDirectives } from '../shared/ignore-directives.js';
+import { lcovSerialize } from '../shared/lcov-serialize.js';
+import { lineHits } from '../shared/line-hits.js';
 import { passesPreRemapFilter } from '../shared/pre-remap-filter.js';
 import { sourceMapRemap } from '../shared/remap.js';
 import { sourceCache } from '../shared/source-cache.js';
 import { findV8JsonFiles, parseV8Json } from '../shared/v8-discovery.js';
-import {
-  absorbFunctions,
-  applyIgnoredBranches,
-  applyIgnoredLines,
-  computeLineHits,
-  mergeLineHits,
-} from './extraction.js';
-import { serializeLcov } from './serialize.js';
+import { absorbFunctions, computeLineHits } from './extraction.js';
 
 const mergeIntoAggregation = (
   aggregations: Map<string, FileAggregation>,
@@ -48,11 +43,11 @@ const mergeIntoAggregation = (
   const lineStartTable = offsets.lineStarts(source);
   const sourceLength = Buffer.byteLength(source, 'utf8');
 
-  mergeLineHits(aggregation.lineHits, computeLineHits(source, script));
+  lineHits.merge(aggregation.lineHits, computeLineHits(source, script));
   absorbFunctions(aggregation, script, lineStartTable, sourceLength);
 
   const ignoredLines = ignoreDirectives.parseSource(source);
-  applyIgnoredLines(aggregation.lineHits, ignoredLines);
+  lineHits.applyIgnoredLines(aggregation.lineHits, ignoredLines);
 };
 
 const finalizeAggregations = (
@@ -67,7 +62,7 @@ const finalizeAggregations = (
     const ignoredLines = ignoreDirectives.parseSource(source);
 
     branchBlocks.build(aggregation, source, lineStartTable);
-    applyIgnoredBranches(aggregation, ignoredLines);
+    lineHits.applyIgnoredBranches(aggregation, ignoredLines);
     functionNames.resolve(aggregation, source);
   }
 };
@@ -171,5 +166,5 @@ export const v8ToLcov = (
 
   finalizeAggregations(fileAggregations, sourceByPath);
 
-  return serializeLcov(fileAggregations, cwd);
+  return lcovSerialize.serialize(fileAggregations, cwd);
 };
