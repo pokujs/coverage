@@ -37,8 +37,8 @@
       "uncoveredLines": "",
       "coveredLines": "1-2",
       "lineHits": {
-        "1": 15,
-        "2": 23
+        "1": 14,
+        "2": 24
       },
       "branchHits": [],
       "functionHits": []

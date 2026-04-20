@@ -7,7 +7,7 @@ import { escapeRegex } from '../utils/strings.js';
 import { jscInspector } from './bun/inspector.js';
 import { setup, teardown } from './lifecycle.js';
 
-const INSPECTOR_URL_PATTERN = /ws:\/\/[^\s]+/;
+const INSPECTOR_URL_PATTERN = /ws:\/\/[A-Za-z0-9.:_/-]+/;
 
 const makeLineFilter = (
   file: string,
