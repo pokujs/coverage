@@ -1,0 +1,30 @@
+{
+  "reporter": "clover",
+  "totals": {
+    "statements": {
+      "total": 99,
+      "covered": 76,
+      "missed": 23,
+      "pct": "76.77 %"
+    },
+    "branches": {
+      "total": 0,
+      "covered": 0,
+      "missed": 0,
+      "pct": "100.00 %"
+    },
+    "functions": {
+      "total": 28,
+      "covered": 27,
+      "missed": 1,
+      "pct": "96.43 %"
+    },
+    "lines": {
+      "total": 99,
+      "covered": 76,
+      "missed": 23,
+      "pct": "76.77 %"
+    }
+  },
+  "files": {}
+}
