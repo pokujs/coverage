@@ -99,7 +99,15 @@ const formatParsed = (parsed: unknown, fixtureRoot: string): string => {
   return JSON.stringify(normalized, null, 2);
 };
 
+const toArray = <Item>(
+  value: Item | readonly Item[] | undefined
+): readonly Item[] => {
+  if (value === undefined) return [];
+  return Array.isArray(value) ? value : [value as Item];
+};
+
 export const xmlShared = {
   parse,
   formatParsed,
+  toArray,
 } as const;

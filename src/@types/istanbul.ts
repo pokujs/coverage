@@ -52,6 +52,22 @@ export type FileCoverage = {
 
 export type CoverageMap = Record<string, FileCoverage>;
 
+export type CoverageSummaryMetric = {
+  total: number;
+  covered: number;
+  skipped: number;
+  pct: number;
+};
+
+export type CoverageSummaryEntry = {
+  statements: CoverageSummaryMetric;
+  branches: CoverageSummaryMetric;
+  functions: CoverageSummaryMetric;
+  lines: CoverageSummaryMetric;
+};
+
+export type CoverageSummaryMap = Record<string, CoverageSummaryEntry>;
+
 export type CovLine = {
   line: number;
   startColumn: number;

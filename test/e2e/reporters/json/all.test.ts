@@ -16,8 +16,8 @@ for (const runtime of runtimesFor('json')) {
   await test(`${runtime}: ${testCase.name}`, async () => {
     const result = await fixture.run(testCase);
 
-    snapshot.match(
-      json.read(result.fixtureRoot),
+    snapshot.matchJson(
+      json.extract(result.fixtureRoot),
       testCase,
       'Writes coverage-final.json with include, exclude and all:true'
     );

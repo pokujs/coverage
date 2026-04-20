@@ -19,8 +19,8 @@ for (const runtime of runtimesFor('lcov')) {
     const result = await fixture.run(testCase);
     const reportDir = `${result.fixtureRoot}/coverage/lcov-report`;
 
-    snapshot.match(
-      await lcov.read(result.fixtureRoot),
+    snapshot.matchJson(
+      await lcov.extract(result.fixtureRoot),
       testCase,
       'Emits lcov.info via delegated lcovonly reporter'
     );

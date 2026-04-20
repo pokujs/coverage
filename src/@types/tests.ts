@@ -22,40 +22,53 @@ export type RuntimeSpec = {
   env?: Readonly<Record<string, string | undefined>>;
 };
 
-export type HtmlSnapshotMetric =
-  | 'statements'
-  | 'branches'
-  | 'functions'
-  | 'lines';
+export type SnapshotMetric = 'statements' | 'branches' | 'functions' | 'lines';
 
-export type HtmlSnapshotSummary = Record<HtmlSnapshotMetric, string>;
-
-export type HtmlSnapshotFileMetrics = HtmlSnapshotSummary & {
-  uncoveredLines: string;
-};
-
-export type HtmlSnapshot = {
-  summary: HtmlSnapshotSummary;
-  files: Record<string, HtmlSnapshotFileMetrics>;
-};
-
-export type HtmlSpaMetricDetail = {
+export type MetricDetail = {
   total: number;
   covered: number;
   missed: number;
-  skipped: number;
-  pct: number;
-  classForPercent: string;
+  pct: string;
 };
 
-export type HtmlSpaNodeMetrics = Record<
-  HtmlSnapshotMetric,
-  HtmlSpaMetricDetail
->;
+export type MetricsBundle = Partial<Record<SnapshotMetric, MetricDetail>>;
 
-export type HtmlSpaSnapshotNode = {
-  file: string;
-  isEmpty: boolean;
-  metrics: HtmlSpaNodeMetrics;
-  children?: readonly HtmlSpaSnapshotNode[];
+export type BranchHit = {
+  line: number;
+  block?: number;
+  branch?: number;
+  hit: number;
+  taken?: number;
+};
+
+export type FunctionRange = {
+  startOffset: number;
+  endOffset: number;
+  count: string;
+};
+
+export type FunctionHit = {
+  name: string;
+  line?: number;
+  hit?: number;
+  ranges?: readonly FunctionRange[];
+};
+
+export type FileSnapshot = MetricsBundle & {
+  uncoveredLines?: string;
+  coveredLines?: string;
+  lineHits?: Record<number, number>;
+  branchHits?: readonly BranchHit[];
+  functionHits?: readonly FunctionHit[];
+};
+
+export type CoverageSnapshot = {
+  reporter: ReporterName;
+  totals?: MetricsBundle;
+  files?: Record<string, FileSnapshot>;
+};
+
+export type LineClassification = {
+  covered: readonly number[];
+  uncovered: readonly number[];
 };

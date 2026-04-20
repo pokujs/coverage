@@ -1,4 +1,4 @@
-import type { TestCase } from '../../src/@types/tests.ts';
+import type { CoverageSnapshot, TestCase } from '../../src/@types/tests.ts';
 import {
   existsSync,
   mkdirSync,
@@ -114,7 +114,7 @@ const matchTree = (
 };
 
 const matchJson = (
-  actual: unknown,
+  actual: CoverageSnapshot,
   target: TestCase,
   message?: string
 ): void => {

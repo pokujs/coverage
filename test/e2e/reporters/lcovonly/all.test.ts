@@ -17,8 +17,8 @@ for (const runtime of runtimes) {
   await test(`${runtime}: ${testCase.name}`, async () => {
     const result = await fixture.run(testCase);
 
-    snapshot.match(
-      await lcov.read(result.fixtureRoot),
+    snapshot.matchJson(
+      await lcov.extract(result.fixtureRoot, 'lcovonly'),
       testCase,
       'Covers all files included and excludes explicit ones'
     );

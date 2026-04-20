@@ -11,6 +11,7 @@ for (const runtime of runtimesFor('v8')) {
     reporter: 'v8',
     runtime,
     name: 'default',
+    extension: 'json',
   };
 
   await test(`${runtime}: ${testCase.name}`, async () => {
@@ -19,8 +20,8 @@ for (const runtime of runtimesFor('v8')) {
 
     strict.equal(existsSync(v8Dir), true, 'coverage/v8/ must be created');
 
-    snapshot.matchTree(
-      v8.read(result.fixtureRoot),
+    snapshot.matchJson(
+      v8.extract(result.fixtureRoot),
       testCase,
       'Emits one normalized V8 coverage JSON per user script'
     );

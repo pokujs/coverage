@@ -15,16 +15,15 @@ for (const runtime of runtimes) {
 
   await test(`${runtime}: ${testCase.name}`, async () => {
     const result = await fixture.run(testCase);
-    const lcovContent = await lcov.read(result.fixtureRoot);
 
-    snapshot.match(
-      lcovContent,
+    snapshot.matchJson(
+      await lcov.extract(result.fixtureRoot, 'lcovonly'),
       testCase,
       'Applies pre-remap filter on transpiled source path'
     );
 
     strict.ok(
-      !lcovContent.includes('transpiled.js'),
+      !lcov.raw(result.fixtureRoot).includes('transpiled.js'),
       `excludeAfterRemap: false should filter out src/transpiled.js on ${runtime}`
     );
   });

@@ -73,6 +73,7 @@ End-to-end tests live under [test/](test/). Open the directory to see the curren
 - **Fixture source of truth lives under [test/\_\_resources\_\_/](test/__resources__/).** Pattern resolution is done by a Map in [poku.config.js](poku.config.js).
 - **Test helpers follow the typed-object export pattern**, same rule as `src/`. Helper types live under `@types/` like any other domain.
 - **Snapshots are stored per platform: `<reporter>/<runtime>/<platform>/<case>.<ext>`** where `<platform>` is one of `darwin`, `linux`, `win32`. There is no "shared" snapshot. Every OS carries its own copy, even when content is identical.
+- **Every `.json` snapshot follows the canonical `CoverageSnapshot` shape in [src/@types/tests.ts](src/@types/tests.ts).** Each reporter fills only the fields it emits; simpler reporters are natural subsets of richer ones. Reader files in [test/**utils**/readers/](test/__utils__/readers/) parse the native format into that shape via builders in [test/**utils**/readers/shared/snapshot.ts](test/__utils__/readers/shared/snapshot.ts). Text reporters keep their `.txt` snapshots as-is.
 - **Regenerate snapshots via tooling, never by hand.**
   - `npm run build:snapshots`.
   - Or `bash scripts/snapshots-<os>.sh`.

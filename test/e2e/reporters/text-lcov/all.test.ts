@@ -16,8 +16,8 @@ for (const runtime of runtimesFor('text-lcov')) {
   await test(`${runtime}: ${testCase.name}`, async () => {
     const result = await fixture.run(testCase);
 
-    snapshot.match(
-      await textLcov.read(result),
+    snapshot.matchJson(
+      await textLcov.extract(result),
       testCase,
       'Emits LCOV output to stdout with include, exclude and all:true'
     );
