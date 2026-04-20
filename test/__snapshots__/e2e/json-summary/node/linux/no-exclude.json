@@ -1,1 +1,239 @@
-../../deno/linux/no-exclude.json
+{
+  "reporter": "json-summary",
+  "totals": {
+    "statements": {
+      "total": 173,
+      "covered": 132,
+      "missed": 41,
+      "pct": "76.30 %"
+    },
+    "branches": {
+      "total": 76,
+      "covered": 70,
+      "missed": 6,
+      "pct": "92.11 %"
+    },
+    "functions": {
+      "total": 27,
+      "covered": 26,
+      "missed": 1,
+      "pct": "96.30 %"
+    },
+    "lines": {
+      "total": 173,
+      "covered": 132,
+      "missed": 41,
+      "pct": "76.30 %"
+    }
+  },
+  "files": {
+    "src/collections.js": {
+      "statements": {
+        "total": 19,
+        "covered": 16,
+        "missed": 3,
+        "pct": "84.21 %"
+      },
+      "branches": {
+        "total": 6,
+        "covered": 5,
+        "missed": 1,
+        "pct": "83.33 %"
+      },
+      "functions": {
+        "total": 3,
+        "covered": 3,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "lines": {
+        "total": 19,
+        "covered": 16,
+        "missed": 3,
+        "pct": "84.21 %"
+      }
+    },
+    "src/dummy.js": {
+      "statements": {
+        "total": 12,
+        "covered": 0,
+        "missed": 12,
+        "pct": "0.00 %"
+      },
+      "branches": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "functions": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "lines": {
+        "total": 12,
+        "covered": 0,
+        "missed": 12,
+        "pct": "0.00 %"
+      }
+    },
+    "src/helpers/format.js": {
+      "statements": {
+        "total": 16,
+        "covered": 0,
+        "missed": 16,
+        "pct": "0.00 %"
+      },
+      "branches": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "functions": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "lines": {
+        "total": 16,
+        "covered": 0,
+        "missed": 16,
+        "pct": "0.00 %"
+      }
+    },
+    "src/index.js": {
+      "statements": {
+        "total": 3,
+        "covered": 0,
+        "missed": 3,
+        "pct": "0.00 %"
+      },
+      "branches": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "functions": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "lines": {
+        "total": 3,
+        "covered": 0,
+        "missed": 3,
+        "pct": "0.00 %"
+      }
+    },
+    "src/logic.js": {
+      "statements": {
+        "total": 67,
+        "covered": 67,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "branches": {
+        "total": 49,
+        "covered": 49,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "functions": {
+        "total": 12,
+        "covered": 12,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "lines": {
+        "total": 67,
+        "covered": 67,
+        "missed": 0,
+        "pct": "100.00 %"
+      }
+    },
+    "src/math.js": {
+      "statements": {
+        "total": 19,
+        "covered": 19,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "branches": {
+        "total": 5,
+        "covered": 5,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "functions": {
+        "total": 4,
+        "covered": 4,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "lines": {
+        "total": 19,
+        "covered": 19,
+        "missed": 0,
+        "pct": "100.00 %"
+      }
+    },
+    "src/partial.js": {
+      "statements": {
+        "total": 20,
+        "covered": 17,
+        "missed": 3,
+        "pct": "85.00 %"
+      },
+      "branches": {
+        "total": 14,
+        "covered": 9,
+        "missed": 5,
+        "pct": "64.29 %"
+      },
+      "functions": {
+        "total": 5,
+        "covered": 5,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "lines": {
+        "total": 20,
+        "covered": 17,
+        "missed": 3,
+        "pct": "85.00 %"
+      }
+    },
+    "src/strings.js": {
+      "statements": {
+        "total": 17,
+        "covered": 13,
+        "missed": 4,
+        "pct": "76.47 %"
+      },
+      "branches": {
+        "total": 2,
+        "covered": 2,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "functions": {
+        "total": 3,
+        "covered": 2,
+        "missed": 1,
+        "pct": "66.67 %"
+      },
+      "lines": {
+        "total": 17,
+        "covered": 13,
+        "missed": 4,
+        "pct": "76.47 %"
+      }
+    }
+  }
+}

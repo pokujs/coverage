@@ -2,10 +2,10 @@
   "reporter": "clover",
   "totals": {
     "statements": {
-      "total": 99,
-      "covered": 76,
+      "total": 94,
+      "covered": 71,
       "missed": 23,
-      "pct": "76.77 %"
+      "pct": "75.53 %"
     },
     "branches": {
       "total": 0,
@@ -14,16 +14,16 @@
       "pct": "100.00 %"
     },
     "functions": {
-      "total": 28,
-      "covered": 27,
+      "total": 27,
+      "covered": 26,
       "missed": 1,
-      "pct": "96.43 %"
+      "pct": "96.30 %"
     },
     "lines": {
-      "total": 99,
-      "covered": 76,
+      "total": 94,
+      "covered": 71,
       "missed": 23,
-      "pct": "76.77 %"
+      "pct": "75.53 %"
     }
   },
   "files": {}

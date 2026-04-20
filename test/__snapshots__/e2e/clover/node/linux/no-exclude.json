@@ -1,1 +1,30 @@
-../../deno/linux/no-exclude.json
+{
+  "reporter": "clover",
+  "totals": {
+    "statements": {
+      "total": 168,
+      "covered": 132,
+      "missed": 36,
+      "pct": "78.57 %"
+    },
+    "branches": {
+      "total": 68,
+      "covered": 62,
+      "missed": 6,
+      "pct": "91.18 %"
+    },
+    "functions": {
+      "total": 27,
+      "covered": 26,
+      "missed": 1,
+      "pct": "96.30 %"
+    },
+    "lines": {
+      "total": 168,
+      "covered": 132,
+      "missed": 36,
+      "pct": "78.57 %"
+    }
+  },
+  "files": {}
+}
