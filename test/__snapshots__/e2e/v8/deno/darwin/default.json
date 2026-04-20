@@ -1,0 +1,925 @@
+{
+  "reporter": "v8",
+  "files": {
+    "src/collections.js": {
+      "functionHits": [
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 0,
+              "endOffset": 388,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 361,
+              "endOffset": 380,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "chunk",
+          "ranges": [
+            {
+              "startOffset": 75,
+              "endOffset": 312,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 120,
+              "endOffset": 180,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 247,
+              "endOffset": 293,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "sum",
+          "ranges": [
+            {
+              "startOffset": 321,
+              "endOffset": 387,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "unique",
+          "ranges": [
+            {
+              "startOffset": 7,
+              "endOffset": 66,
+              "count": "<count>"
+            }
+          ]
+        }
+      ]
+    },
+    "src/logic.js": {
+      "functionHits": [
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 0,
+              "endOffset": 1486,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "allTruthy",
+          "ranges": [
+            {
+              "startOffset": 230,
+              "endOffset": 283,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 271,
+              "endOffset": 275,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 276,
+              "endOffset": 280,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "askOrReturn",
+          "ranges": [
+            {
+              "startOffset": 936,
+              "endOffset": 1035,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 1018,
+              "endOffset": 1027,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 1028,
+              "endOffset": 1032,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "banner",
+          "ranges": [
+            {
+              "startOffset": 827,
+              "endOffset": 927,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 874,
+              "endOffset": 887,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "classify",
+          "ranges": [
+            {
+              "startOffset": 292,
+              "endOffset": 387,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 338,
+              "endOffset": 350,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 351,
+              "endOffset": 384,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 363,
+              "endOffset": 375,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 376,
+              "endOffset": 384,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "counter",
+          "ranges": [
+            {
+              "startOffset": 1173,
+              "endOffset": 1277,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 1262,
+              "endOffset": 1274,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "describeUser",
+          "ranges": [
+            {
+              "startOffset": 556,
+              "endOffset": 721,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 611,
+              "endOffset": 617,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 618,
+              "endOffset": 632,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 650,
+              "endOffset": 662,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 664,
+              "endOffset": 674,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 694,
+              "endOffset": 704,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "ensureArray",
+          "ranges": [
+            {
+              "startOffset": 1286,
+              "endOffset": 1485,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 1465,
+              "endOffset": 1472,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 1473,
+              "endOffset": 1482,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "firstDefined",
+          "ranges": [
+            {
+              "startOffset": 151,
+              "endOffset": 221,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 195,
+              "endOffset": 199,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 200,
+              "endOffset": 204,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 205,
+              "endOffset": 218,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "firstNonEmpty",
+          "ranges": [
+            {
+              "startOffset": 70,
+              "endOffset": 142,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 115,
+              "endOffset": 119,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 120,
+              "endOffset": 124,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 125,
+              "endOffset": 139,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "greet",
+          "ranges": [
+            {
+              "startOffset": 730,
+              "endOffset": 818,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 787,
+              "endOffset": 798,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 799,
+              "endOffset": 812,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "matchOrDefault",
+          "ranges": [
+            {
+              "startOffset": 1044,
+              "endOffset": 1164,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 1143,
+              "endOffset": 1150,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 1151,
+              "endOffset": 1161,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "pickLabel",
+          "ranges": [
+            {
+              "startOffset": 396,
+              "endOffset": 547,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 449,
+              "endOffset": 457,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 462,
+              "endOffset": 544,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 482,
+              "endOffset": 489,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 496,
+              "endOffset": 544,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 516,
+              "endOffset": 524,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 533,
+              "endOffset": 544,
+              "count": "<count>"
+            }
+          ]
+        }
+      ]
+    },
+    "src/math.js": {
+      "functionHits": [
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 0,
+              "endOffset": 267,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "add",
+          "ranges": [
+            {
+              "startOffset": 7,
+              "endOffset": 45,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "divide",
+          "ranges": [
+            {
+              "startOffset": 158,
+              "endOffset": 266,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 197,
+              "endOffset": 265,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "multiply",
+          "ranges": [
+            {
+              "startOffset": 106,
+              "endOffset": 149,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "subtract",
+          "ranges": [
+            {
+              "startOffset": 54,
+              "endOffset": 97,
+              "count": "<count>"
+            }
+          ]
+        }
+      ]
+    },
+    "src/partial.js": {
+      "functionHits": [
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 0,
+              "endOffset": 351,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "chooseFirst",
+          "ranges": [
+            {
+              "startOffset": 211,
+              "endOffset": 279,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 254,
+              "endOffset": 258,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 259,
+              "endOffset": 263,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 264,
+              "endOffset": 276,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "ensureBoth",
+          "ranges": [
+            {
+              "startOffset": 156,
+              "endOffset": 202,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "guardedLength",
+          "ranges": [
+            {
+              "startOffset": 288,
+              "endOffset": 350,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "withFallback",
+          "ranges": [
+            {
+              "startOffset": 7,
+              "endOffset": 69,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 53,
+              "endOffset": 66,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "withNullishFallback",
+          "ranges": [
+            {
+              "startOffset": 78,
+              "endOffset": 147,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 131,
+              "endOffset": 144,
+              "count": "<count>"
+            }
+          ]
+        }
+      ]
+    },
+    "src/strings.js": {
+      "functionHits": [
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 0,
+              "endOffset": 391,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "capitalize",
+          "ranges": [
+            {
+              "startOffset": 7,
+              "endOffset": 178,
+              "count": "<count>"
+            },
+            {
+              "startOffset": 110,
+              "endOffset": 130,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "isPalindrome",
+          "ranges": [
+            {
+              "startOffset": 264,
+              "endOffset": 390,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "reverse",
+          "ranges": [
+            {
+              "startOffset": 187,
+              "endOffset": 255,
+              "count": "<count>"
+            }
+          ]
+        }
+      ]
+    },
+    "test/collections.test.js": {
+      "functionHits": [
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 0,
+              "endOffset": 497,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 142,
+              "endOffset": 207,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 253,
+              "endOffset": 332,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 377,
+              "endOffset": 425,
+              "count": "<count>"
+            }
+          ]
+        }
+      ]
+    },
+    "test/logic.test.js": {
+      "functionHits": [
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 0,
+              "endOffset": 3180,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 317,
+              "endOffset": 384,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 446,
+              "endOffset": 661,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 722,
+              "endOffset": 936,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 1001,
+              "endOffset": 1220,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 1261,
+              "endOffset": 1390,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 1446,
+              "endOffset": 1610,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 1662,
+              "endOffset": 2049,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 2107,
+              "endOffset": 2283,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 2356,
+              "endOffset": 2465,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 2530,
+              "endOffset": 2627,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 2697,
+              "endOffset": 2859,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 2935,
+              "endOffset": 3006,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 3076,
+              "endOffset": 3177,
+              "count": "<count>"
+            }
+          ]
+        }
+      ]
+    },
+    "test/math.test.js": {
+      "functionHits": [
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 0,
+              "endOffset": 562,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 143,
+              "endOffset": 182,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 226,
+              "endOffset": 271,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 312,
+              "endOffset": 357,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 397,
+              "endOffset": 440,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 488,
+              "endOffset": 559,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 512,
+              "endOffset": 530,
+              "count": "<count>"
+            }
+          ]
+        }
+      ]
+    },
+    "test/partial.test.js": {
+      "functionHits": [
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 0,
+              "endOffset": 1181,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 219,
+              "endOffset": 354,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 419,
+              "endOffset": 613,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 663,
+              "endOffset": 795,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 838,
+              "endOffset": 979,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 1040,
+              "endOffset": 1178,
+              "count": "<count>"
+            }
+          ]
+        }
+      ]
+    },
+    "test/strings.test.js": {
+      "functionHits": [
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 0,
+              "endOffset": 293,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 152,
+              "endOffset": 207,
+              "count": "<count>"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "ranges": [
+            {
+              "startOffset": 242,
+              "endOffset": 290,
+              "count": "<count>"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

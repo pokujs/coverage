@@ -1,0 +1,106 @@
+{
+  "reporter": "lcovonly",
+  "totals": {
+    "lines": {
+      "total": 12,
+      "covered": 12,
+      "missed": 0,
+      "pct": "100.00 %"
+    },
+    "branches": {
+      "total": 0,
+      "covered": 0,
+      "missed": 0,
+      "pct": "100.00 %"
+    },
+    "functions": {
+      "total": 3,
+      "covered": 3,
+      "missed": 0,
+      "pct": "100.00 %"
+    }
+  },
+  "files": {
+    "src/original.ts": {
+      "lines": {
+        "total": 8,
+        "covered": 8,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "branches": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "functions": {
+        "total": 2,
+        "covered": 2,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "uncoveredLines": "",
+      "coveredLines": "1-8",
+      "lineHits": {
+        "1": 1,
+        "2": 1,
+        "3": 1,
+        "4": 1,
+        "5": 1,
+        "6": 1,
+        "7": 1,
+        "8": 1
+      },
+      "branchHits": [],
+      "functionHits": [
+        {
+          "name": "identity",
+          "line": 1,
+          "hit": 1
+        },
+        {
+          "name": "twice",
+          "line": 5,
+          "hit": 1
+        }
+      ]
+    },
+    "src/survivor.js": {
+      "lines": {
+        "total": 4,
+        "covered": 4,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "branches": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "functions": {
+        "total": 1,
+        "covered": 1,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "uncoveredLines": "",
+      "coveredLines": "1-4",
+      "lineHits": {
+        "1": 1,
+        "2": 1,
+        "3": 1,
+        "4": 1
+      },
+      "branchHits": [],
+      "functionHits": [
+        {
+          "name": "greet",
+          "line": 1,
+          "hit": 1
+        }
+      ]
+    }
+  }
+}

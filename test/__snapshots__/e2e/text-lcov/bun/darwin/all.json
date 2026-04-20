@@ -1,0 +1,306 @@
+{
+  "reporter": "text-lcov",
+  "totals": {
+    "lines": {
+      "total": 99,
+      "covered": 76,
+      "missed": 23,
+      "pct": "76.77 %"
+    },
+    "branches": {
+      "total": 0,
+      "covered": 0,
+      "missed": 0,
+      "pct": "100.00 %"
+    },
+    "functions": {
+      "total": 28,
+      "covered": 27,
+      "missed": 1,
+      "pct": "96.43 %"
+    }
+  },
+  "files": {
+    "src/collections.js": {
+      "lines": {
+        "total": 13,
+        "covered": 12,
+        "missed": 1,
+        "pct": "92.31 %"
+      },
+      "branches": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "functions": {
+        "total": 4,
+        "covered": 4,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "uncoveredLines": "7",
+      "coveredLines": "1-2,5-6,8-13,16-17",
+      "lineHits": {
+        "1": 14,
+        "2": 32,
+        "5": 20,
+        "6": 14,
+        "7": 0,
+        "8": 2,
+        "9": 20,
+        "10": 46,
+        "11": 38,
+        "12": 2,
+        "13": 14,
+        "16": 14,
+        "17": 39
+      },
+      "branchHits": [],
+      "functionHits": []
+    },
+    "src/helpers/format.js": {
+      "lines": {
+        "total": 16,
+        "covered": 0,
+        "missed": 16,
+        "pct": "0.00 %"
+      },
+      "branches": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "functions": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "uncoveredLines": "1-9,11-17",
+      "coveredLines": "",
+      "lineHits": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 0,
+        "11": 0,
+        "12": 0,
+        "13": 0,
+        "14": 0,
+        "15": 0,
+        "16": 0,
+        "17": 0
+      },
+      "branchHits": [],
+      "functionHits": []
+    },
+    "src/index.js": {
+      "lines": {
+        "total": 3,
+        "covered": 0,
+        "missed": 3,
+        "pct": "0.00 %"
+      },
+      "branches": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "functions": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "uncoveredLines": "1-3",
+      "coveredLines": "",
+      "lineHits": {
+        "1": 0,
+        "2": 0,
+        "3": 0
+      },
+      "branchHits": [],
+      "functionHits": []
+    },
+    "src/logic.js": {
+      "lines": {
+        "total": 37,
+        "covered": 37,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "branches": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "functions": {
+        "total": 12,
+        "covered": 12,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "uncoveredLines": "",
+      "coveredLines": "1,3-4,7-8,11-12,15-16,19-26,29-34,37-38,41-42,45-47,50-52,55,57,60,65",
+      "lineHits": {
+        "1": 61,
+        "3": 18,
+        "4": 34,
+        "7": 18,
+        "8": 33,
+        "11": 18,
+        "12": 19,
+        "15": 16,
+        "16": 60,
+        "19": 16,
+        "20": 20,
+        "21": 8,
+        "22": 13,
+        "23": 7,
+        "24": 11,
+        "25": 8,
+        "26": 10,
+        "29": 15,
+        "30": 12,
+        "31": 36,
+        "32": 39,
+        "33": 35,
+        "34": 2,
+        "37": 25,
+        "38": 51,
+        "41": 16,
+        "42": 69,
+        "45": 19,
+        "46": 43,
+        "47": 20,
+        "50": 26,
+        "51": 26,
+        "52": 44,
+        "55": 16,
+        "57": 26,
+        "60": 16,
+        "65": 43
+      },
+      "branchHits": [],
+      "functionHits": []
+    },
+    "src/math.js": {
+      "lines": {
+        "total": 11,
+        "covered": 11,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "branches": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "functions": {
+        "total": 4,
+        "covered": 4,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "uncoveredLines": "",
+      "coveredLines": "1-2,5-6,9-10,13-17",
+      "lineHits": {
+        "1": 15,
+        "2": 13,
+        "5": 15,
+        "6": 13,
+        "9": 15,
+        "10": 13,
+        "13": 15,
+        "14": 17,
+        "15": 40,
+        "16": 2,
+        "17": 12
+      },
+      "branchHits": [],
+      "functionHits": []
+    },
+    "src/partial.js": {
+      "lines": {
+        "total": 10,
+        "covered": 10,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "branches": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "functions": {
+        "total": 5,
+        "covered": 5,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "uncoveredLines": "",
+      "coveredLines": "1-2,5-6,9-10,13-14,17-18",
+      "lineHits": {
+        "1": 16,
+        "2": 27,
+        "5": 16,
+        "6": 27,
+        "9": 15,
+        "10": 14,
+        "13": 18,
+        "14": 32,
+        "17": 15,
+        "18": 26
+      },
+      "branchHits": [],
+      "functionHits": []
+    },
+    "src/strings.js": {
+      "lines": {
+        "total": 9,
+        "covered": 6,
+        "missed": 3,
+        "pct": "66.67 %"
+      },
+      "branches": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "functions": {
+        "total": 3,
+        "covered": 2,
+        "missed": 1,
+        "pct": "66.67 %"
+      },
+      "uncoveredLines": "4,13-14",
+      "coveredLines": "1,3,5-6,9-10",
+      "lineHits": {
+        "1": 14,
+        "3": 48,
+        "4": 0,
+        "5": 2,
+        "6": 43,
+        "9": 14,
+        "10": 40,
+        "13": 0,
+        "14": 0
+      },
+      "branchHits": [],
+      "functionHits": []
+    }
+  }
+}

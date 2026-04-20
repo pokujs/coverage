@@ -1,0 +1,59 @@
+{
+  "reporter": "html",
+  "totals": {
+    "statements": {
+      "total": 2,
+      "covered": 2,
+      "missed": 0,
+      "pct": "100.00 %"
+    },
+    "branches": {
+      "total": null,
+      "covered": null,
+      "missed": null,
+      "pct": "NaN %"
+    },
+    "functions": {
+      "total": 1,
+      "covered": 1,
+      "missed": 0,
+      "pct": "100.00 %"
+    },
+    "lines": {
+      "total": 2,
+      "covered": 2,
+      "missed": 0,
+      "pct": "100.00 %"
+    }
+  },
+  "files": {
+    "src/survivor.js": {
+      "statements": {
+        "total": 2,
+        "covered": 2,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "branches": {
+        "total": null,
+        "covered": null,
+        "missed": null,
+        "pct": "NaN %"
+      },
+      "functions": {
+        "total": 1,
+        "covered": 1,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "lines": {
+        "total": 2,
+        "covered": 2,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "uncoveredLines": "",
+      "coveredLines": "1-2"
+    }
+  }
+}
