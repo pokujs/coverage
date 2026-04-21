@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.4.0](https://github.com/pokujs/coverage/compare/v0.3.0...v0.4.0) (2026-04-21)
+
+
+### Features
+
+* improve support for monorepos ([3c15818](https://github.com/pokujs/coverage/commit/3c15818246358ba13ff2943a7660d014825b482d))
+* support `c8` and `nyc` config files ([2fcd430](https://github.com/pokujs/coverage/commit/2fcd4309dd11a96e5a5324aa2991b1bcafe50506))
+* support filter by extensions ([8e13d60](https://github.com/pokujs/coverage/commit/8e13d606503308f019f455b3feca4998326e3ef5))
+
+
+### Bug Fixes
+
+* ensure check coverage for branches ([189b793](https://github.com/pokujs/coverage/commit/189b793e49b2a1cb65b6585da7ee2a6918a418ac))
+* truncate line:branches in `text` reporter ([5b86f86](https://github.com/pokujs/coverage/commit/5b86f868edabb2d39ef18fe8f746c73a58cfd01e))
+
 ## [0.3.0](https://github.com/pokujs/coverage/compare/v0.2.1...v0.3.0) (2026-04-21)
 
 
