@@ -3,7 +3,7 @@
  Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
  */
 
-import type { Reporter } from '../../@types/reporters.js';
+import type { Report } from '../../@types/reporters.js';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildFromCoverageMap } from './from-coverage-map.js';
@@ -13,7 +13,7 @@ const XML_PROLOGUE =
   '<?xml version="1.0" ?>\n' +
   '<!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">\n';
 
-const report: Reporter = (context) => {
+const report: Report = (context) => {
   const xmlBody =
     context.runtime === 'bun'
       ? buildFromLcov(context)

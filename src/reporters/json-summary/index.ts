@@ -6,7 +6,7 @@
 import type {
   FileSummary,
   MetricSummary,
-  Reporter,
+  Report,
 } from '../../@types/reporters.js';
 import type { Metric } from '../../@types/text.js';
 import type { FileCoverage } from '../../@types/tree.js';
@@ -44,7 +44,7 @@ const summarizeFile = (file: FileCoverage): FileSummary => {
   };
 };
 
-const report: Reporter = (context) => {
+const report: Report = (context) => {
   const lcovOutput = lcovonly.runtimes[context.runtime].produce(context);
   if (lcovOutput.length === 0) return;
 

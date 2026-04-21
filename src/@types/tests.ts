@@ -1,4 +1,4 @@
-import type { ReporterName, Runtime } from './reporters.js';
+import type { Reporter, Runtime } from './reporters.js';
 
 export type SnapshotExtension = 'json' | 'xml' | 'html' | 'txt';
 
@@ -10,7 +10,7 @@ export type FixtureRun = {
 };
 
 export type TestCase = {
-  reporter: ReporterName;
+  reporter: Reporter;
   runtime: Runtime;
   name: string;
   extension?: SnapshotExtension;
@@ -63,7 +63,7 @@ export type FileSnapshot = MetricsBundle & {
 };
 
 export type CoverageSnapshot = {
-  reporter: ReporterName;
+  reporter: Reporter;
   totals?: MetricsBundle;
   files?: Record<string, FileSnapshot>;
 };

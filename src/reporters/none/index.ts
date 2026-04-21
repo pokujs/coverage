@@ -3,8 +3,8 @@
  Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
  */
 
-import type { Reporter } from '../../@types/reporters.js';
+import type { Report } from '../../@types/reporters.js';
 
-const report: Reporter = () => {};
+const report: Report = () => {};
 
 export const none = { report } as const;

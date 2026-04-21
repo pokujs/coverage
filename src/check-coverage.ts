@@ -1,8 +1,6 @@
 import type {
   CheckCoverageFailure,
-  CheckCoverageInput,
   CheckCoverageMetric,
-  CheckCoverageThresholds,
 } from './@types/check-coverage.js';
 import type { ReporterContext } from './@types/reporters.js';
 import type { Metric } from './@types/text.js';
@@ -18,14 +16,6 @@ import {
   pctValue,
 } from './reporters/shared/metrics.js';
 
-const DEFAULT_THRESHOLDS: CheckCoverageThresholds = {
-  statements: 0,
-  branches: 0,
-  functions: 0,
-  lines: 0,
-  perFile: false,
-};
-
 const METRIC_ORDER: readonly CheckCoverageMetric[] = [
   'statements',
   'branches',
@@ -35,44 +25,10 @@ const METRIC_ORDER: readonly CheckCoverageMetric[] = [
 
 const METRIC_LABEL_WIDTH = 11;
 
-const isValidPercentage = (value: unknown): value is number =>
-  typeof value === 'number' &&
-  Number.isFinite(value) &&
-  value >= 0 &&
-  value <= 100;
-
-const getDefault = (): CheckCoverageThresholds => ({ ...DEFAULT_THRESHOLDS });
-
-const normalize = (
-  custom: CheckCoverageInput | undefined
-): CheckCoverageThresholds => {
-  const resolved = getDefault();
-
-  if (custom === undefined) return resolved;
-
-  if (typeof custom === 'number') {
-    if (!isValidPercentage(custom)) return resolved;
-
-    for (const metric of METRIC_ORDER) resolved[metric] = custom;
-
-    return resolved;
-  }
-
-  for (const metric of METRIC_ORDER) {
-    const entry = custom[metric];
-    if (isValidPercentage(entry)) resolved[metric] = entry;
-  }
-
-  if (typeof custom.perFile === 'boolean') resolved.perFile = custom.perFile;
-
-  return resolved;
+const clampPercentage = (value: number): number => {
+  if (!Number.isFinite(value)) return 0;
+  return Math.min(100, Math.max(0, value));
 };
-
-const hasAnyThreshold = (resolved: CheckCoverageThresholds): boolean =>
-  resolved.statements > 0 ||
-  resolved.branches > 0 ||
-  resolved.functions > 0 ||
-  resolved.lines > 0;
 
 const metricForName = (
   metric: CheckCoverageMetric,
@@ -89,14 +45,13 @@ const metricForName = (
 
 const collectFailures = (
   files: CoverageModel,
-  thresholds: CheckCoverageThresholds
+  thresholds: Record<CheckCoverageMetric, number>,
+  perFile: boolean
 ): CheckCoverageFailure[] => {
   const failures: CheckCoverageFailure[] = [];
-
-  const scopes: Array<{ scope: string; files: CoverageModel }> =
-    thresholds.perFile
-      ? files.map((file) => ({ scope: file.file, files: [file] }))
-      : [{ scope: 'total', files }];
+  const scopes: Array<{ scope: string; files: CoverageModel }> = perFile
+    ? files.map((file) => ({ scope: file.file, files: [file] }))
+    : [{ scope: 'total', files }];
 
   for (const metric of METRIC_ORDER) {
     const threshold = thresholds[metric];
@@ -170,11 +125,25 @@ const printFailures = (
 };
 
 const run = (context: ReporterContext): void => {
-  const custom = context.options.checkCoverage;
-  if (custom === undefined) return;
+  const flag = context.options.checkCoverage;
+  if (flag === undefined || flag === false) return;
 
-  const thresholds = normalize(custom);
-  if (!hasAnyThreshold(thresholds)) return;
+  const defaultValue = typeof flag === 'number' ? clampPercentage(flag) : 0;
+
+  const thresholds: Record<CheckCoverageMetric, number> = {
+    statements: clampPercentage(context.options.statements ?? defaultValue),
+    branches: clampPercentage(context.options.branches ?? defaultValue),
+    functions: clampPercentage(context.options.functions ?? defaultValue),
+    lines: clampPercentage(context.options.lines ?? defaultValue),
+  };
+
+  const hasThreshold =
+    thresholds.statements > 0 ||
+    thresholds.branches > 0 ||
+    thresholds.functions > 0 ||
+    thresholds.lines > 0;
+
+  if (!hasThreshold) return;
 
   const lcovOutput = lcovonly.runtimes[context.runtime].produce(context);
   if (lcovOutput.length === 0) return;
@@ -188,7 +157,11 @@ const run = (context: ReporterContext): void => {
     context.produceBranchDiscoveries()
   );
 
-  const failures = collectFailures(model, thresholds);
+  const failures = collectFailures(
+    model,
+    thresholds,
+    context.options.perFile === true
+  );
   if (failures.length === 0) return;
 
   printFailures(failures, context);
@@ -196,8 +169,4 @@ const run = (context: ReporterContext): void => {
   process.exitCode = 1;
 };
 
-export const checkCoverage = {
-  getDefault,
-  normalize,
-  run,
-} as const;
+export const checkCoverage = { run } as const;

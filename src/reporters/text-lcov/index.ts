@@ -3,10 +3,10 @@
  Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
  */
 
-import type { Reporter } from '../../@types/reporters.js';
+import type { Report } from '../../@types/reporters.js';
 import { lcovonly } from '../lcovonly/index.js';
 
-const report: Reporter = (context) => {
+const report: Report = (context) => {
   const output = lcovonly.runtimes[context.runtime].produce(context);
   if (output.length === 0) return;
 

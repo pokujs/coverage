@@ -3,7 +3,7 @@
  Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
  */
 
-import type { Reporter } from '../../@types/reporters.js';
+import type { Report } from '../../@types/reporters.js';
 import type { Metric } from '../../@types/text.js';
 import { lcovonly } from '../lcovonly/index.js';
 import { applyIstanbulBranches } from '../shared/file-coverage.js';
@@ -17,7 +17,7 @@ const lineForKey = (value: number, teamcityVar: string): string =>
 const coveredValue = (metric: Metric): number => metric.hit ?? 0;
 const totalValue = (metric: Metric): number => metric.total ?? 0;
 
-const report: Reporter = (context) => {
+const report: Report = (context) => {
   const lcovOutput = lcovonly.runtimes[context.runtime].produce(context);
   if (lcovOutput.length === 0) return;
 

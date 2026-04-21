@@ -1,4 +1,4 @@
-import type { ReporterName, Runtime } from '../../src/@types/reporters.js';
+import type { Reporter, Runtime } from '../../src/@types/reporters.js';
 import type { RuntimeSpec } from '../../src/@types/tests.ts';
 import { platform as currentPlatform } from 'node:process';
 
@@ -37,7 +37,7 @@ export const runtimeSpecs: Record<Runtime, RuntimeSpec> = {
 
 export const runtimes: Runtime[] = ['node', 'bun', 'deno'] as const;
 
-const bunSupports = new Set<ReporterName>([
+const bunSupports = new Set<Reporter>([
   'text',
   'lcov',
   'lcovonly',
@@ -51,7 +51,7 @@ const bunSupports = new Set<ReporterName>([
   'html-spa',
 ]);
 
-export const runtimesFor = (reporter: ReporterName): Runtime[] =>
+export const runtimesFor = (reporter: Reporter): Runtime[] =>
   bunSupports.has(reporter)
     ? [...runtimes]
     : runtimes.filter((runtime) => runtime !== 'bun');

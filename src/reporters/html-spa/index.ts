@@ -1,5 +1,5 @@
 import type { HtmlSpaMetricName } from '../../@types/html.js';
-import type { Reporter, Runtime } from '../../@types/reporters.js';
+import type { Report, Runtime } from '../../@types/reporters.js';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { formatDatetime } from '../../utils/datetime.js';
@@ -15,7 +15,7 @@ const metricsFor = (runtime: Runtime): readonly HtmlSpaMetricName[] =>
     ? ['lines', 'functions']
     : ['lines', 'branches', 'functions'];
 
-const report: Reporter = (context) => {
+const report: Report = (context) => {
   const projectedCoverage = htmlRuntimes[context.runtime].project(context);
   if (projectedCoverage === null) return;
 

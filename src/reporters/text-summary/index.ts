@@ -3,7 +3,7 @@
  Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
  */
 
-import type { Reporter, Runtime } from '../../@types/reporters.js';
+import type { Report, Runtime } from '../../@types/reporters.js';
 import type { Metric } from '../../@types/text.js';
 import type { WatermarkMetric } from '../../@types/watermarks.js';
 import { lcovonly } from '../lcovonly/index.js';
@@ -41,7 +41,7 @@ const formatLine = (
   return `${padKey(key)} : ${pctDisplay} ( ${covered}/${total} )`;
 };
 
-const report: Reporter = (context) => {
+const report: Report = (context) => {
   const lcovOutput = lcovonly.runtimes[context.runtime].produce(context);
   if (lcovOutput.length === 0) return;
 

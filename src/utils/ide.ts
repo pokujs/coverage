@@ -1,9 +1,9 @@
 import type { CoverageOptions } from '../@types/coverage.js';
-import type { IdeName, IdeUrlBuilders, UrlBuilder } from '../@types/ide.js';
+import type { IDE, IDEUrlBuilders, UrlBuilder } from '../@types/ide.js';
 import { pathToFileURL } from 'node:url';
 import { supportsHyperlinks } from './terminal.js';
 
-const ideUrlBuilders: IdeUrlBuilders = {
+const ideUrlBuilders: IDEUrlBuilders = {
   jetbrains: (filePath, lineNumber, columnNumber) =>
     `idea://open?file=${encodeURIComponent(filePath)}&line=${lineNumber}&column=${columnNumber}`,
   cursor: (filePath, lineNumber, columnNumber) =>
@@ -20,7 +20,7 @@ export const buildFileLineUrl = (
   absolutePath: string,
   lineNumber: number,
   columnNumber: number,
-  ideName?: IdeName
+  ideName?: IDE
 ): string => {
   const fileUrl = pathToFileURL(absolutePath);
 

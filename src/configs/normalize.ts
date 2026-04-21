@@ -18,6 +18,11 @@ const thresholdMetrics: readonly CheckCoverageMetric[] = [
   'lines',
 ];
 
+const clearThresholds = (mapped: Record<string, unknown>): void => {
+  for (const metric of thresholdMetrics) mapped[metric] = undefined;
+  mapped.perFile = undefined;
+};
+
 const normalize = (raw: Record<string, unknown>): CoverageOptions => {
   const mapped: Record<string, unknown> = Object.create(null);
 
@@ -26,43 +31,15 @@ const normalize = (raw: Record<string, unknown>): CoverageOptions => {
 
   if (mapped['100'] === true) {
     mapped.checkCoverage = 100;
-    mapped.perFile = undefined;
-
-    for (const metric of thresholdMetrics) mapped[metric] = undefined;
+    clearThresholds(mapped);
 
     return mapped;
   }
-
-  if (typeof mapped.checkCoverage !== 'boolean') return mapped;
 
   if (mapped.checkCoverage === false) {
     mapped.checkCoverage = undefined;
-    mapped.perFile = undefined;
-
-    for (const metric of thresholdMetrics) mapped[metric] = undefined;
-
-    return mapped;
+    clearThresholds(mapped);
   }
-
-  const thresholds: Record<string, unknown> = Object.create(null);
-  let hasThreshold = false;
-
-  for (const metric of thresholdMetrics) {
-    if (mapped[metric] !== undefined) {
-      thresholds[metric] = mapped[metric];
-      hasThreshold = true;
-    }
-
-    mapped[metric] = undefined;
-  }
-
-  if (mapped.perFile !== undefined) {
-    thresholds.perFile = mapped.perFile;
-    hasThreshold = true;
-    mapped.perFile = undefined;
-  }
-
-  mapped.checkCoverage = hasThreshold ? thresholds : undefined;
 
   return mapped;
 };

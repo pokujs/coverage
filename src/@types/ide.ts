@@ -1,4 +1,4 @@
-export type IdeName =
+export type IDE =
   | 'jetbrains'
   | 'cursor'
   | 'windsurf'
@@ -11,4 +11,4 @@ export type UrlBuilder = (
   columnNumber: number
 ) => string;
 
-export type IdeUrlBuilders = Record<IdeName, UrlBuilder>;
+export type IDEUrlBuilders = Record<IDE, UrlBuilder>;

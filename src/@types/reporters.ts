@@ -25,7 +25,7 @@ export type ReporterContext = {
   >;
 };
 
-export type Reporter = (context: ReporterContext) => void;
+export type Report = (context: ReporterContext) => void;
 
 export type PackageGroup<Entry> = {
   relativeDir: string;
@@ -50,7 +50,7 @@ export type KnownReporter =
   | 'html-spa'
   | 'none';
 
-export type ReporterName = KnownReporter | (string & NonNullable<unknown>);
+export type Reporter = KnownReporter | (string & NonNullable<unknown>);
 
 export type MetricSummary = {
   total: number;

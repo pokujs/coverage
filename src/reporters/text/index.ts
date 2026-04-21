@@ -1,10 +1,10 @@
-import type { Reporter } from '../../@types/reporters.js';
+import type { Report } from '../../@types/reporters.js';
 import { resolveUrlBuilder } from '../../utils/ide.js';
 import { lcovonly } from '../lcovonly/index.js';
 import { applyIstanbulBranches } from '../shared/file-coverage.js';
 import { renderTable } from './table.js';
 
-const report: Reporter = (context) => {
+const report: Report = (context) => {
   const lcovOutput = lcovonly.runtimes[context.runtime].produce(context);
   if (lcovOutput.length === 0) return;
 

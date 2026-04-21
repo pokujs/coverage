@@ -3,7 +3,7 @@ import type {
   HtmlSummaryChild,
   HtmlWalkInput,
 } from '../../@types/html.js';
-import type { Reporter } from '../../@types/reporters.js';
+import type { Report } from '../../@types/reporters.js';
 import type { TreeNode } from '../../@types/tree.js';
 import type { Watermarks } from '../../@types/watermarks.js';
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -142,7 +142,7 @@ const walkDirectory = (
   }
 };
 
-const report: Reporter = (context) => {
+const report: Report = (context) => {
   const projectedCoverage = htmlRuntimes[context.runtime].project(context);
   if (projectedCoverage === null) return;
 

@@ -1,5 +1,5 @@
 import type { LcovFile } from 'lcov-parse';
-import type { ReporterName } from '../../../../src/@types/reporters.js';
+import type { Reporter } from '../../../../src/@types/reporters.js';
 import type {
   BranchHit,
   CoverageSnapshot,
@@ -110,7 +110,7 @@ const accumulateTotals = (parsed: readonly LcovFile[]): MetricsBundle => {
 
 const build = (
   parsed: readonly LcovFile[],
-  reporter: ReporterName,
+  reporter: Reporter,
   fixtureRoot: string
 ): CoverageSnapshot => {
   const files: Record<string, FileSnapshot> = Object.create(null);

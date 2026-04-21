@@ -1,7 +1,7 @@
 import type {
+  Report,
   Reporter,
   ReporterContext,
-  ReporterName,
   Runtime,
 } from '../@types/reporters.js';
 import { warnOnce } from '../utils/warn-once.js';
@@ -21,7 +21,7 @@ import { textSummary } from './text-summary/index.js';
 import { text } from './text/index.js';
 import { v8 } from './v8/index.js';
 
-const registry = new Map<ReporterName, Reporter>([
+const registry = new Map<Reporter, Report>([
   ['lcov', lcov.report],
   ['lcovonly', lcovonly.report],
   ['text-lcov', textLcov.report],
@@ -39,26 +39,26 @@ const registry = new Map<ReporterName, Reporter>([
   ['none', none.report],
 ]);
 
-const defaultReporter: ReporterName = 'text';
+const defaultReporter: Reporter = 'text';
 
 const normalize = (
-  option: ReporterName | ReporterName[] | undefined,
+  option: Reporter | Reporter[] | undefined,
   runtime: Runtime
-): ReporterName[] => {
+): Reporter[] => {
   if (option === undefined) return [defaultReporter];
 
   const reporterList = Array.isArray(option) ? [...option] : [option];
   if (reporterList.length === 0) return [];
 
-  const native: ReporterName = runtime === 'bun' ? 'jsc' : 'v8';
-  const foreign: ReporterName = native === 'jsc' ? 'v8' : 'jsc';
+  const native: Reporter = runtime === 'bun' ? 'jsc' : 'v8';
+  const foreign: Reporter = native === 'jsc' ? 'v8' : 'jsc';
 
   return reporterList.map((reporterName) =>
     reporterName === foreign ? native : reporterName
   );
 };
 
-const run = (reporterList: ReporterName[], context: ReporterContext): void => {
+const run = (reporterList: Reporter[], context: ReporterContext): void => {
   for (const reporterName of reporterList) {
     const reporter = registry.get(reporterName);
 

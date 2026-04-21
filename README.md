@@ -53,143 +53,262 @@ npm i -D poku @pokujs/coverage
 
 ## Options
 
-### › `reporter`
+| Option                                       | Type                     | Default                                                                                                             | Node.js | Deno | Bun |
+| -------------------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------- | ------- | ---- | --- |
+| [**reporter**](#-reporter)                   | `Reporter \| Reporter[]` | `'text'`                                                                                                            | ●       | ●    | ●   |
+| [**include**](#-include)                     | `string[]`               | `[]`                                                                                                                | ●       | ●    | ●   |
+| [**exclude**](#-exclude)                     | `string[]`               | [list](https://github.com/pokujs/coverage/blob/8e13d606503308f019f455b3feca4998326e3ef5/src/file-filter.ts#L13-L27) | ●       | ●    | ●   |
+| [**all**](#-all)                             | `boolean`                | `false`                                                                                                             | ●       | ●    | ●   |
+| [**src**](#-src)                             | `string \| string[]`     | `[cwd]`                                                                                                             | ●       | ●    | ●   |
+| [**extension**](#-extension)                 | `string \| string[]`     | [list](https://github.com/pokujs/coverage/blob/8e13d606503308f019f455b3feca4998326e3ef5/src/all-files.ts#L8-L17)    | ●       | ●    | ●   |
+| [**checkCoverage**](#-checkcoverage)         | `boolean \| number`      | `undefined`                                                                                                         | ●       | ●    | ●   |
+| [**statements**](#-statements)               | `number`                 | `0`                                                                                                                 | ●       | ●    | ●   |
+| [**branches**](#-branches)                   | `number`                 | `0`                                                                                                                 | ●       | ●    | ◯   |
+| [**functions**](#-functions)                 | `number`                 | `0`                                                                                                                 | ●       | ●    | ●   |
+| [**lines**](#-lines)                         | `number`                 | `0`                                                                                                                 | ●       | ●    | ●   |
+| [**perFile**](#-perfile)                     | `boolean`                | `false`                                                                                                             | ●       | ●    | ●   |
+| [**skipFull**](#-skipfull)                   | `boolean`                | `false`                                                                                                             | ●       | ●    | ●   |
+| [**skipEmpty**](#-skipempty)                 | `boolean`                | `false`                                                                                                             | ●       | ●    | ●   |
+| [**watermarks**](#-watermarks)               | `Partial<Watermarks>`    | `[50, 80]`                                                                                                          | ●       | ●    | ●   |
+| [**hyperlinks**](#-hyperlinks)               | `boolean \| IDE`         | `true`                                                                                                              | ●       | ●    | ●   |
+| [**reportsDirectory**](#-reportsdirectory)   | `string`                 | `'./coverage'`                                                                                                      | ●       | ●    | ●   |
+| [**excludeAfterRemap**](#-excludeafterremap) | `boolean`                | `true`                                                                                                              | ●       | ●    | ◯   |
+| [**tempDirectory**](#-tempdirectory)         | `string`                 | _auto_                                                                                                              | ●       | ●    | ●   |
+| [**clean**](#-clean)                         | `boolean`                | _auto_                                                                                                              | ●       | ●    | ●   |
+| [**config**](#-config)                       | `string \| false`        | `undefined`                                                                                                         | ●       | ●    | ●   |
 
-- **Type:** `ReporterName | ReporterName[]`
-- **Default:** `'text'`
+> [!TIP]
+>
+> `.nycrc` and `.c8rc` config files are supported and are auto automatically remapped, for example:
+>
+> - `"check-coverage": true` → `"checkCoverage": true`
+> - `"100": true` → `checkCoverage: 100`
 
-Available:
+> [!NOTE]
+>
+> On **Bun**, `branches` and `excludeAfterRemap` options are silently ignored.
 
-- `'text'`
-- `'lcov'`
-- `'lcovonly'`
-- `'text-lcov'`
-- `'v8'`
-- `'jsc'`
-- `'text-summary'`
-- `'teamcity'`
-- `'json'`
-- `'json-summary'`
-- `'cobertura'`
-- `'clover'`
-- `'none'`
+---
+
+### › reporter
+
+| Reporter         | Node.js | Deno | Bun |
+| ---------------- | ------- | ---- | --- |
+| `'text'`         | ●       | ●    | ●   |
+| `'lcov'`         | ●       | ●    | ●   |
+| `'lcovonly'`     | ●       | ●    | ●   |
+| `'text-lcov'`    | ●       | ●    | ●   |
+| `'text-summary'` | ●       | ●    | ●   |
+| `'teamcity'`     | ●       | ●    | ●   |
+| `'json'`         | ●       | ●    | ●   |
+| `'json-summary'` | ●       | ●    | ●   |
+| `'cobertura'`    | ●       | ●    | ●   |
+| `'clover'`       | ●       | ●    | ●   |
+| `'none'`         | ●       | ●    | ●   |
+| `'v8'`           | ●       | ●    | ◯   |
+| `'jsc'`          | ◯       | ◯    | ●   |
 
 > [!NOTE]
 >
 > - On **Bun**, `'v8'` falls back to `'jsc'`.
 > - On **Node.js** or **Deno**, `'jsc'` falls back to `'v8'`.
 
+```json
+{
+  "reporter": ["text", "lcov"]
+}
+```
+
 ---
 
-### › `include`
-
-- **Type:** `string[]`
-- **Default:** `[]`
+### › include
 
 Glob patterns for files to include. When non-empty, only matching files appear in reports.
 
+```json
+{
+  "include": ["src/**"]
+}
+```
+
 ---
 
-### › `exclude`
-
-- **Type:** `string[]`
-- **Default:** (extends `@istanbuljs/schema`)
+### › exclude
 
 Glob patterns for files to exclude. Replaces the default list when provided.
 
+```json
+{
+  "exclude": ["test/**", "**/*.spec.ts"]
+}
+```
+
 ---
 
-### › `all`
-
-- **Type:** `boolean`
-- **Default:** `false`
+### › all
 
 Walk the filesystem and report every source file under `cwd`, including those never touched by tests (reported as zero coverage).
 
----
-
-### › `src`
-
-- **Type:** `string | string[]`
-- **Default:** `[cwd]`
-
-Root directories searched when `all: true`. Overrides `cwd` as the default walk root. Useful for monorepos. Relative paths are resolved against `cwd`. Has no effect without `all: true`.
-
-```js
-// poku.config.js
-export default {
-  plugins: [
-    coverage({
-      all: true,
-      src: ['./packages/core/src', './packages/api/src'],
-    }),
-  ],
-};
+```json
+{
+  "all": true
+}
 ```
 
 ---
 
-### › `extension`
+#### › src
 
-- **Type:** `string | string[]`
-- **Default:** `['.js', '.cjs', '.mjs', '.ts', '.cts', '.mts', '.tsx', '.jsx']`
+Root directories searched when `all: true`. Overrides `cwd` as the default walk root. Useful for monorepos. Relative paths are resolved against `cwd`.
 
-File extensions considered by `all: true` discovery. Overrides the default list entirely. Has no effect without `all: true`.
-
-```js
-// poku.config.js
-export default {
-  plugins: [
-    coverage({
-      all: true,
-      extension: ['.ts', '.vue'],
-    }),
-  ],
-};
+```json
+{
+  "all": true,
+  "src": ["./packages/core/src", "./packages/api/src"]
+}
 ```
 
 ---
 
-### › `checkCoverage`
+#### › extension
 
-- **Type:** `number | CheckCoverageThresholds`
-- **Default:** `undefined`
+File extensions considered by `all: true` discovery. Overrides the default list entirely.
 
-Fail the run when coverage falls below configured percentages. Pass a bare number to apply to all metrics, or an object with per-metric values. Set `perFile: true` to enforce per-file.
+```json
+{
+  "all": true,
+  "extension": [".ts", ".vue"]
+}
+```
 
 ---
 
-### › `skipFull`
+### › checkCoverage
 
-- **Type:** `boolean`
-- **Default:** `false`
+Fail the run when coverage falls below the configured thresholds.
+
+- `true`: enable the check with all thresholds at `0` (silent no-op unless at least one per-metric threshold is set).
+- `number`: default threshold applied to every metric. Per-metric root keys override.
+- `false` / `undefined`: disabled.
+
+```json
+{
+  "checkCoverage": 95,
+  "branches": 80
+}
+```
+
+Above: `statements`, `functions`, and `lines` require `95`; `branches` requires `80`.
+
+---
+
+#### › statements
+
+Minimum statements coverage percentage. Requires `checkCoverage` to be active.
+
+```json
+{
+  "checkCoverage": true,
+  "statements": 90
+}
+```
+
+---
+
+#### › branches
+
+Minimum branches coverage percentage. Requires `checkCoverage` to be active.
+
+```json
+{
+  "checkCoverage": true,
+  "branches": 80
+}
+```
+
+---
+
+#### › functions
+
+Minimum functions coverage percentage. Requires `checkCoverage` to be active.
+
+```json
+{
+  "checkCoverage": true,
+  "functions": 90
+}
+```
+
+---
+
+#### › lines
+
+Minimum lines coverage percentage. Requires `checkCoverage` to be active.
+
+```json
+{
+  "checkCoverage": true,
+  "lines": 95
+}
+```
+
+---
+
+#### › perFile
+
+Enforce thresholds per file instead of on aggregated totals.
+
+```json
+{
+  "checkCoverage": 95,
+  "perFile": true
+}
+```
+
+---
+
+### › skipFull
 
 Hide fully-covered files (every non-null metric ≥ 100%) from the `text` reporter table. Totals are unaffected.
 
+```json
+{
+  "skipFull": true
+}
+```
+
 ---
 
-### › `skipEmpty`
-
-- **Type:** `boolean`
-- **Default:** `false`
+### › skipEmpty
 
 Hide files with no executable code from the `text` reporter table. Totals are unaffected.
 
+```json
+{
+  "skipEmpty": true
+}
+```
+
 ---
 
-### › `watermarks`
-
-- **Type:** `Partial<Watermarks>`
-- **Default:** `[50, 80]` per metric
+### › watermarks
 
 `[lowMax, highMin]` thresholds for classifying percentages as `low` / `medium` / `high` in the `text` reporter.
 
+```json
+{
+  "watermarks": {
+    "lines": [60, 85],
+    "branches": [60, 85],
+    "functions": [60, 85],
+    "statements": [60, 85]
+  }
+}
+```
+
 ---
 
-### › `hyperlinks`
-
-- **Type:** `boolean | IdeName`
-- **Default:** `true`
+### › hyperlinks
 
 Controls clickable file links in the `text` reporter.
 
@@ -205,39 +324,51 @@ Available:
 - `'windsurf'`
 - `'vscode-insiders'`
 
+```json
+{
+  "hyperlinks": "vscode"
+}
+```
+
 ---
 
-### › `reportsDirectory`
-
-- **Type:** `string`
-- **Default:** `'./coverage'`
+### › reportsDirectory
 
 Directory where report files are written. Resolved relative to the Poku working directory.
 
----
-
-### › `excludeAfterRemap`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-When `true`, globs match original source paths (post source-map remap). When `false`, globs match transpiled paths (pre-remap, mirrors c8).
+```json
+{
+  "reportsDirectory": "./coverage"
+}
+```
 
 ---
 
-### › `tempDirectory`
+### › excludeAfterRemap
 
-- **Type:** `string`
-- **Default:** auto
+When `true`, globs match original source paths (post source-map remap). When `false`, globs match transpiled paths (pre-remap, mirrors [**c8**](https://github.com/bcoe/c8)).
+
+```json
+{
+  "excludeAfterRemap": false
+}
+```
+
+---
+
+### › tempDirectory
 
 Directory where raw coverage data is written. When omitted, a temp dir is created and cleaned up automatically.
 
+```json
+{
+  "tempDirectory": "./.tmp-coverage"
+}
+```
+
 ---
 
-### › `clean`
-
-- **Type:** `boolean`
-- **Default:** auto
+### › clean
 
 Override temp-directory cleanup at teardown.
 
@@ -245,14 +376,37 @@ Override temp-directory cleanup at teardown.
 - `true`: always clean.
 - `false`: never clean.
 
+```json
+{
+  "clean": false
+}
+```
+
 ---
 
-### › `config`
-
-- **Type:** `string | false`
-- **Default:** `undefined`
+### › config
 
 Path to a config file, or `false` to disable auto-discovery.
+
+```json
+{
+  "config": ".coveragerc"
+}
+```
+
+You can also specify the config path via **CLI**:
+
+```bash
+poku --coverage --coverageConfig=.coveragerc test/
+```
+
+> [!TIP]
+>
+> When no `config` is specified, the plugin automatically searches for the following files in the working directory (in order):
+>
+> - `.coveragerc`, `.coveragerc.json`, `.coveragerc.jsonc`, `.coveragerc.toml`, `.coveragerc.yaml`, `.coveragerc.yml`
+> - `.nycrc`, `.nycrc.json`, `.nycrc.jsonc`, `.nycrc.toml`, `.nycrc.yaml`, `.nycrc.yml`
+> - `.c8rc`, `.c8rc.json`, `.c8rc.jsonc`, `.c8rc.toml`, `.c8rc.yaml`, `.c8rc.yml`
 
 ---
 
@@ -284,31 +438,6 @@ poku test/
 poku --coverage test/
 ```
 
-### Using a config file
-
-```jsonc
-// .coveragerc
-{
-  // ...
-}
-```
-
-```js
-coverage({
-  config: '.coveragerc', // or false to disable auto-discovery
-});
-```
-
-> [!TIP]
->
-> When no `config` is specified, the plugin automatically searches for `.coveragerc`, `.coverage.json`, `.coverage.jsonc`, `.coverage.yaml`, or `.coverage.toml` in the working directory.
-
-You can also specify the config path via **CLI**:
-
-```bash
-poku --coverage --coverageConfig=.coveragerc test/
-```
-
 > [!NOTE]
 >
 > **Priority order:**
@@ -318,13 +447,14 @@ poku --coverage --coverageConfig=.coveragerc test/
 
 ---
 
-## Why Bun Users Should Care
+## 🍞 Why Bun Users Should Care
 
 [**@pokujs/coverage**](https://github.com/pokujs/coverage) extends **Bun**'s coverage by tapping into the **JSC** **Inspector** directly, unlocking:
 
-- The full set of reporters (`html`, `html-spa`, `json`, `cobertura`, `clover`, etc.) that **Bun** does not provide on its own.
-- Consistent options across runtimes (`all`, `include`, `exclude`, `checkCoverage`, `skipFull`, `skipEmpty`, `watermarks`, etc.), so the same configuration produces equivalent reports on **Node.js**, **Deno**, and **Bun**.
-- Support for `/* jsc ignore */` directives (`next`, `start`/`stop`), aligned with **Node.js** and **Deno**.
+- The full set of reporters (`html`, `html-spa`, `jsc`, `json`, `json-summary`, `cobertura`, `clover`, `teamcity`, `text-summary`, etc.).
+  - [**Bun** supports only `text` and `lcov` _(limited)_.](https://bun.com/docs/test/code-coverage)
+- Consistent options across runtimes (`all`,`checkCoverage`, `include`, `exclude`, `extension`, `skipFull`, `skipEmpty`, `watermarks`, etc.).
+- Support for `/* jsc ignore */` directives (`next`, `start`/`stop`).
 - Real function names with per-function execution counts.
 - Accurate line hit counts derived from basic blocks, instead of binary covered/uncovered.
 - A richer **LCOV** built from the **JSC** data, with function records and real per-line counts.
@@ -332,6 +462,23 @@ poku --coverage --coverageConfig=.coveragerc test/
 > [!NOTE]
 >
 > Branch coverage is not yet available under **Bun**. [This is a limitation of the **JSC** **Inspector**](https://webkit.org/blog/3846/type-profiling-and-code-coverage-profiling-for-javascript/), which **Bun** depends on.
+
+---
+
+## 🦕 Why Deno Users Should Care
+
+- The full set of reporters (`html-spa`, `v8`, `json`, `json-summary`, `cobertura`, `clover`, `teamcity`, `text-summary`, etc.).
+  - [**Deno** supports only `text`, `lcov`, and `html`](https://docs.deno.com/runtime/reference/cli/coverage/).
+- Consistent options across runtimes (`all`, `checkCoverage`, `include`, `exclude`, `extension`, `skipFull`, `skipEmpty`, `watermarks`, etc.).
+- Compatibility with `.nycrc` / `.c8rc` config files, easing migration from existing coverage setups.
+
+---
+
+## 🐢 Why Node.js Users Should Care
+
+- Move or combine an entire test suite between **Node.js**, **Deno**, and **Bun** with zero configuration changes, both in the tests and in the coverage.
+  - Know exactly what is and isn't being tested on each runtime while using a single test suite.
+  - Especially useful for maintainers of **JavaScript** libraries that want to guarantee cross-runtime compatibility without replicating the entire test suite for each runtime.
 
 ---
 

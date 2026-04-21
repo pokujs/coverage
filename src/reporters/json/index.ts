@@ -3,13 +3,13 @@
  Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
  */
 
-import type { Reporter } from '../../@types/reporters.js';
+import type { Report } from '../../@types/reporters.js';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { converters } from '../../converters/index.js';
 import { prepareCoverageMap } from '../shared/file-coverage.js';
 
-const report: Reporter = (context) => {
+const report: Report = (context) => {
   const coverageMap = converters.v8ToIstanbul(
     context.tempDir,
     context.cwd,

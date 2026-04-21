@@ -1,10 +1,10 @@
-import type { Reporter } from '../../@types/reporters.js';
+import type { Report } from '../../@types/reporters.js';
 import { bun } from './runtimes/bun.js';
 import { deno } from './runtimes/deno.js';
 import { node } from './runtimes/node.js';
 
 const runtimes = { node, deno, bun } as const;
 
-const report: Reporter = (context) => runtimes[context.runtime].run(context);
+const report: Report = (context) => runtimes[context.runtime].run(context);
 
 export const v8 = { runtimes, report } as const;
