@@ -280,12 +280,12 @@ poku --coverage --coverageConfig=.coveragerc test/
 
 [**@pokujs/coverage**](https://github.com/pokujs/coverage) extends **Bun**'s coverage by tapping into the **JSC** **Inspector** directly, unlocking:
 
-- Real function names with per-function execution counts.
-- Accurate line hit counts derived from basic blocks, instead of binary covered/uncovered.
-- Support for `/* jsc ignore */` directives (`next`, `start`/`stop`), aligned with **Node.js** and **Deno**.
-- A richer **LCOV** built from the **JSC** data, with function records and real per-line counts.
 - The full set of reporters (`html`, `html-spa`, `json`, `cobertura`, `clover`, etc.) that **Bun** does not provide on its own.
 - Consistent options across runtimes (`all`, `include`, `exclude`, `checkCoverage`, `skipFull`, `skipEmpty`, `watermarks`, etc.), so the same configuration produces equivalent reports on **Node.js**, **Deno**, and **Bun**.
+- Support for `/* jsc ignore */` directives (`next`, `start`/`stop`), aligned with **Node.js** and **Deno**.
+- Real function names with per-function execution counts.
+- Accurate line hit counts derived from basic blocks, instead of binary covered/uncovered.
+- A richer **LCOV** built from the **JSC** data, with function records and real per-line counts.
 
 > [!NOTE]
 >
