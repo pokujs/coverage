@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.0](https://github.com/pokujs/coverage/compare/v0.2.1...v0.3.0) (2026-04-21)
+
+
+### Features
+
+* add `"jsc"` reporter ([#10](https://github.com/pokujs/coverage/issues/10)) ([2d4c045](https://github.com/pokujs/coverage/commit/2d4c0450d2900d36f53db197d559b1ceb2548a42))
+
+
+### Bug Fixes
+
+* **jsc:** prevent zero-out of executed class method bodies ([ec4b45f](https://github.com/pokujs/coverage/commit/ec4b45fc57d5c0fd2402a773b44b38a7b1cf00a1))
+
 ## [0.2.1](https://github.com/pokujs/coverage/compare/v0.2.0...v0.2.1) (2026-04-19)
 
 
