@@ -1,18 +1,1 @@
-{
-  "reporter": "cobertura",
-  "totals": {
-    "lines": {
-      "total": 156,
-      "covered": 132,
-      "missed": 24,
-      "pct": "84.62 %"
-    },
-    "branches": {
-      "total": 68,
-      "covered": 62,
-      "missed": 6,
-      "pct": "91.18 %"
-    }
-  },
-  "files": {}
-}
+../../deno/win32/all.json
