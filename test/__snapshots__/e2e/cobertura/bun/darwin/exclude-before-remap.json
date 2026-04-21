@@ -1,1 +1,47 @@
-exclude-after-remap.json
+{
+  "reporter": "cobertura",
+  "totals": {
+    "lines": {
+      "total": 2,
+      "covered": 2,
+      "missed": 0,
+      "pct": "100.00 %"
+    },
+    "branches": {
+      "total": 0,
+      "covered": 0,
+      "missed": 0,
+      "pct": "100.00 %"
+    }
+  },
+  "files": {
+    "src/survivor.js": {
+      "lines": {
+        "total": 2,
+        "covered": 2,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "branches": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "functions": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "uncoveredLines": "",
+      "coveredLines": "1-2",
+      "lineHits": {
+        "1": 14,
+        "2": 24
+      },
+      "branchHits": [],
+      "functionHits": []
+    }
+  }
+}
