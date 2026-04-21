@@ -8,12 +8,13 @@ import {
   writeFileSync,
 } from 'node:fs';
 import { dirname, relative } from 'node:path';
-import { platform } from 'node:process';
 import { fileURLToPath } from 'node:url';
 
 type DedupPlatform = 'darwin' | 'linux' | 'win32';
 
 const platforms: readonly DedupPlatform[] = ['darwin', 'linux', 'win32'];
+
+let totalLinks = 0;
 
 const snapshotsRoot = fileURLToPath(
   new URL('../test/__snapshots__/e2e/', import.meta.url)
@@ -105,16 +106,10 @@ const dedupePlatform = (targetPlatform: DedupPlatform): number => {
   return linksCreated;
 };
 
-if (platform === 'win32') {
-  console.log('postbuild:snapshots skipped on win32');
-} else {
-  console.log('› Mirroring identical snapshots');
+console.log('› Mirroring identical snapshots');
 
-  let totalLinks = 0;
-
-  for (const targetPlatform of platforms) {
-    totalLinks += dedupePlatform(targetPlatform);
-  }
-
-  console.log(`  ${totalLinks} links created`);
+for (const targetPlatform of platforms) {
+  totalLinks += dedupePlatform(targetPlatform);
 }
+
+console.log(`  ${totalLinks} links created`);

@@ -22,7 +22,9 @@ The final commit message will be generated from the _PR_ title by using "**Squas
 
 You will need these tools installed on your system:
 
-- [**Node.js**](https://nodejs.org/en/download/package-manager)
+- [**Node.js**](https://nodejs.org)
+- [**Bun**](https://bun.com/)
+- [**Deno**](https://deno.com/)
 
 ---
 

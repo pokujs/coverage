@@ -32,18 +32,13 @@ jobs:
       - name: 📦 Installing Dependencies
         run: npm ci
 
-      - name: 🚀 Building
-        run: npm run build
-
       - name: 🧪 Generating Snapshots
-        env:
-          UPDATE_SNAPSHOTS: '1'
-        run: npm test
+        run: npm run build:snapshots
 
       - name: 📤 Upload Linux snapshots
         uses: actions/upload-artifact@v7
         with:
           name: snapshots-linux
           path: test/__snapshots__/e2e/**/linux/**
-          retention-days: 14
+          retention-days: 7
           if-no-files-found: error

@@ -77,7 +77,7 @@ npm i -D @pokujs/coverage
 | [**perFile**](#-perfile)                     | `boolean`                | `false`                                                                                                             | ●       | ●    | ●   |
 | [**skipFull**](#-skipfull)                   | `boolean`                | `false`                                                                                                             | ●       | ●    | ●   |
 | [**skipEmpty**](#-skipempty)                 | `boolean`                | `false`                                                                                                             | ●       | ●    | ●   |
-| [**watermarks**](#-watermarks)               | `Partial<Watermarks>`    | `[50, 80]`                                                                                                          | ●       | ●    | ●   |
+| [**watermarks**](#-watermarks)               | `Partial<Watermarks>`    | `[50, 80]` per metric                                                                                               | ●       | ●    | ●   |
 | [**hyperlinks**](#-hyperlinks)               | `boolean \| IDE`         | `true`                                                                                                              | ●       | ●    | ●   |
 | [**reportsDirectory**](#-reportsdirectory)   | `string`                 | `'./coverage'`                                                                                                      | ●       | ●    | ●   |
 | [**excludeAfterRemap**](#-excludeafterremap) | `boolean`                | `true`                                                                                                              | ●       | ●    | –   |
@@ -495,7 +495,7 @@ poku --coverage test/
 The plugin strips the following files from every report before they are emitted, so the numbers reflect only the source code you actually care about:
 
 - Every file **Poku** passes through its `runner` hook is recorded and dropped from reports since they are test files.
-- **`node_modules/` and `.git/`.** directories are unconditionally banned from coverage output.
+- **`node_modules/` and `.git/`** directories are unconditionally banned from coverage output.
 
 ---
 

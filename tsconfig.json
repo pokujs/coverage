@@ -7,7 +7,6 @@
     "module": "Node16",
     "moduleResolution": "Node16",
     "rootDir": "src",
-    "outDir": "lib",
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "allowJs": false,
@@ -20,12 +19,8 @@
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "noImplicitAny": true,
-    "removeComments": false,
-    "sourceMap": false,
+    "resolveJsonModule": true,
     "esModuleInterop": true,
-    "noEmitOnError": true,
-    "declaration": true,
-    "declarationDir": "lib",
     "allowSyntheticDefaultImports": true
   }
 }

@@ -9,7 +9,7 @@ const SPA_ASSET_FILENAMES: readonly string[] = [
 ];
 
 const spaAssetsDir = (): string =>
-  fileURLToPath(new URL('../../../resources/html-spa/', import.meta.url));
+  fileURLToPath(new URL('../resources/html-spa/', import.meta.url));
 
 export const copyAssets = (reportsDir: string): void => {
   copyAssetSet(reportsDir, htmlAssetsDir(), HTML_ASSET_FILENAMES);

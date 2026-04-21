@@ -12,7 +12,7 @@ export const HTML_ASSET_FILENAMES: readonly string[] = [
 ];
 
 export const htmlAssetsDir = (): string =>
-  fileURLToPath(new URL('../../../resources/html/', import.meta.url));
+  fileURLToPath(new URL('../resources/html/', import.meta.url));
 
 export const copyAssets = (reportsDir: string): void => {
   copyAssetSet(reportsDir, htmlAssetsDir(), HTML_ASSET_FILENAMES);

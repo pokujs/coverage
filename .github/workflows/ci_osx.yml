@@ -44,9 +44,6 @@ jobs:
       - name: 📦 Installing Dependencies
         run: npm ci
 
-      - name: 🚀 Building
-        run: npm run build
-
       - name: 🧪 Testing
         run: set -o pipefail && npm run test:node 2>&1 | tee test-output.log
 
@@ -93,9 +90,6 @@ jobs:
       - name: 📦 Installing Dependencies
         run: npm ci
 
-      - name: 🚀 Building
-        run: npm run build
-
       - name: 🧪 Testing
         run: set -o pipefail && npm run test:bun 2>&1 | tee test-output.log
 
@@ -141,9 +135,6 @@ jobs:
 
       - name: 📦 Installing Dependencies
         run: npm ci
-
-      - name: 🚀 Building
-        run: npm run build
 
       - name: 🧪 Testing
         run: set -o pipefail && npm run test:deno 2>&1 | tee test-output.log
