@@ -89,10 +89,14 @@ End-to-end tests live under [test/](test/). Open the directory to see the curren
 
 ```sh
 npm run typecheck
+npm test             # runs all tests for each runtime
+```
+
+```sh
+npm run build
 npm run test:node    # runs all tests for Node.js
 npm run test:deno    # runs all tests for Deno
 npm run test:bun     # runs all tests for Bun
-npm test             # runs all tests for each runtime
 ```
 
 Always ask before regenerating snapshots after a deliberate change to a reporter's output.
