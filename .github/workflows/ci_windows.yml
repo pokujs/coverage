@@ -85,6 +85,16 @@ jobs:
       - name: 🚀 Building
         run: npm run build
 
+      - name: 🗑️ Uninstalling Node.js
+        shell: pwsh
+        run: |
+          foreach ($name in @('node','npm','npx','corepack')) {
+            Get-Command $name -All -ErrorAction SilentlyContinue | ForEach-Object {
+              Remove-Item $_.Source -Force -ErrorAction SilentlyContinue
+            }
+          }
+          if (Get-Command node -ErrorAction SilentlyContinue) { exit 1 }
+
       - name: 🧪 Testing
         uses: nick-fields/retry@v3
         with:
@@ -132,6 +142,16 @@ jobs:
 
       - name: 🚀 Building
         run: npm run build
+
+      - name: 🗑️ Uninstalling Node.js
+        shell: pwsh
+        run: |
+          foreach ($name in @('node','npm','npx','corepack')) {
+            Get-Command $name -All -ErrorAction SilentlyContinue | ForEach-Object {
+              Remove-Item $_.Source -Force -ErrorAction SilentlyContinue
+            }
+          }
+          if (Get-Command node -ErrorAction SilentlyContinue) { exit 1 }
 
       - name: 🧪 Testing
         shell: pwsh

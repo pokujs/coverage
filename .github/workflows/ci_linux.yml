@@ -98,6 +98,11 @@ jobs:
       - name: 🚀 Building
         run: npm run build
 
+      - name: 🗑️ Uninstalling Node.js
+        run: |
+          sudo rm -f $(which -a node npm npx corepack 2>/dev/null) || true
+          ! command -v node
+
       - name: 🧪 Testing
         run: set -o pipefail && bun run test:bun 2>&1 | tee test-output.log
 
@@ -146,6 +151,11 @@ jobs:
 
       - name: 🚀 Building
         run: npm run build
+
+      - name: 🗑️ Uninstalling Node.js
+        run: |
+          sudo rm -f $(which -a node npm npx corepack 2>/dev/null) || true
+          ! command -v node
 
       - name: 🧪 Testing
         run: set -o pipefail && deno task test:deno 2>&1 | tee test-output.log
