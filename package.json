@@ -4,7 +4,17 @@
   "version": "0.5.0",
   "description": "☔️ The world's first V8 and JSC coverage tool to generate reports for Node.js, Bun, Deno, and TypeScript at the same time.",
   "type": "module",
-  "main": "./lib/index.js",
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js",
+      "require": "./lib/index.cjs",
+      "default": "./lib/index.js"
+    }
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
