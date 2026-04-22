@@ -25,7 +25,7 @@ export const runtimeSpecs: Record<Runtime, RuntimeSpec> = {
   },
   deno: {
     command: 'deno',
-    args: ['run', '-A', 'npm:poku'],
+    args: ['run', '-A', 'npm:poku', '--denoAllow=all'],
     env: { ...reset.poku, ...reset.engine },
   },
   bun: {

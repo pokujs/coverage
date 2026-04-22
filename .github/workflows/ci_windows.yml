@@ -79,6 +79,9 @@ jobs:
       - name: 📦 Installing Dependencies
         run: npm ci
 
+      - name: 🚀 Building
+        run: npm run build
+
       - name: 🧪 Testing
         uses: nick-fields/retry@v3
         with:
@@ -123,6 +126,9 @@ jobs:
 
       - name: 📦 Installing Dependencies
         run: npm ci
+
+      - name: 🚀 Building
+        run: npm run build
 
       - name: 🧪 Testing
         shell: pwsh

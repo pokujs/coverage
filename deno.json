@@ -1,3 +1,6 @@
 {
+  "tasks": {
+    "test:deno": "deno run -A npm:poku -t=\"deno:\""
+  },
   "unstable": ["sloppy-imports", "detect-cjs"]
 }

@@ -34,5 +34,9 @@ jobs:
       - name: 📦 Installing Dependencies
         run: npm ci
 
-      - name: 🤹🏻‍♀️ Biome + Prettier Check
+      - name: 🤹🏻‍♀️ Prettier Check
         run: npm run lint
+
+      - name: 🗂️ Typecheck
+        if: always()
+        run: npm run typecheck

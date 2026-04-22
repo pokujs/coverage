@@ -90,6 +90,9 @@ export default defineConfig({
   include: ['test/e2e'],
   reporter: 'compact',
   timeout: 30000,
+  deno: {
+    allow: ['all'],
+  },
   plugins: [
     {
       setup: async () => {
