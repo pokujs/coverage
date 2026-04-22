@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.0](https://github.com/pokujs/coverage/compare/v0.4.0...v0.5.0) (2026-04-22)
+
+
+### Features
+
+* support `bunfig.toml` ([0aa5ca8](https://github.com/pokujs/coverage/commit/0aa5ca8c2892ec95dda11a080fad491828fc5dff))
+
+
+### Bug Fixes
+
+* **build:** ship only what is really necessary ([#13](https://github.com/pokujs/coverage/issues/13)) ([2923edc](https://github.com/pokujs/coverage/commit/2923edc6c47bf9b92034edf82c9ddb5f39a0576f))
+
 ## [0.4.0](https://github.com/pokujs/coverage/compare/v0.3.0...v0.4.0) (2026-04-21)
 
 
