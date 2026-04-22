@@ -38,6 +38,9 @@ jobs:
       - name: 📦 Installing Dependencies
         run: npm ci
 
+      - name: 🚀 Building
+        run: npm run build
+
       - name: 🧪 Testing
         shell: pwsh
         run: npm run test:node *>&1 | Tee-Object -FilePath test-output.log
