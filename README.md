@@ -48,7 +48,7 @@ npm i -D @pokujs/coverage
 ```json
 {
   "scripts": {
-    "test:bun": "bun poku --coverage",
+    "test:bun": "bun --bun poku --coverage",
     "test:deno": "deno run -A npm:poku --coverage",
     "test:node": "poku --coverage"
   }
@@ -112,16 +112,14 @@ npm i -D @pokujs/coverage
 | `'v8'`           | ●       | ●    | –   |
 | `'jsc'`          | –       | –    | ●   |
 
+```json
+{ "reporter": ["text", "lcov"] }
+```
+
 > [!NOTE]
 >
 > - On **Bun**, `'v8'` falls back to `'jsc'`.
 > - On **Node.js** or **Deno**, `'jsc'` falls back to `'v8'`.
-
-```json
-{
-  "reporter": ["text", "lcov"]
-}
-```
 
 ---
 
@@ -130,9 +128,7 @@ npm i -D @pokujs/coverage
 Glob patterns for files to include. When non-empty, only matching files appear in reports.
 
 ```json
-{
-  "include": ["src/**"]
-}
+{ "include": ["src/**"] }
 ```
 
 ---
@@ -142,9 +138,7 @@ Glob patterns for files to include. When non-empty, only matching files appear i
 Glob patterns for files to exclude. Replaces the default list when provided.
 
 ```json
-{
-  "exclude": ["test/**", "**/*.spec.ts"]
-}
+{ "exclude": ["test/**", "**/*.spec.ts"] }
 ```
 
 - Every file **Poku** passes through its `runner` hook is recorded and dropped from reports.
@@ -157,9 +151,7 @@ Glob patterns for files to exclude. Replaces the default list when provided.
 Walk the filesystem and report every source file under `cwd`, including those never touched by tests (reported as zero coverage).
 
 ```json
-{
-  "all": true
-}
+{ "all": true }
 ```
 
 ---
@@ -279,9 +271,7 @@ Enforce thresholds per file instead of on aggregated totals.
 Hide fully-covered files (every non-null metric ≥ 100%) from the `text` reporter table. Totals are unaffected.
 
 ```json
-{
-  "skipFull": true
-}
+{ "skipFull": true }
 ```
 
 ---
@@ -291,9 +281,7 @@ Hide fully-covered files (every non-null metric ≥ 100%) from the `text` report
 Hide files with no executable code from the `text` reporter table. Totals are unaffected.
 
 ```json
-{
-  "skipEmpty": true
-}
+{ "skipEmpty": true }
 ```
 
 ---
@@ -332,9 +320,7 @@ Available:
 - `'vscode-insiders'`
 
 ```json
-{
-  "hyperlinks": "vscode"
-}
+{ "hyperlinks": "vscode" }
 ```
 
 ---
@@ -344,9 +330,7 @@ Available:
 Directory where report files are written. Resolved relative to the Poku working directory.
 
 ```json
-{
-  "reportsDirectory": "./coverage"
-}
+{ "reportsDirectory": "./coverage" }
 ```
 
 ---
@@ -356,9 +340,7 @@ Directory where report files are written. Resolved relative to the Poku working 
 When `true`, globs match original source paths (post source-map remap). When `false`, globs match transpiled paths (pre-remap, mirrors [**c8**](https://github.com/bcoe/c8)).
 
 ```json
-{
-  "excludeAfterRemap": false
-}
+{ "excludeAfterRemap": false }
 ```
 
 ---
@@ -368,9 +350,7 @@ When `true`, globs match original source paths (post source-map remap). When `fa
 Directory where raw coverage data is written. When omitted, a temp dir is created and cleaned up automatically.
 
 ```json
-{
-  "tempDirectory": "./.tmp-coverage"
-}
+{ "tempDirectory": "./.tmp-coverage" }
 ```
 
 ---
@@ -384,9 +364,7 @@ Override temp-directory cleanup at teardown.
 - `false`: never clean.
 
 ```json
-{
-  "clean": false
-}
+{ "clean": false }
 ```
 
 ---
@@ -396,9 +374,7 @@ Override temp-directory cleanup at teardown.
 Path to a config file, or `false` to disable auto-discovery.
 
 ```json
-{
-  "config": ".coveragerc"
-}
+{ "config": ".coveragerc" }
 ```
 
 You can also specify the config path via **CLI**:
@@ -466,6 +442,7 @@ poku --coverage test/
 - Real function names with per-function execution counts.
 - Accurate line hit counts derived from basic blocks, instead of binary covered/uncovered.
 - A richer **LCOV** built from the **JSC** data, with function records and real per-line counts.
+- Compatibility with `.nycrc` / `.c8rc` config files, easing migration from existing coverage setups.
 
 > [!NOTE]
 >
@@ -479,14 +456,6 @@ poku --coverage test/
   - [**Deno** supports only `text`, `lcov`, and `html`](https://docs.deno.com/runtime/reference/cli/coverage/).
 - Consistent options across runtimes (`all`, `checkCoverage`, `include`, `exclude`, `extension`, `skipFull`, `skipEmpty`, `watermarks`, etc.).
 - Compatibility with `.nycrc` / `.c8rc` config files, easing migration from existing coverage setups.
-
----
-
-## How It Works
-
-- 🐢 Under **Node.js**, the plugin sets `NODE_V8_COVERAGE` before **Poku** spawns tests. On teardown, the plugin reads the **V8** **JSON** files from `<tempDir>` and forwards the data.
-- 🦕 Under **Deno**, the plugin sets `DENO_COVERAGE_DIR` before **Poku** spawns tests. On teardown, the plugin shells out to `deno coverage <tempDir>` and forwards the data.
-- 🍞 Under **Bun**, the plugin attaches to the **JSC** **Inspector** over WebSocket and captures basic-block execution counts via `Runtime.getBasicBlocks`. On teardown, the plugin reads the **JSON** files from `<tempDir>` and forwards the data.
 
 ---
 
