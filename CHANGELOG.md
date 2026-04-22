@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/pokujs/coverage/compare/v0.5.0...v0.6.0) (2026-04-22)
+
+
+### Features
+
+* export both `.mjs` and `.cjs` ([#15](https://github.com/pokujs/coverage/issues/15)) ([5eb25c6](https://github.com/pokujs/coverage/commit/5eb25c64a18ae03bc944599ebc6b4b6cab71dbad))
+
 ## [0.5.0](https://github.com/pokujs/coverage/compare/v0.4.0...v0.5.0) (2026-04-22)
 
 
