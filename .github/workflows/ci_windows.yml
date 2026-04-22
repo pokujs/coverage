@@ -85,7 +85,7 @@ jobs:
           timeout_minutes: 10
           max_attempts: 2
           shell: pwsh
-          command: npm run test:bun *>&1 | Tee-Object -FilePath test-output.log
+          command: bun run test:bun *>&1 | Tee-Object -FilePath test-output.log
 
       - name: 📤 Upload test output
         if: always()
@@ -126,7 +126,7 @@ jobs:
 
       - name: 🧪 Testing
         shell: pwsh
-        run: npm run test:deno *>&1 | Tee-Object -FilePath test-output.log
+        run: deno task test:deno *>&1 | Tee-Object -FilePath test-output.log
 
       - name: 📤 Upload test output
         if: always()

@@ -4,7 +4,6 @@
   "exclude": ["__fixtures__", "__snapshots__"],
   "compilerOptions": {
     "rootDir": "..",
-    "noEmit": true,
     "allowImportingTsExtensions": true
   }
 }

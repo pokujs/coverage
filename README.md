@@ -7,18 +7,18 @@ _**Stage: Experimental**_ 🧟
 
 Enjoying **Poku**? [Give him a star to show your support](https://github.com/wellwelwel/poku) ⭐
 
-![GitHub Workflow Status (Node.js)](https://img.shields.io/github/actions/workflow/status/pokujs/coverage/ci_linux.yml?event=push&label=&branch=main&logo=nodedotjs&logoColor=535c68&color=badc58)
-![GitHub Workflow Status (Bun)](https://img.shields.io/github/actions/workflow/status/pokujs/coverage/ci_linux.yml?event=push&label=&branch=main&logo=bun&logoColor=ffffff&color=f368e0)
-![GitHub Workflow Status (Deno)](https://img.shields.io/github/actions/workflow/status/pokujs/coverage/ci_linux.yml?event=push&label=&branch=main&logo=deno&logoColor=ffffff&color=079992)  
-![GitHub Workflow Status (Linux)](https://img.shields.io/github/actions/workflow/status/pokujs/coverage/ci_linux.yml?event=push&label=&branch=main&logo=ubuntu&logoColor=8897a9&color=dfe4ea)
-![GitHub Workflow Status (OSX)](https://img.shields.io/github/actions/workflow/status/pokujs/coverage/ci_osx.yml?event=push&label=&branch=main&logo=apple&logoColor=8897a9&color=dfe4ea)
-![GitHub Workflow Status (Windows)](https://img.shields.io/github/actions/workflow/status/pokujs/coverage/ci_windows.yml?event=push&label=&branch=main&logo=data:image/svg+xml;base64,PHN2ZyByb2xlPSJpbWciIHZpZXdCb3g9IjAgMCAxMjggMTI4IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjx0aXRsZT5XaW5kb3dzIDExPC90aXRsZT48cGF0aCBmaWxsPSIjODg5N2E5IiBkPSJNMTI2IDEuNjM3bC02NyA5LjgzNHY0OS44MzFsNjctLjUzNHpNMS42NDcgNjYuNzA5bC4wMDMgNDIuNDA0IDUwLjc5MSA2Ljk4My0uMDQtNDkuMDU3em01Ni44Mi42OGwuMDk0IDQ5LjQ2NSA2Ny4zNzYgOS41MDkuMDE2LTU4Ljg2M3pNMS42MSAxOS4yOTdsLjA0NyA0Mi4zODMgNTAuNzkxLS4yODktLjAyMy00OS4wMTZ6Ij48L3BhdGg+PC9zdmc+&color=dfe4ea)
+![](https://img.shields.io/github/actions/workflow/status/pokujs/coverage/ci_linux.yml?event=push&label=&branch=main&logo=nodedotjs&logoColor=535c68&color=badc58)
+![](https://img.shields.io/github/actions/workflow/status/pokujs/coverage/ci_linux.yml?event=push&label=&branch=main&logo=bun&logoColor=ffffff&color=f368e0)
+![](https://img.shields.io/github/actions/workflow/status/pokujs/coverage/ci_linux.yml?event=push&label=&branch=main&logo=deno&logoColor=ffffff&color=079992)  
+![](https://img.shields.io/github/actions/workflow/status/pokujs/coverage/ci_linux.yml?event=push&label=&branch=main&logo=ubuntu&logoColor=8897a9&color=dfe4ea)
+![](https://img.shields.io/github/actions/workflow/status/pokujs/coverage/ci_osx.yml?event=push&label=&branch=main&logo=apple&logoColor=8897a9&color=dfe4ea)
+![](https://img.shields.io/github/actions/workflow/status/pokujs/coverage/ci_windows.yml?event=push&label=&branch=main&logo=data:image/svg+xml;base64,PHN2ZyByb2xlPSJpbWciIHZpZXdCb3g9IjAgMCAxMjggMTI4IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjx0aXRsZT5XaW5kb3dzIDExPC90aXRsZT48cGF0aCBmaWxsPSIjODg5N2E5IiBkPSJNMTI2IDEuNjM3bC02NyA5LjgzNHY0OS44MzFsNjctLjUzNHpNMS42NDcgNjYuNzA5bC4wMDMgNDIuNDA0IDUwLjc5MSA2Ljk4My0uMDQtNDkuMDU3em01Ni44Mi42OGwuMDk0IDQ5LjQ2NSA2Ny4zNzYgOS41MDkuMDE2LTU4Ljg2M3pNMS42MSAxOS4yOTdsLjA0NyA0Mi4zODMgNTAuNzkxLS4yODktLjAyMy00OS4wMTZ6Ij48L3BhdGg+PC9zdmc+&color=dfe4ea)
 
 </div>
 
 ---
 
-☔️ [**@pokujs/coverage**](https://github.com/pokujs/coverage) is a **Poku** plugin that unifies coverage collection across **Node.js**, **Deno**, and **Bun**.
+☔️ **@pokujs/coverage** is a **Poku** plugin that unifies coverage collection across **Node.js**, **Deno**, and **Bun**.
 
 > [!TIP]
 >
@@ -39,7 +39,7 @@ Enjoying **Poku**? [Give him a star to show your support](https://github.com/wel
 
 ### Install
 
-```bash
+```sh
 npm i -D @pokujs/coverage
 ```
 
@@ -146,6 +146,9 @@ Glob patterns for files to exclude. Replaces the default list when provided.
   "exclude": ["test/**", "**/*.spec.ts"]
 }
 ```
+
+- Every file **Poku** passes through its `runner` hook is recorded and dropped from reports.
+- **`node_modules/` and `.git/`** directories are unconditionally banned from coverage output.
 
 ---
 
@@ -400,7 +403,7 @@ Path to a config file, or `false` to disable auto-discovery.
 
 You can also specify the config path via **CLI**:
 
-```bash
+```sh
 poku --coverage --coverageConfig=.coveragerc test/
 ```
 
@@ -435,7 +438,7 @@ export default defineConfig({
 });
 ```
 
-```bash
+```sh
 # No coverage (plugin is a no-op)
 poku test/
 
@@ -454,7 +457,7 @@ poku --coverage test/
 
 ## 🍞 Why Bun Users Should Care
 
-[**@pokujs/coverage**](https://github.com/pokujs/coverage) extends **Bun**'s coverage by tapping into the **JSC** **Inspector** directly, unlocking:
+**@pokujs/coverage** extends **Bun**'s coverage by tapping into the **JSC** **Inspector** directly, unlocking:
 
 - The full set of reporters (`html`, `html-spa`, `jsc`, `json`, `json-summary`, `cobertura`, `clover`, `teamcity`, `text-summary`, etc.).
   - [**Bun** supports only `text` and `lcov` _(limited)_.](https://bun.com/docs/test/code-coverage)
@@ -487,18 +490,9 @@ poku --coverage test/
 
 ---
 
-### File Exclusions
-
-The plugin strips the following files from every report before they are emitted, so the numbers reflect only the source code you actually care about:
-
-- Every file **Poku** passes through its `runner` hook is recorded and dropped from reports since they are test files.
-- **`node_modules/` and `.git/`** directories are unconditionally banned from coverage output.
-
----
-
 ## Acknowledgements and Credits
 
-[**@pokujs/coverage**](https://github.com/pokujs/coverage) internally adapts parts of the projects [**v8-to-istanbul**](https://github.com/istanbuljs/v8-to-istanbul), [**@jridgewell/trace-mapping**](https://github.com/jridgewell/sourcemaps), and [**istanbul-reports**](https://github.com/istanbuljs/istanbuljs) for multi-runtime support, enabling **Istanbul** reports for both **Node.js**, **Deno**, and **Bun**.
+**@pokujs/coverage** internally adapts parts of the projects [**v8-to-istanbul**](https://github.com/istanbuljs/v8-to-istanbul), [**@jridgewell/trace-mapping**](https://github.com/jridgewell/sourcemaps), and [**istanbul-reports**](https://github.com/istanbuljs/istanbuljs) for multi-runtime support, enabling **Istanbul** reports for both **Node.js**, **Deno**, and **Bun**.
 
 - `.js`, `.css`, `.png`, and `.ico` assets from `html` and `html-spa` reporters are copied verbatim from [**istanbul-reports**](https://github.com/istanbuljs/istanbuljs).
 

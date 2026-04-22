@@ -93,7 +93,7 @@ jobs:
         run: npm ci
 
       - name: 🧪 Testing
-        run: set -o pipefail && npm run test:bun 2>&1 | tee test-output.log
+        run: set -o pipefail && bun run test:bun 2>&1 | tee test-output.log
 
       - name: 📤 Upload test output
         if: always()
@@ -139,7 +139,7 @@ jobs:
         run: npm ci
 
       - name: 🧪 Testing
-        run: set -o pipefail && npm run test:deno 2>&1 | tee test-output.log
+        run: set -o pipefail && deno task test:deno 2>&1 | tee test-output.log
 
       - name: 📤 Upload test output
         if: always()

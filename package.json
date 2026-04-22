@@ -27,7 +27,7 @@
   "author": "https://github.com/wellwelwel",
   "funding": {
     "type": "github",
-    "url": "https://github.com/pokujs/coverage?sponsor=1"
+    "url": "https://github.com/sponsors/wellwelwel"
   },
   "files": [
     "lib",
@@ -38,7 +38,7 @@
   },
   "scripts": {
     "build": "tsx tools/build.ts",
-    "typecheck": "tsc --noEmit && tsc -p test --noEmit",
+    "typecheck": "tsc && tsc -p test && tsc -p tools",
     "build:snapshots": "cross-env UPDATE_SNAPSHOTS=1 npm test",
     "postbuild:snapshots": "tsx tools/postbuild-snapshots.ts",
     "lint": "prettier --check .",
@@ -94,10 +94,7 @@
     "istanbul",
     "javascript",
     "node",
-    "node.js",
     "bun",
-    "oven-bun",
-    "bun.sh",
     "deno",
     "cross-runtime",
     "cross-platform",
@@ -121,6 +118,7 @@
     "nyc",
     "c8",
     "monocart-coverage-reports",
+    "monocart",
     "one-double-zero"
   ]
 }
