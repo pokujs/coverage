@@ -64,10 +64,10 @@ npm run build
 Then:
 
 ```sh
-npm test             # runs all tests for each runtime
-npm run test:node    # runs all tests for Node.js
-npm run test:deno    # runs all tests for Deno
-npm run test:bun     # runs all tests for Bun
+npm test               # runs all tests for each runtime
+npm run test:node      # runs all tests for Node.js
+bun run test:bun       # runs all tests for Bun
+deno task test:deno    # runs all tests for Deno
 ```
 
 - Run the test suite.
