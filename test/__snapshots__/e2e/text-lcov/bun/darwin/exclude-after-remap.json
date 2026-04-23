@@ -2,8 +2,8 @@
   "reporter": "text-lcov",
   "totals": {
     "lines": {
-      "total": 2,
-      "covered": 2,
+      "total": 4,
+      "covered": 4,
       "missed": 0,
       "pct": "100.00 %"
     },
@@ -23,8 +23,8 @@
   "files": {
     "src/survivor.js": {
       "lines": {
-        "total": 2,
-        "covered": 2,
+        "total": 4,
+        "covered": 4,
         "missed": 0,
         "pct": "100.00 %"
       },
@@ -41,10 +41,12 @@
         "pct": "100.00 %"
       },
       "uncoveredLines": "",
-      "coveredLines": "1-2",
+      "coveredLines": "1-4",
       "lineHits": {
         "1": 14,
-        "2": 24
+        "2": 24,
+        "3": 1,
+        "4": 1
       },
       "branchHits": [],
       "functionHits": [

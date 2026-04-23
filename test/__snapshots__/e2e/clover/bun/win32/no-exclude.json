@@ -2,10 +2,10 @@
   "reporter": "clover",
   "totals": {
     "statements": {
-      "total": 106,
-      "covered": 71,
+      "total": 173,
+      "covered": 138,
       "missed": 35,
-      "pct": "66.98 %"
+      "pct": "79.77 %"
     },
     "branches": {
       "total": 0,
@@ -20,10 +20,10 @@
       "pct": "96.30 %"
     },
     "lines": {
-      "total": 106,
-      "covered": 71,
+      "total": 173,
+      "covered": 138,
       "missed": 35,
-      "pct": "66.98 %"
+      "pct": "79.77 %"
     }
   },
   "files": {}
