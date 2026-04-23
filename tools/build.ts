@@ -19,7 +19,7 @@ const [dtsBundle] = generateDtsBundle(
   { preferredConfigPath: 'tsconfig.json' }
 );
 
-const sharedBuildOptions = {
+const sharedBuildOptions: esbuild.BuildOptions = {
   entryPoints: ['src/index.ts'],
   bundle: true,
   platform: 'node',
@@ -27,11 +27,10 @@ const sharedBuildOptions = {
   external,
   logLevel: 'info',
   treeShaking: true,
-} satisfies esbuild.BuildOptions;
+};
 
 await rm('lib', { recursive: true, force: true });
 await mkdir('lib', { recursive: true });
-
 await Promise.all([
   esbuild.build({
     ...sharedBuildOptions,
@@ -45,9 +44,7 @@ await Promise.all([
     banner: {
       js: "const __importMetaUrl = require('node:url').pathToFileURL(__filename).href;",
     },
-    define: {
-      'import.meta.url': '__importMetaUrl',
-    },
+    define: { 'import.meta.url': '__importMetaUrl' },
   }),
   writeFile('lib/index.d.ts', dtsBundle, 'utf-8'),
 ]);
