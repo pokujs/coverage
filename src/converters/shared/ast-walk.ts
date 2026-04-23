@@ -16,18 +16,12 @@ const isNodeLike = (candidate: unknown): candidate is Node => {
   return typeof typed.type === 'string' && typeof typed.start === 'number';
 };
 
-const isOptionalChaining = (candidate: Node): boolean =>
-  (candidate.type === 'MemberExpression' ||
-    candidate.type === 'CallExpression') &&
-  Reflect.get(candidate, 'optional') === true;
-
 const isBranchNode = (candidate: Node): boolean =>
   candidate.type === 'LogicalExpression' ||
   candidate.type === 'ConditionalExpression' ||
   candidate.type === 'AssignmentPattern' ||
   candidate.type === 'IfStatement' ||
-  candidate.type === 'SwitchStatement' ||
-  isOptionalChaining(candidate);
+  candidate.type === 'SwitchStatement';
 
 const forEachNode = (root: Node, visitor: (current: Node) => void): void => {
   const walkNode = (currentNode: Node): void => {
@@ -56,7 +50,6 @@ const forEachNode = (root: Node, visitor: (current: Node) => void): void => {
 
 export const astWalk = {
   isBranchNode,
-  isOptionalChaining,
   isNodeLike,
   forEachNode,
 } as const;
