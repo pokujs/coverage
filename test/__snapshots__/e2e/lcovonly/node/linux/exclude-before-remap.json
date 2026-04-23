@@ -1,1 +1,61 @@
-../../deno/linux/exclude-after-remap.json
+{
+  "reporter": "lcovonly",
+  "totals": {
+    "lines": {
+      "total": 4,
+      "covered": 4,
+      "missed": 0,
+      "pct": "100.00 %"
+    },
+    "branches": {
+      "total": 0,
+      "covered": 0,
+      "missed": 0,
+      "pct": "100.00 %"
+    },
+    "functions": {
+      "total": 1,
+      "covered": 1,
+      "missed": 0,
+      "pct": "100.00 %"
+    }
+  },
+  "files": {
+    "src/survivor.js": {
+      "lines": {
+        "total": 4,
+        "covered": 4,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "branches": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "functions": {
+        "total": 1,
+        "covered": 1,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "uncoveredLines": "",
+      "coveredLines": "1-4",
+      "lineHits": {
+        "1": 1,
+        "2": 1,
+        "3": 1,
+        "4": 1
+      },
+      "branchHits": [],
+      "functionHits": [
+        {
+          "name": "greet",
+          "line": 1,
+          "hit": 1
+        }
+      ]
+    }
+  }
+}
