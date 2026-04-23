@@ -87,33 +87,6 @@ const computeArmRanges = (currentNode: Node): readonly AstArmRange[] => {
     }));
   }
 
-  if (
-    currentNode.type === 'MemberExpression' &&
-    astWalk.isOptionalChaining(currentNode)
-  ) {
-    const objectNode = getChildNode(currentNode, 'object');
-    const propertyNode = getChildNode(currentNode, 'property');
-
-    if (objectNode === null || propertyNode === null) return [];
-    return [
-      { armStart: objectNode.start, armEnd: objectNode.end },
-      { armStart: propertyNode.start, armEnd: propertyNode.end },
-    ];
-  }
-
-  if (
-    currentNode.type === 'CallExpression' &&
-    astWalk.isOptionalChaining(currentNode)
-  ) {
-    const calleeNode = getChildNode(currentNode, 'callee');
-    if (calleeNode === null) return [];
-
-    return [
-      { armStart: calleeNode.start, armEnd: calleeNode.end },
-      { armStart: calleeNode.end, armEnd: currentNode.end },
-    ];
-  }
-
   return [];
 };
 

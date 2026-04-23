@@ -25,12 +25,6 @@ const getChildren = (node: Node, property: string): Node[] => {
   return value.filter(astWalk.isNodeLike);
 };
 
-const isOptionalChainMember = (node: Node): boolean =>
-  node.type === 'MemberExpression' && astWalk.isOptionalChaining(node);
-
-const isOptionalChainCall = (node: Node): boolean =>
-  node.type === 'CallExpression' && astWalk.isOptionalChaining(node);
-
 const describeBlock = (node: Node): BlockTemplate | null => {
   if (node.type === 'IfStatement') {
     const consequent = getChild(node, 'consequent');
@@ -137,31 +131,6 @@ const describeBlock = (node: Node): BlockTemplate | null => {
       nodeEnd: node.end,
       expectedArms: [{ armStart: handlerBody.start, armEnd: handlerBody.end }],
       inferMissingAsComplement: false,
-    };
-  }
-
-  if (isOptionalChainMember(node)) {
-    const object = getChild(node, 'object');
-    const property = getChild(node, 'property');
-
-    if (object === null || property === null) return null;
-    return {
-      nodeStart: node.start,
-      nodeEnd: node.end,
-      expectedArms: [{ armStart: property.start, armEnd: property.end }],
-      inferMissingAsComplement: true,
-    };
-  }
-
-  if (isOptionalChainCall(node)) {
-    const callee = getChild(node, 'callee');
-    if (callee === null) return null;
-
-    return {
-      nodeStart: node.start,
-      nodeEnd: node.end,
-      expectedArms: [{ armStart: callee.end, armEnd: node.end }],
-      inferMissingAsComplement: true,
     };
   }
 
