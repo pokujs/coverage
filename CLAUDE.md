@@ -17,6 +17,8 @@ The first code coverage package that targets Node.js (V8), Bun (JSC), and Deno (
 - Under **Bun**, the plugin attaches to the **JSC** **Inspector** over WebSocket and captures basic-block execution counts via `Runtime.getBasicBlocks`. On teardown, the plugin reads the **JSON** files from `<tempDir>` and forwards the data.
 
 > V8 vs. JSC reports have structural distinctions, therefore, the focus is not that all runtimes present exactly the same lines and percentages, but rather that coverage within the limits of each engine and runtime is coherent and consistent with the reality of each fixture and their respective snapshots.
+>
+> - When the Istanbul convention and the reality of the coverage report diverge, you should ask me how to proceed.
 
 ---
 
