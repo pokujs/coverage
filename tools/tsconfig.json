@@ -1,7 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "include": ["**/*.ts"],
-  "exclude": [],
+  "exclude": ["debug"],
   "compilerOptions": {
     "module": "nodenext",
     "rootDir": ".."
