@@ -52,6 +52,35 @@ const mergeAggregation = (
   }
 };
 
+const resolveModuleCountFromAggregation = (
+  aggregation: FileAggregation
+): number => {
+  let moduleCount = 0;
+
+  for (const functionEntry of aggregation.functions.values()) {
+    if (!functionEntry.isModuleFunction) continue;
+    if (functionEntry.outerCount > moduleCount)
+      moduleCount = functionEntry.outerCount;
+  }
+
+  return moduleCount;
+};
+
+const applyModuleCountFallback = (
+  aggregation: FileAggregation,
+  diskSource: string
+): void => {
+  const moduleCount = resolveModuleCountFromAggregation(aggregation);
+  if (moduleCount === 0) return;
+
+  const totalLines = diskSource.split('\n').length;
+
+  for (let lineNumber = 1; lineNumber <= totalLines; lineNumber++) {
+    if (aggregation.lineHits.has(lineNumber)) continue;
+    aggregation.lineHits.set(lineNumber, moduleCount);
+  }
+};
+
 const trimWrappedSource = (wrappedSource: string): string => {
   const match = SOURCE_MAP_COMMENT_PATTERN.exec(wrappedSource);
   if (match === null) return wrappedSource;
@@ -189,6 +218,8 @@ const run = (
       if (functionEntry.isModuleFunction) continue;
       if (functionEntry.name === '') aggregation.functions.delete(key);
     }
+
+    applyModuleCountFallback(aggregation, diskSource);
 
     const ignoredLines = ignoreDirectives.parseSource(diskSource);
 

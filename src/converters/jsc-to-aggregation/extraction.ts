@@ -193,11 +193,40 @@ const findOwnerContainer = (
   return bestContainer;
 };
 
+const resolveModuleCount = (
+  container: JscFunctionContainer,
+  blocks: readonly JscBasicBlock[]
+): number => {
+  let outerCount: number | undefined;
+  let outerSpan = -1;
+  let maxExecutionCount = 0;
+
+  for (const block of blocks) {
+    if (block.startOffset < container.nodeStart) continue;
+    if (block.endOffset > container.nodeEnd) continue;
+
+    const span = block.endOffset - block.startOffset;
+    if (span <= 0) continue;
+
+    if (span > outerSpan) {
+      outerCount = block.executionCount;
+      outerSpan = span;
+    }
+
+    if (block.executionCount > maxExecutionCount) {
+      maxExecutionCount = block.executionCount;
+    }
+  }
+
+  if (outerCount !== undefined && outerCount > 0) return outerCount;
+  return maxExecutionCount;
+};
+
 const resolveBodyCount = (
   container: JscFunctionContainer,
   blocks: readonly JscBasicBlock[]
 ): number => {
-  if (container.isModuleFunction) return 1;
+  if (container.isModuleFunction) return resolveModuleCount(container, blocks);
 
   let bodyCount: number | undefined;
   let bestBodySpan = -1;
@@ -253,6 +282,9 @@ const absorbBasicBlocks = (
 
     if (functionEntry === undefined) {
       const location = offsets.toLocation(container.nodeStart, lineStartTable);
+      const blocksForCount = container.isModuleFunction
+        ? scriptBlocks.blocks
+        : ownedBlocks;
 
       functionEntry = {
         line: location.line,
@@ -260,7 +292,7 @@ const absorbBasicBlocks = (
         name: container.name,
         startOffset: container.nodeStart,
         endOffset: container.nodeEnd,
-        outerCount: resolveBodyCount(container, ownedBlocks),
+        outerCount: resolveBodyCount(container, blocksForCount),
         isBlockCoverage: true,
         isModuleFunction: container.isModuleFunction,
         subRanges: new Map(),
