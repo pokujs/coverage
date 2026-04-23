@@ -5,10 +5,11 @@ export const computeLineHits = (
   source: string,
   script: V8ScriptCoverage
 ): Map<number, number> => {
+  const lineStartTable = offsets.lineStarts(source);
+  const contentExtents = offsets.lineContentExtents(source, lineStartTable);
+  const totalLines = source.split('\n').length;
   const lineCounts = new Map<number, number>();
   const lineRangeSize = new Map<number, number>();
-  const lineStartTable = offsets.lineStarts(source);
-  const totalLines = source.split('\n').length;
 
   for (const scriptFunction of script.functions) {
     for (const range of scriptFunction.ranges) {
@@ -23,6 +24,19 @@ export const computeLineHits = (
       const size = range.endOffset - range.startOffset;
 
       for (let lineNumber = firstLine; lineNumber <= lastLine; lineNumber++) {
+        if (lineNumber < 1 || lineNumber > totalLines) continue;
+
+        const extent = contentExtents[lineNumber - 1];
+        if (extent === null) continue;
+
+        const [firstContentByte, lastContentByte] = extent;
+
+        if (
+          range.startOffset > firstContentByte ||
+          range.endOffset <= lastContentByte
+        )
+          continue;
+
         const existing = lineRangeSize.get(lineNumber);
 
         if (existing === undefined || size < existing) {
@@ -36,7 +50,6 @@ export const computeLineHits = (
   const result = new Map<number, number>();
 
   for (const [lineNumber, count] of lineCounts) {
-    if (lineNumber < 1 || lineNumber > totalLines) continue;
     result.set(lineNumber, count);
   }
 

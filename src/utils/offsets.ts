@@ -43,20 +43,91 @@ const rangeLines = (
   return [first, last];
 };
 
-const toLocation = (offset: number, lineStartTable: number[]): LineColumn => {
+const findLineIndex = (
+  lineStartTable: number[],
+  byteOffset: number
+): number => {
   let low = 0;
   let high = lineStartTable.length - 1;
 
   while (low < high) {
     const middle = (low + high + 1) >>> 1;
-    if (lineStartTable[middle] <= offset) low = middle;
+
+    if (lineStartTable[middle] <= byteOffset) low = middle;
     else high = middle - 1;
   }
 
+  return low;
+};
+
+const toLocation = (offset: number, lineStartTable: number[]): LineColumn => {
+  const lineIndex = findLineIndex(lineStartTable, offset);
+
   return {
-    line: low + 1,
-    column: offset - lineStartTable[low],
+    line: lineIndex + 1,
+    column: offset - lineStartTable[lineIndex],
   };
+};
+
+const lineContentExtents = (
+  source: string,
+  lineStartTable: number[]
+): Array<[number, number] | null> => {
+  const buffer = Buffer.from(source, 'utf8');
+  const totalLines = lineStartTable.length - 1;
+  const extents: Array<[number, number] | null> = new Array(totalLines);
+
+  for (let lineIndex = 0; lineIndex < totalLines; lineIndex++) {
+    const lineStart = lineStartTable[lineIndex];
+    const lineEnd = lineStartTable[lineIndex + 1];
+
+    let firstContentByte = -1;
+
+    for (let byteIndex = lineStart; byteIndex < lineEnd; byteIndex++) {
+      const byteValue = buffer[byteIndex];
+
+      if (
+        byteValue === 0x20 ||
+        byteValue === 0x09 ||
+        byteValue === 0x0a ||
+        byteValue === 0x0d
+      )
+        continue;
+
+      firstContentByte = byteIndex;
+      break;
+    }
+
+    if (firstContentByte === -1) {
+      extents[lineIndex] = null;
+      continue;
+    }
+
+    let lastContentByte = firstContentByte;
+
+    for (
+      let byteIndex = lineEnd - 1;
+      byteIndex > firstContentByte;
+      byteIndex--
+    ) {
+      const byteValue = buffer[byteIndex];
+
+      if (
+        byteValue === 0x20 ||
+        byteValue === 0x09 ||
+        byteValue === 0x0a ||
+        byteValue === 0x0d
+      )
+        continue;
+
+      lastContentByte = byteIndex;
+      break;
+    }
+
+    extents[lineIndex] = [firstContentByte, lastContentByte];
+  }
+
+  return extents;
 };
 
 const toOffset = (location: LineColumn, lineStartTable: number[]): number => {
@@ -73,6 +144,8 @@ const toOffset = (location: LineColumn, lineStartTable: number[]): number => {
 export const offsets = {
   lineStarts,
   rangeLines,
+  findLineIndex,
+  lineContentExtents,
   toLocation,
   toOffset,
 } as const;

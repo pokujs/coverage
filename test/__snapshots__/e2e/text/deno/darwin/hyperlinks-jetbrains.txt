@@ -1,12 +1,12 @@
-┌──────────────────┬────────────┬──────────┬───────────┬──────────┬────────────────────────────┐
-│ Name             │ Statements │ Branches │ Functions │    Lines │ Uncovered Lines            │
-├──────────────────┼────────────┼──────────┼───────────┼──────────┼────────────────────────────┤
-│ src              │    92.96 % │  92.11 % │   96.30 % │  92.96 % │                            │
-│ ├ collections.js │    84.21 % │  83.33 % │  100.00 % │  84.21 % │ ]8;;idea://open?file=<fixtureRoot>%2Fsrc%2Fcollections.js&line=6&column=1\6-8]8;;\                        │
-│ ├ logic.js       │   100.00 % │ 100.00 % │  100.00 % │ 100.00 % │                            │
-│ ├ math.js        │   100.00 % │ 100.00 % │  100.00 % │ 100.00 % │                            │
-│ ├ partial.js     │    85.00 % │  64.29 % │  100.00 % │  85.00 % │ ]8;;idea://open?file=<fixtureRoot>%2Fsrc%2Fpartial.js&line=2&column=19\2:19-29]8;;\, ]8;;idea://open?file=<fixtureRoot>%2Fsrc%2Fpartial.js&line=6&column=19\6:19-29]8;;\, ]8;;idea://open?file=<fixtureRoot>%2Fsrc%2Fpartial.js&line=14&column=15\14:15-16]8;;\ │
-│ └ strings.js     │    76.47 % │ 100.00 % │   66.67 % │  76.47 % │ ]8;;idea://open?file=<fixtureRoot>%2Fsrc%2Fstrings.js&line=13&column=1\13-16]8;;\                      │
-├──────────────────┼────────────┼──────────┼───────────┼──────────┼────────────────────────────┤
-│ Summary          │    92.96 % │  92.11 % │   96.30 % │  92.96 % │                            │
-└──────────────────┴────────────┴──────────┴───────────┴──────────┴────────────────────────────┘
+┌──────────────────┬────────────┬──────────┬───────────┬──────────┬─────────────────────────────────────────────────────┐
+│ Name             │ Statements │ Branches │ Functions │    Lines │ Uncovered Lines                                     │
+├──────────────────┼────────────┼──────────┼───────────┼──────────┼─────────────────────────────────────────────────────┤
+│ src              │    96.48 % │  92.11 % │   96.30 % │  96.48 % │                                                     │
+│ ├ collections.js │    89.47 % │  83.33 % │  100.00 % │  89.47 % │ ]8;;idea://open?file=<fixtureRoot>%2Fsrc%2Fcollections.js&line=7&column=1\7-8]8;;\, ]8;;idea://open?file=<fixtureRoot>%2Fsrc%2Fcollections.js&line=6&column=18\6:18-8:4]8;;\                                       │
+│ ├ logic.js       │   100.00 % │ 100.00 % │  100.00 % │ 100.00 % │                                                     │
+│ ├ math.js        │   100.00 % │ 100.00 % │  100.00 % │ 100.00 % │                                                     │
+│ ├ partial.js     │   100.00 % │  64.29 % │  100.00 % │ 100.00 % │ ]8;;idea://open?file=<fixtureRoot>%2Fsrc%2Fpartial.js&line=2&column=19\2:19-29]8;;\, ]8;;idea://open?file=<fixtureRoot>%2Fsrc%2Fpartial.js&line=6&column=19\6:19-29]8;;\, ]8;;idea://open?file=<fixtureRoot>%2Fsrc%2Fpartial.js&line=14&column=10\14:10-21]8;;\, ]8;;idea://open?file=<fixtureRoot>%2Fsrc%2Fpartial.js&line=14&column=25\14:25-34]8;;\, ]8;;idea://open?file=<fixtureRoot>%2Fsrc%2Fpartial.js&line=14&column=10\14:10-16]8;;\, ... │
+│ └ strings.js     │    82.35 % │ 100.00 % │   66.67 % │  82.35 % │ ]8;;idea://open?file=<fixtureRoot>%2Fsrc%2Fstrings.js&line=14&column=1\14-16]8;;\                                               │
+├──────────────────┼────────────┼──────────┼───────────┼──────────┼─────────────────────────────────────────────────────┤
+│ Summary          │    96.48 % │  92.11 % │   96.30 % │  96.48 % │                                                     │
+└──────────────────┴────────────┴──────────┴───────────┴──────────┴─────────────────────────────────────────────────────┘
