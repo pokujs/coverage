@@ -7,6 +7,7 @@ The first code coverage package that targets Node.js (V8), Bun (JSC), and Deno (
 > - When an implementation goes wrong, avoid fixing progressively on top of errors, eliminate the error and implement the right approach in a clean and concise way.
 > - This document is living. If you complete a plan that changes the project structure (e.g., extract a shared module, introduce a new group/pattern), update the rules and examples below in the same commit. Do not let this document drift from repository reality.
 >   - Always ask before changing this document.
+> - Do not write to "/tmp", instead use the "tools/debug" directory which is not tracked by Git.
 
 ---
 
