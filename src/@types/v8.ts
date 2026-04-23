@@ -1,3 +1,4 @@
+import type { RangeTree } from '../utils/v8-merge/range-tree.js';
 import type { BranchBlockEntry } from './branch-blocks.js';
 
 export type V8Range = {
@@ -93,4 +94,24 @@ export type SourceCacheResolveInputs = {
   script: V8ScriptCoverage;
   sourceMapCache: SourceMapCache;
   cwd: string;
+};
+
+export type PerFileCollection = {
+  source: string;
+  scriptFunctionsFromAllJsons: V8Function[][];
+};
+
+export type ParentChildRef = {
+  parentIndex: number;
+  tree: RangeTree;
+};
+
+export type StartEvent = {
+  offset: number;
+  trees: ParentChildRef[];
+};
+
+export type OpenRange = {
+  start: number;
+  end: number;
 };

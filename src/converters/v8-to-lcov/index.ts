@@ -2,12 +2,15 @@ import type { ResolvedFileFilter } from '../../@types/file-filter.js';
 import type { SourceMapInput } from '../../@types/source-map.js';
 import type {
   FileAggregation,
+  PerFileCollection,
   ResolvedScriptSource,
+  V8Function,
   V8ScriptCoverage,
 } from '../../@types/v8.js';
 import { readFileSync } from 'node:fs';
 import { offsets } from '../../utils/offsets.js';
 import { traceMap } from '../../utils/source-map/index.js';
+import { v8Merge } from '../../utils/v8-merge/merge.js';
 import { astCache } from '../shared/ast-cache.js';
 import { branchBlocks } from '../shared/branch-blocks.js';
 import { functionNames } from '../shared/function-names.js';
@@ -20,34 +23,91 @@ import { sourceCache } from '../shared/source-cache.js';
 import { findV8JsonFiles, parseV8Json } from '../shared/v8-discovery.js';
 import { absorbFunctions, computeLineHits } from './extraction.js';
 
-const mergeIntoAggregation = (
-  aggregations: Map<string, FileAggregation>,
-  sourceByPath: Map<string, string>,
+const recordScriptFunctions = (
+  perFile: Map<string, PerFileCollection>,
   filePath: string,
   source: string,
-  script: V8ScriptCoverage
+  functions: V8Function[]
 ): void => {
-  let aggregation = aggregations.get(filePath);
+  let collection = perFile.get(filePath);
 
-  if (!aggregation) {
-    aggregation = {
-      lineHits: new Map(),
-      functions: new Map(),
-    };
-
-    aggregations.set(filePath, aggregation);
+  if (!collection) {
+    collection = { source, scriptFunctionsFromAllJsons: [] };
+    perFile.set(filePath, collection);
   }
 
-  sourceByPath.set(filePath, source);
+  collection.scriptFunctionsFromAllJsons.push(functions);
+};
 
+const collectDirectScript = (
+  perFile: Map<string, PerFileCollection>,
+  resolved: ResolvedScriptSource,
+  script: V8ScriptCoverage
+): void => {
+  if (resolved.filePath === '') return;
+
+  recordScriptFunctions(
+    perFile,
+    resolved.filePath,
+    resolved.source,
+    script.functions
+  );
+};
+
+const collectRemappedScript = (
+  perFile: Map<string, PerFileCollection>,
+  resolved: ResolvedScriptSource,
+  script: V8ScriptCoverage,
+  cwd: string
+): void => {
+  const traceMapInstance = traceMap.create(
+    resolved.sourceMapData as SourceMapInput,
+    resolved.sourceMapUrl
+  );
+
+  const projected = sourceMapRemap.project({
+    script,
+    transpiledSource: resolved.source,
+    traceMapInstance,
+    cwd,
+  });
+
+  for (const entry of projected)
+    recordScriptFunctions(
+      perFile,
+      entry.originalPath,
+      entry.originalSource,
+      entry.syntheticScript.functions
+    );
+};
+
+const extractPerFileAggregation = (
+  filePath: string,
+  collection: PerFileCollection
+): FileAggregation => {
+  const mergedFunctions = v8Merge.mergeFunctions(
+    collection.scriptFunctionsFromAllJsons
+  );
+  const syntheticScript: V8ScriptCoverage = {
+    scriptId: '',
+    url: filePath,
+    functions: mergedFunctions,
+  };
+  const aggregation: FileAggregation = {
+    lineHits: new Map(),
+    functions: new Map(),
+  };
+  const { source } = collection;
   const lineStartTable = offsets.lineStarts(source);
   const sourceLength = Buffer.byteLength(source, 'utf8');
-
-  lineHits.merge(aggregation.lineHits, computeLineHits(source, script));
-  absorbFunctions(aggregation, script, lineStartTable, sourceLength);
-
   const ignoredLines = ignoreDirectives.parseSource(source);
+
+  aggregation.lineHits = computeLineHits(source, syntheticScript);
+
+  absorbFunctions(aggregation, syntheticScript, lineStartTable, sourceLength);
   lineHits.applyIgnoredLines(aggregation.lineHits, ignoredLines);
+
+  return aggregation;
 };
 
 const finalizeAggregations = (
@@ -67,53 +127,6 @@ const finalizeAggregations = (
   }
 };
 
-const processDirectScript = (
-  aggregations: Map<string, FileAggregation>,
-  sourceByPath: Map<string, string>,
-  resolved: ResolvedScriptSource,
-  script: V8ScriptCoverage
-): void => {
-  if (resolved.filePath === '') return;
-
-  mergeIntoAggregation(
-    aggregations,
-    sourceByPath,
-    resolved.filePath,
-    resolved.source,
-    script
-  );
-};
-
-const processRemappedScript = (
-  aggregations: Map<string, FileAggregation>,
-  sourceByPath: Map<string, string>,
-  resolved: ResolvedScriptSource,
-  script: V8ScriptCoverage,
-  cwd: string
-): void => {
-  const traceMapInstance = traceMap.create(
-    resolved.sourceMapData as SourceMapInput,
-    resolved.sourceMapUrl
-  );
-
-  const projected = sourceMapRemap.project({
-    script,
-    transpiledSource: resolved.source,
-    traceMapInstance,
-    cwd,
-  });
-
-  for (const entry of projected) {
-    mergeIntoAggregation(
-      aggregations,
-      sourceByPath,
-      entry.originalPath,
-      entry.originalSource,
-      entry.syntheticScript
-    );
-  }
-};
-
 export const v8ToLcov = (
   tempDir: string,
   cwd: string,
@@ -124,8 +137,7 @@ export const v8ToLcov = (
   const jsonFiles = findV8JsonFiles(tempDir);
   if (jsonFiles.length === 0) return '';
 
-  const fileAggregations = new Map<string, FileAggregation>();
-  const sourceByPath = new Map<string, string>();
+  const perFile = new Map<string, PerFileCollection>();
 
   for (const jsonPath of jsonFiles) {
     let content: string;
@@ -151,17 +163,22 @@ export const v8ToLcov = (
         continue;
 
       if (resolved.sourceMapData !== undefined) {
-        processRemappedScript(
-          fileAggregations,
-          sourceByPath,
-          resolved,
-          script,
-          cwd
-        );
+        collectRemappedScript(perFile, resolved, script, cwd);
       } else {
-        processDirectScript(fileAggregations, sourceByPath, resolved, script);
+        collectDirectScript(perFile, resolved, script);
       }
     }
+  }
+
+  const fileAggregations = new Map<string, FileAggregation>();
+  const sourceByPath = new Map<string, string>();
+
+  for (const [filePath, collection] of perFile) {
+    fileAggregations.set(
+      filePath,
+      extractPerFileAggregation(filePath, collection)
+    );
+    sourceByPath.set(filePath, collection.source);
   }
 
   finalizeAggregations(fileAggregations, sourceByPath);
