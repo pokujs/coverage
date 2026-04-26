@@ -2,7 +2,12 @@
 /*
  * Probe V8 raw coverage for one or more lines of a source file.
  *
- * Usage: tsx check-lines.ts <project-root> <v8-dir> <relative/file> <line1> [line2] ...
+ * Usage: tsx check-lines.ts <project-root> [<v8-dir>] <relative/file> <line1> [line2] ...
+ *
+ * <project-root> may be absolute or relative to the current working directory.
+ * <v8-dir> is optional; when omitted it defaults to <project-root>/coverage/v8.
+ * It is recognized as a directory only when the path exists and is a directory;
+ * otherwise the third argument is treated as <relative/file>.
  *
  * Reports for each line: how many V8 dumps loaded the script and how many
  * had a count > 0 in the innermost range covering the line's executable span.
@@ -23,8 +28,8 @@
  *   - "Innermost range" = smallest span among ranges that fully envelope the probe.
  */
 import type { SourceMapInput } from '@jridgewell/trace-mapping';
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { isAbsolute, join, resolve } from 'node:path';
 import process from 'node:process';
 import { generatedPositionFor, TraceMap } from '@jridgewell/trace-mapping';
 
@@ -68,21 +73,46 @@ type LineProbe = {
   end: number;
 };
 
-const projectRoot = process.argv[2];
-const v8Dir = process.argv[3];
-const relPath = process.argv[4];
+const rawProjectRoot = process.argv[2];
+
+if (rawProjectRoot === undefined || process.argv.length < 5) {
+  console.error(
+    'Usage: tsx check-lines.ts <project-root> [<v8-dir>] <relative/file> <line> [line] ...'
+  );
+  process.exit(1);
+}
+
+const projectRoot = isAbsolute(rawProjectRoot)
+  ? rawProjectRoot
+  : resolve(process.cwd(), rawProjectRoot);
+
+const isExistingDirectory = (candidate: string): boolean => {
+  if (!existsSync(candidate)) return false;
+  try {
+    return statSync(candidate).isDirectory();
+  } catch {
+    return false;
+  }
+};
+
+const resolveMaybeRelative = (value: string): string =>
+  isAbsolute(value) ? value : resolve(process.cwd(), value);
+
+const thirdArg = process.argv[3]!;
+const thirdArgResolved = resolveMaybeRelative(thirdArg);
+const thirdArgIsV8Dir = isExistingDirectory(thirdArgResolved);
+
+const v8Dir = thirdArgIsV8Dir
+  ? thirdArgResolved
+  : join(projectRoot, 'coverage', 'v8');
+const relPath = thirdArgIsV8Dir ? process.argv[4] : thirdArg;
 const targetLines = process.argv
-  .slice(5)
+  .slice(thirdArgIsV8Dir ? 5 : 4)
   .map((value) => Number.parseInt(value, 10));
 
-if (
-  projectRoot === undefined ||
-  v8Dir === undefined ||
-  relPath === undefined ||
-  targetLines.length === 0
-) {
+if (relPath === undefined || targetLines.length === 0) {
   console.error(
-    'Usage: tsx check-lines.ts <project-root> <v8-dir> <relative/file> <line> [line] ...'
+    'Usage: tsx check-lines.ts <project-root> [<v8-dir>] <relative/file> <line> [line] ...'
   );
   process.exit(1);
 }

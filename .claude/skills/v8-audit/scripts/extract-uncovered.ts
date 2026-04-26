@@ -4,6 +4,8 @@
  *
  * Usage: tsx extract-uncovered.ts <lcov-path> [--lines|--branches|--functions]
  *
+ * <lcov-path> may be absolute or relative to the current working directory.
+ *
  * Default emits all three. Output is grouped by source file, one entry per line.
  *
  * Format:
@@ -12,9 +14,16 @@
  *   <file>\tfunction\t<lineNumber>\t<name>
  */
 import { existsSync, readFileSync } from 'node:fs';
+import { isAbsolute, resolve } from 'node:path';
 import process from 'node:process';
 
-const lcovPath = process.argv[2];
+const rawLcovPath = process.argv[2];
+const lcovPath =
+  rawLcovPath === undefined
+    ? undefined
+    : isAbsolute(rawLcovPath)
+      ? rawLcovPath
+      : resolve(process.cwd(), rawLcovPath);
 const flags = new Set(process.argv.slice(3));
 const wantAll =
   !flags.has('--lines') &&

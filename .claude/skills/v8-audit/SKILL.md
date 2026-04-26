@@ -1,7 +1,7 @@
 ---
 name: v8-audit
 user-invocable: true
-description: Audit uncovered lines, branches, and functions of a project against raw V8 coverage to determine whether each uncovered entry is legitimate (no test exercises it) or suspect (V8 says it ran but the report says otherwise). Produces a categorized markdown map with recommendations for missing tests.
+description: Audit a coverage report (lcov) against raw V8 coverage to determine whether each uncovered entry is faithful (V8 confirms it was not executed) or suspect (V8 says it ran but the report claims it didn't — a pipeline bug). Output is a binary verdict per entry, not a roadmap of missing tests.
 ---
 
 # v8-audit
@@ -10,46 +10,45 @@ Cross-checks every uncovered entry in an `lcov.info` against the raw V8 coverage
 
 ## When to use
 
-- A project's coverage report shows uncovered lines/branches/functions and you want to know which are real gaps in tests vs. which might be reporter bugs.
+- A project's coverage report shows uncovered lines/branches/functions and you want to know whether the report is honest about what V8 actually executed.
 - After a change to the coverage pipeline, you want to validate that the report still matches V8.
-- You want a roadmap of missing tests grouped by category (runtime-specific, error paths, features without tests, dead code).
 
-## Required inputs (no defaults — you MUST stop and ask if missing)
+This skill does **not** recommend tests, estimate coverage gains, or classify _why_ code was left uncovered. Its only job is to confirm whether the lcov report agrees with V8.
 
-The user **must** provide both paths when invoking this skill. There are no defaults — auditing the wrong project silently is worse than asking.
+## Inputs
 
-- **`<project-root>`** — absolute path to the project being audited. Used to resolve relative source paths (e.g. `src/foo.ts`) when reading source code.
-- **`<coverage-dir>`** — absolute path to the coverage output directory from the most recent run. Conventionally `<project-root>/coverage`, but other names exist (e.g. Poku uses `<project-root>/poku-coverage`). The directory **must contain** both:
+- **`<project-root>`** _(required)_ — path to the project being audited. May be absolute or relative; relative paths resolve against the current workspace (`process.cwd()`). Used to resolve source paths (e.g. `src/foo.ts`) when reading source code.
+- **`<coverage-dir>`** _(optional)_ — path to the coverage output directory from the most recent run. Defaults to `<project-root>/coverage`. Pass it explicitly only when the project uses a non-conventional name (e.g. Poku uses `<project-root>/poku-coverage`). May be absolute or relative; relative resolves against the workspace. The directory **must contain** both:
   - `<coverage-dir>/v8/` — directory of raw V8 coverage JSONs (Node `NODE_V8_COVERAGE` output).
   - `<coverage-dir>/lcov.info` — the lcov report produced from the same run.
 
 ### Halting rule
 
-Before doing any work, verify both inputs were provided by the user. If either is missing, **stop immediately** and reply:
+If `<project-root>` is missing, **stop immediately** and reply:
 
-> This skill requires two inputs:
+> This skill requires at least one input:
 >
-> - `<project-root>` — absolute path to the project being audited.
-> - `<coverage-dir>` — absolute path to the coverage output directory containing both `v8/*.json` and `lcov.info` from the same run.
+> - `<project-root>` — path to the project being audited (absolute or relative to the workspace).
+> - `<coverage-dir>` — _optional_, defaults to `<project-root>/coverage`. Pass it only when the project uses a non-conventional coverage directory name.
 >
-> Please re-invoke with both paths, e.g.:
+> Please re-invoke with the project path, e.g.:
 >
-> `/v8-audit /path/to/project /path/to/project/coverage`
+> `/v8-audit ts-lab` (uses `ts-lab/coverage` by default) or `/v8-audit poku poku-coverage` (custom dir).
 
-Do not guess paths, do not fall back to a previous session's project. Wait for the user to re-invoke with explicit inputs.
+Do not guess the project, do not fall back to a previous session's project. Wait for the user to re-invoke with the project path.
 
 ## Procedure
 
-### 1. Confirm inputs exist
+### 1. Resolve and confirm inputs
 
-Once the user has provided both paths, verify on disk:
+Resolve relative paths against the current workspace. If `<coverage-dir>` was omitted, set it to `<project-root>/coverage`. Then verify on disk:
 
 - The project root exists and is a directory.
 - The coverage directory exists and is a directory.
 - `<coverage-dir>/lcov.info` exists and is non-empty.
 - `<coverage-dir>/v8/` exists and contains at least one `.json` file.
 
-If any of these checks fail, stop and ask the user to regenerate coverage (or correct the path) before continuing.
+If any of these checks fail, stop and ask the user to regenerate coverage (or pass an explicit `<coverage-dir>`) before continuing.
 
 ### 2. Extract every uncovered entry
 
@@ -68,8 +67,10 @@ Group by file, then by entry kind. Note the totals — a file with hundreds of u
 For lines, run:
 
 ```
-npx tsx .claude/skills/v8-audit/scripts/check-lines.ts <project-root> <coverage-dir>/v8 <relative/path/to/file> <line> [<line>...]
+npx tsx .claude/skills/v8-audit/scripts/check-lines.ts <project-root> [<v8-dir>] <relative/path/to/file> <line> [<line>...]
 ```
+
+`<v8-dir>` is optional; when omitted it defaults to `<project-root>/coverage/v8`. Pass it explicitly only when the project's coverage directory is non-conventional. Both `<project-root>` and `<v8-dir>` may be relative to the workspace.
 
 The script reports, per line:
 
@@ -77,30 +78,31 @@ The script reports, per line:
 - `hit` — number of processes where the **innermost range** covering the line's executable span has `count > 0`.
 - `totalHits` — sum of those innermost counts.
 
-Read the surrounding source (Read tool) to understand the construct (which arm of an `if`, which case of a switch, which catch block, etc.).
+Reading the surrounding source is only needed when probing a suspect (to identify which executable position to compare against the V8 range). Do not read source files just to describe the construct of a faithful entry — that is out of scope.
 
-For branches and functions, the lcov BRDA / FNDA values already give the per-process aggregate — usually no need to re-probe V8 unless you suspect the pipeline is mis-attributing. When in doubt, write a small ad-hoc TS script with `@jridgewell/trace-mapping` to traverse the V8 JSONs (template in `check-lines.ts`).
+For branches and functions, the lcov BRDA / FNDA values already give the per-process aggregate — usually no need to re-probe V8 unless the lcov entry is uncovered AND you want to confirm whether V8 also reports `count = 0` for that exact arm/function. When in doubt, write a small ad-hoc TS script with `@jridgewell/trace-mapping` to traverse the V8 JSONs (template in `check-lines.ts`).
 
-### 4. Categorize each entry
+### 4. Classify each entry as faithful or suspect
 
-Place each uncovered entry into one of these buckets:
+Each uncovered entry gets exactly one of two verdicts:
 
-| Category                        | Meaning                                                                                                                                                |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Runtime/OS-specific**         | Branch only taken on Windows / Bun / Deno / a specific runtime not exercised.                                                                          |
-| **Error/cleanup path**          | `} catch`, `uncaughtException` handler, `child.on('error')`, fallback in `}` finally — only triggered when something goes wrong.                       |
-| **Feature without test**        | `--watch`, `--coverage`, plugin lifecycle, etc.: the test suite simply doesn't exercise this feature.                                                  |
-| **Default arm in passing test** | `success ? 'success' : 'fail'` arm `'fail'` — covered when assertions fail; in the suite they pass.                                                    |
-| **Dead code (genuine)**         | Caller short-circuits before this can be reached, or the call site always passes a flag that prevents this branch. Recommend removal.                  |
-| **Suspect**                     | V8 says `count > 0` somewhere covering this position, but the lcov says the entry is uncovered. **This is a reporter bug — investigate the pipeline.** |
+| Verdict      | Meaning                                                                                                                 |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| **faithful** | V8 confirms the entry was not executed (innermost range covering the position has `count = 0` in every loaded process). |
+| **suspect**  | V8 says `count > 0` somewhere covering the position, but lcov reports the entry as uncovered. **Pipeline bug.**         |
+
+Do not classify _why_ a faithful entry was not executed (runtime-specific, error path, feature without test, dead code, etc.). That is a coverage-design question, not an audit question, and is explicitly out of scope for this skill.
 
 ### 5. Produce the report
 
-Write a markdown report grouped by category. For each entry include: file, line, the construct (one short phrase), and the reason. End with:
+Write a markdown report with the **suspect section first** (escalated, never buried) and the **faithful section last** (aggregate counts only).
 
-- A **Conclusion** stating how many entries fell into each bucket.
-- A **Recommendations** section: for the _Feature without test_ and _Default arm_ buckets, suggest concrete missing tests grouped by feature. Estimate the resulting coverage % gain if those tests were added.
-- For any **Suspect** entries, escalate immediately — don't bury them in the table. Open a separate section explaining what V8 reports vs. what the lcov shows.
+- **Top of report:** per-file totals — `<file>: N uncovered entries (M faithful, K suspect)`.
+- **Suspect section:** for each suspect, show file, line, what V8 reports (innermost range count + which process JSON saw it), and what lcov reports for the same position. Include the V8 sub-range coordinates (`startOffset`, `endOffset`, `count`) so the pipeline bug is reproducible.
+- **Faithful section:** aggregate count per file only. Do not list per-entry constructs, do not classify reasons, do not recommend tests, do not estimate coverage gains.
+- **Final line:** total faithful vs. total suspect across the whole report. If suspect = 0, state explicitly: **"Report is faithful to V8."**
+
+The report must not contain the words "missing test", "recommendation", "coverage gain", or any per-entry rationale for faithful entries. Those belong to a different workflow.
 
 ## What "fidelity to V8" means
 
@@ -111,7 +113,7 @@ V8 raw ranges are the source of truth. A given source position is covered iff th
 - V8 offsets are **character-based** (UTF-16 code units), not bytes. The helper scripts already handle this.
 - Source-mapped files (TypeScript via `--experimental-strip-types` on Node) require `@jridgewell/trace-mapping` to convert original (line, col) → generated offset before probing V8 ranges. The script handles this automatically when it detects the Node format.
 - Functions reported as `(anonymous_N)` in lcov often correspond to genuine arrow callbacks; cross-check the line in the source before flagging as ghost.
-- If a line has `loaded` > 0 but `hit` = 0 across all processes, that line is genuinely never executed in the test suite — legitimate uncovered.
+- If a line has `loaded` > 0 but `hit` = 0 across all processes, V8 confirms it was never executed — classify as **faithful**.
 
 ### V8 dump formats (auto-detected)
 
