@@ -15,8 +15,8 @@ import {
   metricsForFile,
   metricsForSubtree,
 } from '../shared/html/row-metrics.js';
-import { computePercentage } from '../shared/metrics.js';
-import { shouldHideFileRow } from '../shared/skip.js';
+import { metrics } from '../shared/metrics.js';
+import { skip } from '../shared/skip.js';
 
 const round2 = (value: number): number => Math.round(value * 100) / 100;
 
@@ -28,7 +28,7 @@ const metricData = (
   const total = metric.total ?? 0;
   const covered = metric.hit ?? 0;
   const isEmpty = total === 0;
-  const percentage = computePercentage(metric);
+  const percentage = metrics.computePercentage(metric);
   const roundedPercentage =
     isEmpty || percentage === null ? 100 : round2(percentage);
 
@@ -96,7 +96,7 @@ export const buildHtmlSpaNode = (
   for (const childNode of node.children) {
     if (childNode.isFile && childNode.file) {
       const childMetrics = metricsForFile(childNode.file);
-      if (shouldHideFileRow(childMetrics, input.skipFull, input.skipEmpty))
+      if (skip.shouldHideFileRow(childMetrics, input.skipFull, input.skipEmpty))
         continue;
     }
 

@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { datetime } from '../../utils/datetime.js';
 import { emitDetailPages } from '../shared/html/emit-details.js';
 import { htmlRuntimes } from '../shared/html/runtimes/index.js';
-import { buildTree } from '../shared/tree.js';
+import { tree } from '../shared/tree.js';
 import { buildHtmlSpaNode } from './build-data.js';
 import { copyAssets } from './copy-assets.js';
 import { renderShell } from './render-shell.js';
@@ -22,8 +22,8 @@ const report: Report = (context) => {
   const { model, byPath } = projectedCoverage;
   if (model.length === 0) return;
 
-  const tree = buildTree(model, context.cwd);
-  if (tree.children.length === 0) return;
+  const coverageTree = tree.build(model, context.cwd);
+  if (coverageTree.children.length === 0) return;
 
   mkdirSync(context.reportsDir, { recursive: true });
   copyAssets(context.reportsDir);
@@ -33,7 +33,7 @@ const report: Report = (context) => {
   const skipFull = context.options.skipFull === true;
   const skipEmpty = context.options.skipEmpty === true;
 
-  emitDetailPages(tree, {
+  emitDetailPages(coverageTree, {
     reportsDir: context.reportsDir,
     title,
     rootLabel: 'All files',
@@ -46,7 +46,7 @@ const report: Report = (context) => {
     runtime: context.runtime,
   });
 
-  const data = buildHtmlSpaNode(tree, {
+  const data = buildHtmlSpaNode(coverageTree, {
     resolvedWatermarks: context.watermarks,
     skipFull,
     skipEmpty,

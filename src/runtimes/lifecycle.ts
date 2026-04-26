@@ -12,7 +12,7 @@ import { converters } from '../converters/index.js';
 import { discoveryMerge } from '../converters/shared/discovery-merge.js';
 import { fileFilter } from '../file-filter.js';
 import { reporters } from '../reporters/index.js';
-import { prepareCoverageMap } from '../reporters/shared/file-coverage.js';
+import { fileCoverage } from '../reporters/shared/file-coverage.js';
 import { watermarks } from '../watermarks.js';
 
 const ensureSourceMaps = (state: CoverageState): void => {
@@ -136,7 +136,7 @@ const teardown = (
               reporterContext.preRemapFilter
             );
 
-      prepareCoverageMap(coverageMap, reporterContext);
+      fileCoverage.prepareCoverageMap(coverageMap, reporterContext);
 
       const discoveries =
         runtime === 'bun'

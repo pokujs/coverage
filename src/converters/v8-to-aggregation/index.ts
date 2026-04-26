@@ -17,10 +17,10 @@ import { branchBlocks } from '../shared/branch-blocks.js';
 import { functionNames } from '../shared/function-names.js';
 import { ignoreDirectives } from '../shared/ignore-directives.js';
 import { lineHits } from '../shared/line-hits.js';
-import { passesPreRemapFilter } from '../shared/pre-remap-filter.js';
+import { preRemapFilter } from '../shared/pre-remap-filter.js';
 import { sourceMapRemap } from '../shared/remap.js';
 import { sourceCache } from '../shared/source-cache.js';
-import { findV8JsonFiles, parseV8Json } from '../shared/v8-discovery.js';
+import { v8Discovery } from '../shared/v8-discovery.js';
 import { v8Extraction } from './extraction.js';
 
 const recordScriptFunctions = (
@@ -137,14 +137,14 @@ const finalizeAggregations = (
 const run = (
   tempDir: string,
   cwd: string,
-  preRemapFilter: ResolvedFileFilter
+  resolvedFilter: ResolvedFileFilter
 ): V8AggregationResult => {
   astCache.reset();
 
   const fileAggregations = new Map<string, FileAggregation>();
   const sourceByPath = new Map<string, string>();
 
-  const jsonFiles = findV8JsonFiles(tempDir);
+  const jsonFiles = v8Discovery.findJsonFiles(tempDir);
   if (jsonFiles.length === 0)
     return { aggregations: fileAggregations, sources: sourceByPath };
 
@@ -159,7 +159,7 @@ const run = (
       continue;
     }
 
-    const document = parseV8Json(content);
+    const document = v8Discovery.parseJson(content);
 
     for (const script of document.scripts) {
       const resolved = sourceCache.resolve({
@@ -170,7 +170,7 @@ const run = (
 
       if (resolved === undefined) continue;
 
-      if (!passesPreRemapFilter(script, resolved, preRemapFilter, cwd))
+      if (!preRemapFilter.passes(script, resolved, resolvedFilter, cwd))
         continue;
 
       if (resolved.sourceMapData !== undefined) {

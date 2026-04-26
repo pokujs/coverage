@@ -9,26 +9,15 @@ import { basename } from 'node:path';
 import { converters } from '../../converters/index.js';
 import { paths } from '../../utils/paths.js';
 import { xml } from '../../utils/xml.js';
-import {
-  branchCoverageByLine,
-  fileBranchesMetric,
-  fileStatementsMetric,
-  lineCoverage,
-  prepareCoverageMap,
-} from '../shared/file-coverage.js';
-import {
-  aggregateMetric,
-  metricCovered,
-  metricRate,
-  metricTotal,
-} from '../shared/metrics.js';
-import { groupByPackage } from '../shared/packages.js';
+import { fileCoverage } from '../shared/file-coverage.js';
+import { metrics } from '../shared/metrics.js';
+import { packages } from '../shared/packages.js';
 
 const aggregateFilesStatements = (files: readonly FileCoverage[]) =>
-  aggregateMetric(files, fileStatementsMetric);
+  metrics.aggregateBy(files, fileCoverage.statementsMetric);
 
 const aggregateFilesBranches = (files: readonly FileCoverage[]) =>
-  aggregateMetric(files, fileBranchesMetric);
+  metrics.aggregateBy(files, fileCoverage.branchesMetric);
 
 const formatConditionCoverage = (covered: number, total: number): string => {
   const percentage = Math.round((covered / total) * 100);
@@ -44,7 +33,7 @@ export const buildFromCoverageMap = (
     context.preRemapFilter
   );
 
-  prepareCoverageMap(coverageMap, context);
+  fileCoverage.prepareCoverageMap(coverageMap, context);
 
   const files = Object.values(coverageMap);
   if (files.length === 0) return undefined;
@@ -54,12 +43,12 @@ export const buildFromCoverageMap = (
   const builder = xml.create();
 
   builder.openTag('coverage', {
-    'lines-valid': metricTotal(rootStatements),
-    'lines-covered': metricCovered(rootStatements),
-    'line-rate': metricRate(rootStatements) ?? 1,
-    'branches-valid': metricTotal(rootBranches),
-    'branches-covered': metricCovered(rootBranches),
-    'branch-rate': metricRate(rootBranches) ?? 1,
+    'lines-valid': metrics.total(rootStatements),
+    'lines-covered': metrics.covered(rootStatements),
+    'line-rate': metrics.rate(rootStatements) ?? 1,
+    'branches-valid': metrics.total(rootBranches),
+    'branches-covered': metrics.covered(rootBranches),
+    'branch-rate': metrics.rate(rootBranches) ?? 1,
     timestamp: Date.now(),
     complexity: 0,
     version: '0.1',
@@ -70,9 +59,9 @@ export const buildFromCoverageMap = (
   builder.closeTag('sources');
   builder.openTag('packages');
 
-  for (const group of groupByPackage(
+  for (const group of packages.groupBy(
     files,
-    (fileCoverage) => fileCoverage.path,
+    (coverageEntry) => coverageEntry.path,
     context.cwd
   )) {
     const groupStatements = aggregateFilesStatements(group.files);
@@ -80,33 +69,33 @@ export const buildFromCoverageMap = (
 
     builder.openTag('package', {
       name: group.packageName,
-      'line-rate': metricRate(groupStatements) ?? 1,
-      'branch-rate': metricRate(groupBranches) ?? 1,
+      'line-rate': metrics.rate(groupStatements) ?? 1,
+      'branch-rate': metrics.rate(groupBranches) ?? 1,
     });
 
     builder.openTag('classes');
 
-    for (const fileCoverage of group.files) {
-      const fileStatements = fileStatementsMetric(fileCoverage);
-      const fileBranches = fileBranchesMetric(fileCoverage);
-      const branchByLine = branchCoverageByLine(fileCoverage);
+    for (const coverageEntry of group.files) {
+      const fileStatements = fileCoverage.statementsMetric(coverageEntry);
+      const fileBranches = fileCoverage.branchesMetric(coverageEntry);
+      const branchByLine = fileCoverage.branchCoverageByLine(coverageEntry);
 
       builder.openTag('class', {
-        name: basename(fileCoverage.path),
+        name: basename(coverageEntry.path),
         filename: paths.toPosix(
-          paths.relativize(fileCoverage.path, context.cwd)
+          paths.relativize(coverageEntry.path, context.cwd)
         ),
-        'line-rate': metricRate(fileStatements) ?? 1,
-        'branch-rate': metricRate(fileBranches) ?? 1,
+        'line-rate': metrics.rate(fileStatements) ?? 1,
+        'branch-rate': metrics.rate(fileBranches) ?? 1,
       });
 
       builder.openTag('methods');
 
-      const functionKeys = Object.keys(fileCoverage.fnMap);
+      const functionKeys = Object.keys(coverageEntry.fnMap);
 
       for (const functionKey of functionKeys) {
-        const functionEntry = fileCoverage.fnMap[functionKey];
-        const functionHitCount = fileCoverage.f[functionKey] ?? 0;
+        const functionEntry = coverageEntry.fnMap[functionKey];
+        const functionHitCount = coverageEntry.f[functionKey] ?? 0;
 
         builder.openTag('method', {
           name: functionEntry.name,
@@ -128,7 +117,7 @@ export const buildFromCoverageMap = (
       builder.openTag('lines');
 
       const sortedLineNumbers = Array.from(
-        lineCoverage(fileCoverage).entries()
+        fileCoverage.lineCoverage(coverageEntry).entries()
       ).sort((left, right) => left[0] - right[0]);
 
       for (const [lineNumber, lineHitCount] of sortedLineNumbers) {

@@ -1,14 +1,10 @@
 import type { Row } from '../../@types/text.js';
 import type { TreeNode } from '../../@types/tree.js';
-import {
-  aggregateLines,
-  aggregateMetric,
-  linesMetric,
-} from '../shared/metrics.js';
-import { collectFileCoverages } from '../shared/tree.js';
+import { metrics } from '../shared/metrics.js';
+import { tree } from '../shared/tree.js';
 import { collapseRanges, extractUncoveredLines } from './ranges.js';
 
-export { buildTree } from '../shared/tree.js';
+export const buildTree = tree.build;
 
 export const walkTree = (
   node: TreeNode,
@@ -33,7 +29,7 @@ export const walkTree = (
     }
 
     if (child.isFile && child.file) {
-      const fileLines = linesMetric(child.file.lineHits);
+      const fileLines = metrics.fromLineHits(child.file.lineHits);
       const positionalLines = new Set<number>();
 
       for (const position of child.file.uncoveredBranchPositions)
@@ -72,18 +68,18 @@ export const walkTree = (
         },
       });
     } else {
-      const descendantFiles = collectFileCoverages(child);
-      const descendantLines = aggregateLines(descendantFiles);
+      const descendantFiles = tree.collectFiles(child);
+      const descendantLines = metrics.aggregateLines(descendantFiles);
 
       rows.push({
         name,
         metrics: {
           statements: descendantLines,
-          branches: aggregateMetric(
+          branches: metrics.aggregateBy(
             descendantFiles,
             (fileCoverage) => fileCoverage.branches
           ),
-          functions: aggregateMetric(
+          functions: metrics.aggregateBy(
             descendantFiles,
             (fileCoverage) => fileCoverage.functions
           ),

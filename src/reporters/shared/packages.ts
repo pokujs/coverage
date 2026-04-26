@@ -7,8 +7,7 @@ const directoryOf = (relativePath: string): string => {
   return lastSlash === -1 ? '' : normalized.slice(0, lastSlash);
 };
 
-/** Mirrors istanbul-lib-report's `pkg` summarizer (direct children only). */
-export const groupByPackage = <Entry>(
+const groupBy = <Entry>(
   entries: readonly Entry[],
   getPath: (entry: Entry) => string,
   cwd: string
@@ -34,3 +33,5 @@ export const groupByPackage = <Entry>(
     left.relativeDir.localeCompare(right.relativeDir)
   );
 };
+
+export const packages = { groupBy } as const;

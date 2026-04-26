@@ -8,13 +8,9 @@ import type { Metric } from '../../@types/text.js';
 import type { WatermarkMetric } from '../../@types/watermarks.js';
 import { terminal } from '../../utils/terminal.js';
 import { watermarks } from '../../watermarks.js';
-import { applyIstanbulBranches } from '../shared/file-coverage.js';
+import { fileCoverage } from '../shared/file-coverage.js';
 import { lcov } from '../shared/lcov/index.js';
-import {
-  aggregateLines,
-  aggregateMetric,
-  resolveDisplayPercentage,
-} from '../shared/metrics.js';
+import { metrics } from '../shared/metrics.js';
 
 const KEY_WIDTH = 12;
 const HEADER =
@@ -34,7 +30,7 @@ const formatLine = (
   metric: Metric,
   runtime: Runtime
 ): string => {
-  const percentage = resolveDisplayPercentage(metric, runtime, key);
+  const percentage = metrics.resolveDisplayPercentage(metric, runtime, key);
   const percentageDisplay =
     percentage === null ? '-' : `${percentage.toFixed(2)}%`;
   const covered = metric.hit ?? 0;
@@ -50,11 +46,11 @@ const report: Report = (context) => {
   const model = lcov.parse(lcovOutput, context.cwd);
   if (model.length === 0) return;
 
-  applyIstanbulBranches(model, context.produceCoverageMap());
+  fileCoverage.applyIstanbulBranches(model, context.produceCoverageMap());
 
-  const statementsAndLines = aggregateLines(model);
-  const branches = aggregateMetric(model, (file) => file.branches);
-  const functions = aggregateMetric(model, (file) => file.functions);
+  const statementsAndLines = metrics.aggregateLines(model);
+  const branches = metrics.aggregateBy(model, (file) => file.branches);
+  const functions = metrics.aggregateBy(model, (file) => file.functions);
 
   const rows: Array<{ key: WatermarkMetric; metric: Metric }> = [
     { key: 'statements', metric: statementsAndLines },
@@ -70,7 +66,7 @@ const report: Report = (context) => {
     const color = watermarks.colorForPercent(
       context.watermarks,
       row.key,
-      resolveDisplayPercentage(row.metric, context.runtime, row.key)
+      metrics.resolveDisplayPercentage(row.metric, context.runtime, row.key)
     );
 
     console.log(terminal.colorize(line, color));

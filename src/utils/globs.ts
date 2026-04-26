@@ -1,8 +1,3 @@
-/*
- * Minimal glob → regex compiler. Supports `*`, `**`, `?`, brace expansion
- * (including `{,s}`). No character classes, extglob, or negation.
- */
-
 const REGEX_META = /[.+^$()|[\]\\]/g;
 
 const expandBraces = (pattern: string): string[] => {

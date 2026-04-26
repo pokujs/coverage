@@ -22,9 +22,9 @@ import { traceMap } from '../utils/source-map/index.js';
 import { armCoverage } from './shared/arm-coverage.js';
 import { astCache } from './shared/ast-cache.js';
 import { astWalk } from './shared/ast-walk.js';
-import { passesPreRemapFilter } from './shared/pre-remap-filter.js';
+import { preRemapFilter } from './shared/pre-remap-filter.js';
 import { sourceCache } from './shared/source-cache.js';
-import { findV8JsonFiles, parseV8Json } from './shared/v8-discovery.js';
+import { v8Discovery } from './shared/v8-discovery.js';
 
 const TS_TYPE_WRAPPER_TYPES: ReadonlySet<string> = new Set([
   'TSAsExpression',
@@ -169,14 +169,14 @@ const collectScriptRanges = (script: V8ScriptCoverage): readonly V8Range[] =>
 const run = (
   tempDir: string,
   cwd: string,
-  preRemapFilter: ResolvedFileFilter
+  resolvedFilter: ResolvedFileFilter
 ): Map<string, readonly DiscoveredBranch[]> => {
   astCache.reset();
 
   const discoveredByPath = new Map<string, DiscoveredBranch[]>();
   const byUrl = new Map<string, ScriptCoverageData>();
 
-  const jsonFiles = findV8JsonFiles(tempDir);
+  const jsonFiles = v8Discovery.findJsonFiles(tempDir);
   if (jsonFiles.length === 0) return discoveredByPath;
 
   for (const jsonPath of jsonFiles) {
@@ -188,7 +188,7 @@ const run = (
       continue;
     }
 
-    const document = parseV8Json(jsonContent);
+    const document = v8Discovery.parseJson(jsonContent);
 
     for (const script of document.scripts) {
       const resolved = sourceCache.resolve({
@@ -199,7 +199,7 @@ const run = (
       if (resolved === undefined) continue;
       if (resolved.filePath === '') continue;
 
-      if (!passesPreRemapFilter(script, resolved, preRemapFilter, cwd))
+      if (!preRemapFilter.passes(script, resolved, resolvedFilter, cwd))
         continue;
 
       let entry = byUrl.get(script.url);

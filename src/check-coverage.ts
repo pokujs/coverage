@@ -7,13 +7,9 @@ import type { Metric } from './@types/text.js';
 import type { CoverageModel } from './@types/tree.js';
 import { relative } from 'node:path';
 import process from 'node:process';
-import { applyIstanbulBranches } from './reporters/shared/file-coverage.js';
+import { fileCoverage } from './reporters/shared/file-coverage.js';
 import { lcov } from './reporters/shared/lcov/index.js';
-import {
-  aggregateLines,
-  aggregateMetric,
-  computePercentage,
-} from './reporters/shared/metrics.js';
+import { metrics } from './reporters/shared/metrics.js';
 import { terminal } from './utils/terminal.js';
 import { watermarks } from './watermarks.js';
 
@@ -36,12 +32,12 @@ const metricForName = (
   files: CoverageModel
 ): Metric => {
   if (metric === 'statements' || metric === 'lines')
-    return aggregateLines(files);
+    return metrics.aggregateLines(files);
 
   if (metric === 'branches')
-    return aggregateMetric(files, (file) => file.branches);
+    return metrics.aggregateBy(files, (file) => file.branches);
 
-  return aggregateMetric(files, (file) => file.functions);
+  return metrics.aggregateBy(files, (file) => file.functions);
 };
 
 const collectFailures = (
@@ -60,7 +56,7 @@ const collectFailures = (
 
     for (const entry of scopes) {
       const computed = metricForName(metric, entry.files);
-      const actual = computePercentage(computed);
+      const actual = metrics.computePercentage(computed);
 
       if (actual === null) continue;
 
@@ -152,7 +148,7 @@ const run = (context: ReporterContext): void => {
   const model = lcov.parse(lcovOutput, context.cwd);
   if (model.length === 0) return;
 
-  applyIstanbulBranches(model, context.produceCoverageMap());
+  fileCoverage.applyIstanbulBranches(model, context.produceCoverageMap());
 
   const failures = collectFailures(
     model,

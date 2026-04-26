@@ -4,11 +4,7 @@ import type {
   FileCoverage as IstanbulFileCoverage,
 } from '../../../@types/istanbul.js';
 import type { CoverageModel, FileCoverage } from '../../../@types/tree.js';
-import {
-  fileBranchesMetric,
-  fileFunctionsMetric,
-  lineCoverage,
-} from '../file-coverage.js';
+import { fileCoverage } from '../file-coverage.js';
 
 export const projectCoverageMap = (
   coverageMap: CoverageMap
@@ -18,16 +14,16 @@ export const projectCoverageMap = (
 
   for (const absolutePath of Object.keys(coverageMap)) {
     const istanbulFile = coverageMap[absolutePath];
-    const fileCoverage: FileCoverage = {
+    const fileEntry: FileCoverage = {
       file: istanbulFile.path,
-      lineHits: lineCoverage(istanbulFile),
-      functions: fileFunctionsMetric(istanbulFile),
-      branches: fileBranchesMetric(istanbulFile),
+      lineHits: fileCoverage.lineCoverage(istanbulFile),
+      functions: fileCoverage.functionsMetric(istanbulFile),
+      branches: fileCoverage.branchesMetric(istanbulFile),
       uncoveredBranchPositions: [],
       uncoveredFunctionPositions: [],
     };
 
-    model.push(fileCoverage);
+    model.push(fileEntry);
     byPath.set(istanbulFile.path, istanbulFile);
   }
 

@@ -1,9 +1,6 @@
 import type { Report } from '../../@types/reporters.js';
 import { ide } from '../../utils/ide.js';
-import {
-  applyIstanbulBranches,
-  applyIstanbulFunctions,
-} from '../shared/file-coverage.js';
+import { fileCoverage } from '../shared/file-coverage.js';
 import { lcov } from '../shared/lcov/index.js';
 import { renderTable } from './table.js';
 
@@ -16,8 +13,8 @@ const report: Report = (context) => {
 
   const coverageMap = context.produceCoverageMap();
 
-  applyIstanbulBranches(model, coverageMap);
-  applyIstanbulFunctions(model, coverageMap);
+  fileCoverage.applyIstanbulBranches(model, coverageMap);
+  fileCoverage.applyIstanbulFunctions(model, coverageMap);
 
   const urlBuilder = ide.resolveUrlBuilder(context.options.hyperlinks);
 

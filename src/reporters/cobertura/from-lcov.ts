@@ -9,20 +9,14 @@ import { basename } from 'node:path';
 import { paths } from '../../utils/paths.js';
 import { xml } from '../../utils/xml.js';
 import { lcov } from '../shared/lcov/index.js';
-import {
-  aggregateLines,
-  aggregateMetric,
-  linesMetric,
-  metricCovered,
-  metricRate,
-  metricTotal,
-} from '../shared/metrics.js';
-import { groupByPackage } from '../shared/packages.js';
+import { metrics } from '../shared/metrics.js';
+import { packages } from '../shared/packages.js';
 
-const aggregateFilesLines = (files: FileCoverage[]) => aggregateLines(files);
+const aggregateFilesLines = (files: FileCoverage[]) =>
+  metrics.aggregateLines(files);
 
 const aggregateFilesBranches = (files: FileCoverage[]) =>
-  aggregateMetric(files, (lcovFile) => lcovFile.branches);
+  metrics.aggregateBy(files, (lcovFile) => lcovFile.branches);
 
 const sortedLineHits = (lcovFile: FileCoverage): Array<[number, number]> =>
   Array.from(lcovFile.lineHits.entries()).sort(
@@ -36,17 +30,20 @@ export const buildFromLcov = (context: ReporterContext): string | undefined => {
   const model = lcov.parse(lcovOutput, context.cwd);
   if (model.length === 0) return undefined;
 
-  const rootLines = aggregateLines(model);
-  const rootBranches = aggregateMetric(model, (lcovFile) => lcovFile.branches);
+  const rootLines = metrics.aggregateLines(model);
+  const rootBranches = metrics.aggregateBy(
+    model,
+    (lcovFile) => lcovFile.branches
+  );
   const builder = xml.create();
 
   builder.openTag('coverage', {
-    'lines-valid': metricTotal(rootLines),
-    'lines-covered': metricCovered(rootLines),
-    'line-rate': metricRate(rootLines) ?? 1,
-    'branches-valid': metricTotal(rootBranches),
-    'branches-covered': metricCovered(rootBranches),
-    'branch-rate': metricRate(rootBranches) ?? 1,
+    'lines-valid': metrics.total(rootLines),
+    'lines-covered': metrics.covered(rootLines),
+    'line-rate': metrics.rate(rootLines) ?? 1,
+    'branches-valid': metrics.total(rootBranches),
+    'branches-covered': metrics.covered(rootBranches),
+    'branch-rate': metrics.rate(rootBranches) ?? 1,
     timestamp: Date.now(),
     complexity: 0,
     version: '0.1',
@@ -57,7 +54,7 @@ export const buildFromLcov = (context: ReporterContext): string | undefined => {
   builder.closeTag('sources');
   builder.openTag('packages');
 
-  for (const group of groupByPackage(
+  for (const group of packages.groupBy(
     model,
     (lcovFile) => lcovFile.file,
     context.cwd
@@ -67,20 +64,20 @@ export const buildFromLcov = (context: ReporterContext): string | undefined => {
 
     builder.openTag('package', {
       name: group.packageName,
-      'line-rate': metricRate(groupLines) ?? 1,
-      'branch-rate': metricRate(groupBranches) ?? 1,
+      'line-rate': metrics.rate(groupLines) ?? 1,
+      'branch-rate': metrics.rate(groupBranches) ?? 1,
     });
 
     builder.openTag('classes');
 
     for (const lcovFile of group.files) {
-      const fileLines = linesMetric(lcovFile.lineHits);
+      const fileLines = metrics.fromLineHits(lcovFile.lineHits);
 
       builder.openTag('class', {
         name: basename(lcovFile.file),
         filename: paths.toPosix(paths.relativize(lcovFile.file, context.cwd)),
-        'line-rate': metricRate(fileLines) ?? 1,
-        'branch-rate': metricRate(lcovFile.branches) ?? 1,
+        'line-rate': metrics.rate(fileLines) ?? 1,
+        'branch-rate': metrics.rate(lcovFile.branches) ?? 1,
       });
 
       builder.openTag('methods');

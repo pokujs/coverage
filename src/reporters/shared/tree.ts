@@ -5,7 +5,7 @@ import type {
 } from '../../@types/tree.js';
 import { paths } from '../../utils/paths.js';
 
-export const buildTree = (model: CoverageModel, cwd: string): TreeNode => {
+const build = (model: CoverageModel, cwd: string): TreeNode => {
   const root: TreeNode = { segment: '', isFile: false, children: [] };
 
   for (const fileCoverage of model) {
@@ -53,7 +53,9 @@ const sortTree = (node: TreeNode): void => {
   for (const child of node.children) sortTree(child);
 };
 
-export const collectFileCoverages = (node: TreeNode): FileCoverage[] => {
+const collectFiles = (node: TreeNode): FileCoverage[] => {
   if (node.isFile && node.file) return [node.file];
-  return node.children.flatMap((child) => collectFileCoverages(child));
+  return node.children.flatMap((child) => collectFiles(child));
 };
+
+export const tree = { build, collectFiles } as const;

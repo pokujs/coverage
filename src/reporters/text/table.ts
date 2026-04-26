@@ -12,13 +12,8 @@ import type { CoverageModel } from '../../@types/tree.js';
 import type { Watermarks } from '../../@types/watermarks.js';
 import { terminal } from '../../utils/terminal.js';
 import { watermarks } from '../../watermarks.js';
-import {
-  aggregateLines,
-  aggregateMetric,
-  computePercentage,
-  resolveDisplayPercentage,
-} from '../shared/metrics.js';
-import { shouldHideFileRow } from '../shared/skip.js';
+import { metrics } from '../shared/metrics.js';
+import { skip } from '../shared/skip.js';
 import {
   formatArmPosition,
   formatRange,
@@ -37,7 +32,7 @@ const isFileRowHidden = (
   skipEmpty: boolean
 ): boolean => {
   if (!row.absolutePath || !row.metrics) return false;
-  return shouldHideFileRow(row.metrics, skipFull, skipEmpty);
+  return skip.shouldHideFileRow(row.metrics, skipFull, skipEmpty);
 };
 
 const BOX = {
@@ -130,19 +125,19 @@ const buildUncoveredDisplay = (
 
 const averageColor = (
   resolvedWatermarks: Watermarks,
-  metrics: RowMetrics | null
+  rowMetrics: RowMetrics | null
 ): ColorName | null => {
-  if (!metrics) return null;
+  if (!rowMetrics) return null;
 
   const percentages: number[] = [];
 
   for (const metric of [
-    metrics.statements,
-    metrics.branches,
-    metrics.functions,
-    metrics.lines,
+    rowMetrics.statements,
+    rowMetrics.branches,
+    rowMetrics.functions,
+    rowMetrics.lines,
   ]) {
-    const percentage = computePercentage(metric);
+    const percentage = metrics.computePercentage(metric);
     if (percentage !== null) percentages.push(percentage);
   }
 
@@ -161,12 +156,12 @@ const DIRECTORY_MARKER = '◼ ';
 const nameCell = (
   resolvedWatermarks: Watermarks,
   name: string,
-  metrics: RowMetrics | null,
+  rowMetrics: RowMetrics | null,
   isDirectory: boolean
 ): RenderCell => {
   const segmentColor: ColorName | null = isDirectory
     ? 'gray'
-    : averageColor(resolvedWatermarks, metrics);
+    : averageColor(resolvedWatermarks, rowMetrics);
   const connectorIndex = Math.max(
     name.lastIndexOf('├ '),
     name.lastIndexOf('└ ')
@@ -257,25 +252,25 @@ const buildRowCells = (
     display: uncoveredDisplay,
   };
 
-  const statementsPercentage = resolveDisplayPercentage(
+  const statementsPercentage = metrics.resolveDisplayPercentage(
     row.metrics.statements,
     runtime,
     'statements'
   );
 
-  const branchesPercentage = resolveDisplayPercentage(
+  const branchesPercentage = metrics.resolveDisplayPercentage(
     row.metrics.branches,
     runtime,
     'branches'
   );
 
-  const functionsPercentage = resolveDisplayPercentage(
+  const functionsPercentage = metrics.resolveDisplayPercentage(
     row.metrics.functions,
     runtime,
     'functions'
   );
 
-  const linesPercentage = resolveDisplayPercentage(
+  const linesPercentage = metrics.resolveDisplayPercentage(
     row.metrics.lines,
     runtime,
     'lines'
@@ -351,9 +346,15 @@ export const renderTable = (
 
   if (tableRows.length === 0) return '';
 
-  const aggregatedBranches = aggregateMetric(model, (file) => file.branches);
-  const aggregatedFunctions = aggregateMetric(model, (file) => file.functions);
-  const aggregatedLines = aggregateLines(model);
+  const aggregatedBranches = metrics.aggregateBy(
+    model,
+    (file) => file.branches
+  );
+  const aggregatedFunctions = metrics.aggregateBy(
+    model,
+    (file) => file.functions
+  );
+  const aggregatedLines = metrics.aggregateLines(model);
 
   const summaryRow: Row = {
     name: 'All Files',

@@ -5,9 +5,9 @@
 
 import type { Report } from '../../@types/reporters.js';
 import type { Metric } from '../../@types/text.js';
-import { applyIstanbulBranches } from '../shared/file-coverage.js';
+import { fileCoverage } from '../shared/file-coverage.js';
 import { lcov } from '../shared/lcov/index.js';
-import { aggregateLines, aggregateMetric } from '../shared/metrics.js';
+import { metrics } from '../shared/metrics.js';
 
 const BLOCK_NAME = 'Code Coverage Summary';
 
@@ -24,11 +24,11 @@ const report: Report = (context) => {
   const model = lcov.parse(lcovOutput, context.cwd);
   if (model.length === 0) return;
 
-  applyIstanbulBranches(model, context.produceCoverageMap());
+  fileCoverage.applyIstanbulBranches(model, context.produceCoverageMap());
 
-  const statementsAndLines = aggregateLines(model);
-  const branches = aggregateMetric(model, (file) => file.branches);
-  const functions = aggregateMetric(model, (file) => file.functions);
+  const statementsAndLines = metrics.aggregateLines(model);
+  const branches = metrics.aggregateBy(model, (file) => file.branches);
+  const functions = metrics.aggregateBy(model, (file) => file.functions);
 
   const lines: string[] = [
     '',

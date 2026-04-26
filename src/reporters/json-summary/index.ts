@@ -13,17 +13,12 @@ import type { FileCoverage } from '../../@types/tree.js';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { paths } from '../../utils/paths.js';
-import { applyIstanbulBranches } from '../shared/file-coverage.js';
+import { fileCoverage } from '../shared/file-coverage.js';
 import { lcov } from '../shared/lcov/index.js';
-import {
-  aggregateLines,
-  aggregateMetric,
-  computePercentage,
-  linesMetric,
-} from '../shared/metrics.js';
+import { metrics } from '../shared/metrics.js';
 
 const metricSummary = (metric: Metric): MetricSummary => {
-  const percentage = computePercentage(metric);
+  const percentage = metrics.computePercentage(metric);
 
   return {
     total: metric.total ?? 0,
@@ -34,7 +29,7 @@ const metricSummary = (metric: Metric): MetricSummary => {
 };
 
 const summarizeFile = (file: FileCoverage): FileSummary => {
-  const lines = linesMetric(file.lineHits);
+  const lines = metrics.fromLineHits(file.lineHits);
 
   return {
     statements: metricSummary(lines),
@@ -51,11 +46,17 @@ const report: Report = (context) => {
   const model = lcov.parse(lcovOutput, context.cwd);
   if (model.length === 0) return;
 
-  applyIstanbulBranches(model, context.produceCoverageMap());
+  fileCoverage.applyIstanbulBranches(model, context.produceCoverageMap());
 
-  const aggregatedLines = aggregateLines(model);
-  const aggregatedBranches = aggregateMetric(model, (file) => file.branches);
-  const aggregatedFunctions = aggregateMetric(model, (file) => file.functions);
+  const aggregatedLines = metrics.aggregateLines(model);
+  const aggregatedBranches = metrics.aggregateBy(
+    model,
+    (file) => file.branches
+  );
+  const aggregatedFunctions = metrics.aggregateBy(
+    model,
+    (file) => file.functions
+  );
 
   const payload: Record<string, FileSummary> = {
     total: {

@@ -7,7 +7,7 @@ import type { Report } from '../../@types/reporters.js';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { converters } from '../../converters/index.js';
-import { prepareCoverageMap } from '../shared/file-coverage.js';
+import { fileCoverage } from '../shared/file-coverage.js';
 
 const report: Report = (context) => {
   const coverageMap = converters.v8ToIstanbul.convert(
@@ -16,7 +16,7 @@ const report: Report = (context) => {
     context.preRemapFilter
   );
 
-  prepareCoverageMap(coverageMap, context);
+  fileCoverage.prepareCoverageMap(coverageMap, context);
 
   if (Object.keys(coverageMap).length === 0) return;
 

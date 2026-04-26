@@ -5,7 +5,7 @@ import type {
 import type { TreeNode } from '../../../@types/tree.js';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, posix } from 'node:path';
-import { shouldHideFileRow } from '../skip.js';
+import { skip } from '../skip.js';
 import { pagePathForDirectory, pagePathForFile } from './link-mapper.js';
 import { renderDetailPageLineOnly } from './render-detail-line-only.js';
 import { renderDetailPage } from './render-detail.js';
@@ -58,7 +58,7 @@ const walkForDetails = (
         input.istanbulByPath.get(childNode.file.file) ?? null;
       const fileMetrics = metricsForFile(childNode.file);
 
-      if (shouldHideFileRow(fileMetrics, input.skipFull, input.skipEmpty))
+      if (skip.shouldHideFileRow(fileMetrics, input.skipFull, input.skipEmpty))
         continue;
 
       const filePagePath = pagePathForFile(childRelative);

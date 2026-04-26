@@ -9,7 +9,7 @@ import { allFiles } from '../../all-files.js';
 import { ignoreDirectives } from '../../converters/shared/ignore-directives.js';
 import { fileFilter } from '../../file-filter.js';
 
-export const filterCoverageMap = (
+const filterCoverageMap = (
   coverageMap: CoverageMap,
   testFiles: ReadonlySet<string>,
   resolvedFilter: ResolvedFileFilter,
@@ -22,7 +22,7 @@ export const filterCoverageMap = (
       delete coverageMap[absolutePath];
 };
 
-export const prepareCoverageMap = (
+const prepareCoverageMap = (
   coverageMap: CoverageMap,
   context: ReporterContext
 ): void => {
@@ -37,9 +37,7 @@ export const prepareCoverageMap = (
     allFiles.injectCoverageMap(coverageMap, allFiles.discover(context));
 };
 
-export const lineCoverage = (
-  fileCoverage: FileCoverage
-): Map<number, number> => {
+const lineCoverage = (fileCoverage: FileCoverage): Map<number, number> => {
   const perLine = new Map<number, number>();
 
   for (const statementKey of Object.keys(fileCoverage.statementMap)) {
@@ -55,7 +53,7 @@ export const lineCoverage = (
   return perLine;
 };
 
-export const branchCoverageByLine = (
+const branchCoverageByLine = (
   fileCoverage: FileCoverage
 ): Map<number, { covered: number; total: number }> => {
   const perLine = new Map<number, { covered: number; total: number }>();
@@ -82,7 +80,7 @@ export const branchCoverageByLine = (
   return perLine;
 };
 
-export const fileStatementsMetric = (fileCoverage: FileCoverage): Metric => {
+const statementsMetric = (fileCoverage: FileCoverage): Metric => {
   const statementKeys = Object.keys(fileCoverage.statementMap);
 
   const total = statementKeys.length;
@@ -96,7 +94,7 @@ export const fileStatementsMetric = (fileCoverage: FileCoverage): Metric => {
   return { total, hit };
 };
 
-export const fileFunctionsMetric = (fileCoverage: FileCoverage): Metric => {
+const functionsMetric = (fileCoverage: FileCoverage): Metric => {
   const functionKeys = Object.keys(fileCoverage.fnMap);
 
   const total = functionKeys.length;
@@ -110,7 +108,7 @@ export const fileFunctionsMetric = (fileCoverage: FileCoverage): Metric => {
   return { total, hit };
 };
 
-export const fileBranchesMetric = (fileCoverage: FileCoverage): Metric => {
+const branchesMetric = (fileCoverage: FileCoverage): Metric => {
   let total = 0;
   let hit = 0;
 
@@ -153,7 +151,7 @@ const createIgnoredLinesLoader = (): ((
   };
 };
 
-export const applyIstanbulBranches = (
+const applyIstanbulBranches = (
   lcovModel: CoverageModel,
   coverageMap: CoverageMap | null
 ): void => {
@@ -167,7 +165,7 @@ export const applyIstanbulBranches = (
 
     const uncoveredArms: BranchArmPosition[] = [];
     const ignoredLines = getIgnoredLines(lcovFile.file);
-    const metric = fileBranchesMetric(istanbulFile);
+    const metric = branchesMetric(istanbulFile);
 
     for (const branchKey of Object.keys(istanbulFile.branchMap)) {
       const branchEntry = istanbulFile.branchMap[branchKey];
@@ -199,7 +197,7 @@ export const applyIstanbulBranches = (
   }
 };
 
-export const applyIstanbulFunctions = (
+const applyIstanbulFunctions = (
   lcovModel: CoverageModel,
   coverageMap: CoverageMap | null
 ): void => {
@@ -241,3 +239,15 @@ export const applyIstanbulFunctions = (
     lcovFile.uncoveredFunctionPositions = uncoveredFunctions;
   }
 };
+
+export const fileCoverage = {
+  filterCoverageMap,
+  prepareCoverageMap,
+  lineCoverage,
+  branchCoverageByLine,
+  statementsMetric,
+  functionsMetric,
+  branchesMetric,
+  applyIstanbulBranches,
+  applyIstanbulFunctions,
+} as const;

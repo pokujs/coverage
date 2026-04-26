@@ -9,26 +9,19 @@ import { basename } from 'node:path';
 import { converters } from '../../converters/index.js';
 import { paths } from '../../utils/paths.js';
 import { xml } from '../../utils/xml.js';
-import {
-  branchCoverageByLine,
-  fileBranchesMetric,
-  fileFunctionsMetric,
-  fileStatementsMetric,
-  lineCoverage,
-  prepareCoverageMap,
-} from '../shared/file-coverage.js';
-import { aggregateMetric } from '../shared/metrics.js';
-import { groupByPackage } from '../shared/packages.js';
+import { fileCoverage } from '../shared/file-coverage.js';
+import { metrics } from '../shared/metrics.js';
+import { packages } from '../shared/packages.js';
 import { baseMetrics, rootMetrics } from './attrs.js';
 
 const aggregateFilesStatements = (files: readonly FileCoverage[]) =>
-  aggregateMetric(files, fileStatementsMetric);
+  metrics.aggregateBy(files, fileCoverage.statementsMetric);
 
 const aggregateFilesBranches = (files: readonly FileCoverage[]) =>
-  aggregateMetric(files, fileBranchesMetric);
+  metrics.aggregateBy(files, fileCoverage.branchesMetric);
 
 const aggregateFilesFunctions = (files: readonly FileCoverage[]) =>
-  aggregateMetric(files, fileFunctionsMetric);
+  metrics.aggregateBy(files, fileCoverage.functionsMetric);
 
 export const buildFromCoverageMap = (
   context: ReporterContext
@@ -39,7 +32,7 @@ export const buildFromCoverageMap = (
     context.preRemapFilter
   );
 
-  prepareCoverageMap(coverageMap, context);
+  fileCoverage.prepareCoverageMap(coverageMap, context);
 
   const files = Object.values(coverageMap);
   if (files.length === 0) return undefined;
@@ -48,9 +41,9 @@ export const buildFromCoverageMap = (
   const rootBranches = aggregateFilesBranches(files);
   const rootFunctions = aggregateFilesFunctions(files);
 
-  const groups = groupByPackage(
+  const groups = packages.groupBy(
     files,
-    (fileCoverage) => fileCoverage.path,
+    (coverageEntry) => coverageEntry.path,
     context.cwd
   );
 
@@ -89,15 +82,15 @@ export const buildFromCoverageMap = (
       baseMetrics(groupStatements, groupBranches, groupFunctions)
     );
 
-    for (const fileCoverage of group.files) {
-      const fileStatements = fileStatementsMetric(fileCoverage);
-      const fileBranches = fileBranchesMetric(fileCoverage);
-      const fileFunctions = fileFunctionsMetric(fileCoverage);
-      const branchByLine = branchCoverageByLine(fileCoverage);
+    for (const coverageEntry of group.files) {
+      const fileStatements = fileCoverage.statementsMetric(coverageEntry);
+      const fileBranches = fileCoverage.branchesMetric(coverageEntry);
+      const fileFunctions = fileCoverage.functionsMetric(coverageEntry);
+      const branchByLine = fileCoverage.branchCoverageByLine(coverageEntry);
 
       builder.openTag('file', {
-        name: basename(fileCoverage.path),
-        path: paths.toPosix(paths.relativize(fileCoverage.path, context.cwd)),
+        name: basename(coverageEntry.path),
+        path: paths.toPosix(paths.relativize(coverageEntry.path, context.cwd)),
       });
 
       builder.inlineTag(
@@ -106,7 +99,7 @@ export const buildFromCoverageMap = (
       );
 
       const sortedLineNumbers = Array.from(
-        lineCoverage(fileCoverage).entries()
+        fileCoverage.lineCoverage(coverageEntry).entries()
       ).sort((left, right) => left[0] - right[0]);
 
       for (const [lineNumber, lineHitCount] of sortedLineNumbers) {

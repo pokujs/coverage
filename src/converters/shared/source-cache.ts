@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 import { offsets } from '../../utils/offsets.js';
 import { paths } from '../../utils/paths.js';
 import { sourceMapComment } from '../../utils/source-map-comment.js';
-import { resolveFilePath } from './v8-discovery.js';
+import { v8Discovery } from './v8-discovery.js';
 
 const lineLengthsToLineStarts = (lineLengths: number[]): number[] => {
   const starts: number[] = [0];
@@ -176,7 +176,7 @@ const resolveFromDenoCache = (
 const resolveFromDisk = (
   inputs: SourceCacheResolveInputs
 ): ResolvedScriptSource | undefined => {
-  const filePath = resolveFilePath(inputs.script.url, inputs.cwd);
+  const filePath = v8Discovery.resolveFilePath(inputs.script.url, inputs.cwd);
   if (filePath === undefined) return undefined;
 
   let source: string;

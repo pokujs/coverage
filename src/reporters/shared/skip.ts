@@ -1,18 +1,18 @@
 import type { RowMetrics } from '../../@types/text.js';
-import { computePercentage } from './metrics.js';
+import { metrics } from './metrics.js';
 
 const FULL_COVERAGE_PERCENTAGE = 100;
 
-export const shouldHideFileRow = (
-  metrics: RowMetrics,
+const shouldHideFileRow = (
+  rowMetrics: RowMetrics,
   skipFull: boolean,
   skipEmpty: boolean
 ): boolean => {
   const percentages = [
-    computePercentage(metrics.statements),
-    computePercentage(metrics.branches),
-    computePercentage(metrics.functions),
-    computePercentage(metrics.lines),
+    metrics.computePercentage(rowMetrics.statements),
+    metrics.computePercentage(rowMetrics.branches),
+    metrics.computePercentage(rowMetrics.functions),
+    metrics.computePercentage(rowMetrics.lines),
   ];
 
   if (skipEmpty && percentages.every((percentage) => percentage === null))
@@ -34,3 +34,5 @@ export const shouldHideFileRow = (
 
   return false;
 };
+
+export const skip = { shouldHideFileRow } as const;

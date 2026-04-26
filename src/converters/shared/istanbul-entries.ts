@@ -14,7 +14,8 @@ import type {
   FnMapEntry,
   StatementMapEntry,
 } from '../../@types/istanbul.js';
-import { ignoreDirectives, LINE_SPLIT } from './ignore-directives.js';
+import { sourceLines } from '../../utils/source-lines.js';
+import { ignoreDirectives } from './ignore-directives.js';
 
 const NEWLINE_PATTERN = /\r?\n$/u;
 
@@ -104,7 +105,7 @@ const covLineToStatementMapEntry = (covLine: CovLine): StatementMapEntry => ({
 const buildLines = (source: string): CovLine[] => {
   const ignoredLines = ignoreDirectives.parseSource(source);
   const lines: CovLine[] = [];
-  const splitLines = source.split(LINE_SPLIT);
+  const splitLines = source.split(sourceLines.LINE_SPLITTER);
 
   let runningPosition = 0;
 

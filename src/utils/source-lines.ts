@@ -169,7 +169,10 @@ const findDelimiterOnlyLines = (source: string): Set<number> => {
   return delimiterOnlyLines;
 };
 
+const LINE_SPLITTER = /(?<=\r?\n)/u;
+
 export const sourceLines = {
+  LINE_SPLITTER,
   findCommentOnlyLines,
   findDelimiterOnlyLines,
 } as const;

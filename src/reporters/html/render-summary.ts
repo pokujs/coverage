@@ -12,11 +12,7 @@ import {
   renderFooter,
   renderHeader,
 } from '../shared/html/templates.js';
-import {
-  computePercentage,
-  formatPercentage,
-  resolveDisplayPercentage,
-} from '../shared/metrics.js';
+import { metrics } from '../shared/metrics.js';
 
 const METRIC_ORDER: readonly ['statements', 'branches', 'functions', 'lines'] =
   ['statements', 'branches', 'functions', 'lines'];
@@ -43,11 +39,11 @@ const summaryCell = (
   metricName: WatermarkMetric
 ): string => {
   const parts: string[] = [];
-  const percentage = computePercentage(metric);
+  const percentage = metrics.computePercentage(metric);
 
   if (percentage === null) {
     const metricAbsent =
-      resolveDisplayPercentage(metric, runtime, metricName) === null;
+      metrics.resolveDisplayPercentage(metric, runtime, metricName) === null;
 
     if (metricAbsent) {
       if (showGraph) {
@@ -219,7 +215,7 @@ export const renderSummaryPage = (input: HtmlSummaryPageInput): string => {
 
   const formattedTotals = METRIC_ORDER.map((metricName) => {
     const metric = input.metrics[metricName];
-    return `${metricName}: ${formatPercentage(computePercentage(metric))}`;
+    return `${metricName}: ${metrics.formatPercentage(metrics.computePercentage(metric))}`;
   }).join(' · ');
 
   const signature = `<!-- ${html.escape(formattedTotals)} -->\n`;

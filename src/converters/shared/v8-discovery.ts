@@ -8,7 +8,7 @@ import { join, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { paths } from '../../utils/paths.js';
 
-export const findV8JsonFiles = (tempDir: string): string[] => {
+const findJsonFiles = (tempDir: string): string[] => {
   let entries: string[];
 
   try {
@@ -48,7 +48,7 @@ const extractSourceMapCache = (parsed: object): SourceMapCache => {
   return candidate as SourceMapCache;
 };
 
-export const parseV8Json = (content: string): V8CoverageDocument => {
+const parseJson = (content: string): V8CoverageDocument => {
   let parsed: unknown;
 
   try {
@@ -73,10 +73,7 @@ export const parseV8Json = (content: string): V8CoverageDocument => {
   return EMPTY_DOCUMENT;
 };
 
-export const resolveFilePath = (
-  url: string,
-  cwd: string
-): string | undefined => {
+const resolveFilePath = (url: string, cwd: string): string | undefined => {
   if (!url.startsWith('file://')) return undefined;
 
   let absolutePath: string;
@@ -94,3 +91,9 @@ export const resolveFilePath = (
   if (!existsSync(absolutePath)) return undefined;
   return absolutePath;
 };
+
+export const v8Discovery = {
+  findJsonFiles,
+  parseJson,
+  resolveFilePath,
+} as const;
