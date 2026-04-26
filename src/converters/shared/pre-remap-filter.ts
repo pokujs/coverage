@@ -12,10 +12,13 @@ export const passesPreRemapFilter = (
   preRemapFilter: ResolvedFileFilter,
   cwd: string
 ): boolean => {
+  const transpiledPath = resolveFilePath(script.url, cwd);
   const preRemapPath =
-    resolved.filePath !== ''
-      ? resolved.filePath
-      : resolveFilePath(script.url, cwd);
+    transpiledPath !== undefined
+      ? transpiledPath
+      : resolved.filePath !== ''
+        ? resolved.filePath
+        : undefined;
   if (preRemapPath === undefined) return true;
   return fileFilter.matches(preRemapFilter, preRemapPath, cwd);
 };
