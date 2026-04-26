@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.6.1](https://github.com/pokujs/coverage/compare/v0.6.0...v0.6.1) (2026-04-26)
+
+
+### Bug Fixes
+
+* **bun:** improve precision in auto-executable lines ([#17](https://github.com/pokujs/coverage/issues/17)) ([ab31038](https://github.com/pokujs/coverage/commit/ab310382fce7ce748b635a98d4b5537127fd1188))
+* **v8:** distinguish lines and branches metrics ([#19](https://github.com/pokujs/coverage/issues/19)) ([a45bb2a](https://github.com/pokujs/coverage/commit/a45bb2aef993b4630eceb11e44860c4ec354d532))
+* **v8:** merge ranges per file before line extraction ([#20](https://github.com/pokujs/coverage/issues/20)) ([5ce51cc](https://github.com/pokujs/coverage/commit/5ce51cc3e8e1c7d4bffaf50b863951135c4b61e9))
+
 ## [0.6.0](https://github.com/pokujs/coverage/compare/v0.5.0...v0.6.0) (2026-04-22)
 
 
