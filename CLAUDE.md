@@ -125,5 +125,7 @@ npm run build:snapshots
 
 ### Skills
 
-- [.claude/skills/v8-audit/SKILL.md](.claude/skills/v8-audit/SKILL.md): audits uncovered lines/branches/functions of a project against raw V8.
-  - **Usage:** `/v8-audit <project-path> <coverage-path>` (require `lcov` and `v8` reporter outputs)
+- [.claude/skills/v8-audit/SKILL.md](.claude/skills/v8-audit/SKILL.md): audits uncovered lines/branches/functions of a project against raw V8 (Node.js / Deno).
+  - **Usage:** `/v8-audit <project-path> [<coverage-path>]` (requires `lcov` and `v8` reporter outputs)
+- [.claude/skills/jsc-audit/SKILL.md](.claude/skills/jsc-audit/SKILL.md): audits uncovered lines/functions of a project against raw JSC basic-blocks (Bun).
+  - **Usage:** `/jsc-audit <project-path> [<coverage-path>]` (requires `lcov` and `jsc` reporter outputs from a Bun-only run)
