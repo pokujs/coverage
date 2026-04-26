@@ -1,4 +1,6 @@
-import type { Node } from 'acorn';
+import type { Node, SourceLocation } from 'acorn';
+
+export type WithLocation = Node & { loc: SourceLocation };
 
 export type IdentifierNode = Node & { type: 'Identifier'; name: string };
 

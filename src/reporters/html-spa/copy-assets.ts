@@ -1,6 +1,9 @@
 import { fileURLToPath } from 'node:url';
-import { HTML_ASSET_FILENAMES, htmlAssetsDir } from '../html/copy-assets.js';
 import { copyAssetSet } from '../shared/html/copy-assets.js';
+import {
+  HTML_ASSET_FILENAMES,
+  htmlAssetsDir,
+} from '../shared/html/html-assets.js';
 
 const SPA_ASSET_FILENAMES: readonly string[] = [
   'bundle.js',

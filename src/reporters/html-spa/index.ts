@@ -2,7 +2,7 @@ import type { HtmlSpaMetricName } from '../../@types/html.js';
 import type { Report, Runtime } from '../../@types/reporters.js';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { formatDatetime } from '../../utils/datetime.js';
+import { datetime } from '../../utils/datetime.js';
 import { emitDetailPages } from '../shared/html/emit-details.js';
 import { htmlRuntimes } from '../shared/html/runtimes/index.js';
 import { buildTree } from '../shared/tree.js';
@@ -29,7 +29,7 @@ const report: Report = (context) => {
   copyAssets(context.reportsDir);
 
   const title = 'All files';
-  const datetime = formatDatetime();
+  const formattedDatetime = datetime.format();
   const skipFull = context.options.skipFull === true;
   const skipEmpty = context.options.skipEmpty === true;
 
@@ -41,7 +41,7 @@ const report: Report = (context) => {
     istanbulByPath: byPath,
     skipFull,
     skipEmpty,
-    datetime,
+    datetime: formattedDatetime,
     backBreadcrumb: true,
     runtime: context.runtime,
   });
@@ -54,7 +54,7 @@ const report: Report = (context) => {
 
   const shell = renderShell({
     data,
-    datetime,
+    datetime: formattedDatetime,
     metricsToShow: metricsFor(context.runtime),
   });
 

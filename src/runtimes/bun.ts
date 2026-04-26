@@ -3,9 +3,9 @@ import type { PluginContext } from 'poku/plugins';
 import type { CoverageOptions, CoverageState } from '../@types/coverage.js';
 import type { JscInspectorHandle } from '../@types/jsc.js';
 import type { DataListener } from '../@types/runtimes.js';
-import { escapeRegex } from '../utils/strings.js';
+import { strings } from '../utils/strings.js';
 import { jscInspector } from './bun/inspector.js';
-import { setup, teardown } from './lifecycle.js';
+import { lifecycle } from './lifecycle.js';
 
 const INSPECTOR_URL_PATTERN = /ws:\/\/[A-Za-z0-9.:_/-]+/;
 
@@ -13,7 +13,7 @@ const makeLineFilter = (
   file: string,
   downstream: DataListener[]
 ): DataListener => {
-  const fileHeader = new RegExp(`^${escapeRegex(file)}:$`);
+  const fileHeader = new RegExp(`^${strings.escapeRegex(file)}:$`);
   let buffer = '';
 
   const emit = (text: string): void => {
@@ -122,7 +122,7 @@ export const bun = {
     options: CoverageOptions,
     state: CoverageState
   ): void => {
-    setup(options, state, 'bun');
+    lifecycle.setup(options, state, 'bun');
   },
   runner,
   onTestProcess,
@@ -130,5 +130,5 @@ export const bun = {
     context: PluginContext,
     options: CoverageOptions,
     state: CoverageState
-  ): void => teardown(context, options, state, 'bun'),
+  ): void => lifecycle.teardown(context, options, state, 'bun'),
 } as const;

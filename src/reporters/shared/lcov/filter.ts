@@ -1,7 +1,7 @@
-import type { ResolvedFileFilter } from '../../@types/file-filter.js';
+import type { ResolvedFileFilter } from '../../../@types/file-filter.js';
 import { isAbsolute, resolve } from 'node:path';
-import { fileFilter } from '../../file-filter.js';
-import { isBannedPath } from '../../utils/paths.js';
+import { fileFilter } from '../../../file-filter.js';
+import { paths } from '../../../utils/paths.js';
 
 export const filter = (
   lcov: string,
@@ -25,7 +25,7 @@ export const filter = (
         ? sourcePath
         : resolve(cwd, sourcePath);
 
-      if (isBannedPath(absoluteSourcePath)) continue;
+      if (paths.isBanned(absoluteSourcePath)) continue;
       if (testFiles.has(absoluteSourcePath)) continue;
       if (!fileFilter.matches(resolvedFilter, absoluteSourcePath, cwd))
         continue;

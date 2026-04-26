@@ -7,7 +7,7 @@ import type { FileCoverage } from '../../@types/istanbul.js';
 import type { ReporterContext } from '../../@types/reporters.js';
 import { basename } from 'node:path';
 import { converters } from '../../converters/index.js';
-import { relativize, toPosix } from '../../utils/paths.js';
+import { paths } from '../../utils/paths.js';
 import { xml } from '../../utils/xml.js';
 import {
   branchCoverageByLine,
@@ -38,7 +38,7 @@ const formatConditionCoverage = (covered: number, total: number): string => {
 export const buildFromCoverageMap = (
   context: ReporterContext
 ): string | undefined => {
-  const coverageMap = converters.v8ToIstanbul(
+  const coverageMap = converters.v8ToIstanbul.convert(
     context.tempDir,
     context.cwd,
     context.preRemapFilter
@@ -93,7 +93,9 @@ export const buildFromCoverageMap = (
 
       builder.openTag('class', {
         name: basename(fileCoverage.path),
-        filename: toPosix(relativize(fileCoverage.path, context.cwd)),
+        filename: paths.toPosix(
+          paths.relativize(fileCoverage.path, context.cwd)
+        ),
         'line-rate': metricRate(fileStatements) ?? 1,
         'branch-rate': metricRate(fileBranches) ?? 1,
       });

@@ -8,7 +8,7 @@ import type {
 } from '../../@types/jsc.js';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { slug } from '../../utils/strings.js';
+import { strings } from '../../utils/strings.js';
 
 const BLOCKS_FILE_SUFFIX = '.jsc.json';
 const POLL_INTERVAL_MS = 50;
@@ -58,8 +58,8 @@ const attach = ({
     });
 
   const writeBlocks = (scriptBlocks: JscScriptBlocks): void => {
-    const outputDir = join(tempDir, slug(testFile));
-    const fileName = `${slug(resolveUrlPath(scriptBlocks.url))}${BLOCKS_FILE_SUFFIX}`;
+    const outputDir = join(tempDir, strings.slug(testFile));
+    const fileName = `${strings.slug(resolveUrlPath(scriptBlocks.url))}${BLOCKS_FILE_SUFFIX}`;
 
     mkdirSync(outputDir, { recursive: true });
     writeFileSync(

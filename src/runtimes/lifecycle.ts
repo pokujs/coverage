@@ -35,7 +35,7 @@ const ensureSourceMaps = (state: CoverageState): void => {
   process.env.NODE_OPTIONS = `${existingNodeOptions} ${ENABLE_SOURCE_MAPS_FLAG}`;
 };
 
-export const setup = (
+const setup = (
   options: CoverageOptions,
   state: CoverageState,
   runtime: Runtime,
@@ -62,7 +62,7 @@ export const setup = (
   state.enabled = true;
 };
 
-export const teardown = (
+const teardown = (
   context: PluginContext,
   options: CoverageOptions,
   state: CoverageState,
@@ -125,12 +125,12 @@ export const teardown = (
 
       const coverageMap =
         runtime === 'bun'
-          ? converters.jscToIstanbul(
+          ? converters.jscToIstanbul.convert(
               state.tempDir,
               context.cwd,
               reporterContext.preRemapFilter
             )
-          : converters.v8ToIstanbul(
+          : converters.v8ToIstanbul.convert(
               state.tempDir,
               context.cwd,
               reporterContext.preRemapFilter
@@ -141,7 +141,7 @@ export const teardown = (
       const discoveries =
         runtime === 'bun'
           ? emptyDiscoveries
-          : converters.discoverBranches(
+          : converters.discoverBranches.run(
               state.tempDir,
               context.cwd,
               reporterContext.preRemapFilter
@@ -160,3 +160,5 @@ export const teardown = (
     if (shouldClean) rmSync(state.tempDir, { recursive: true, force: true });
   }
 };
+
+export const lifecycle = { setup, teardown } as const;

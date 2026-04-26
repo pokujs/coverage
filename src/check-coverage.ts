@@ -7,9 +7,9 @@ import type { Metric } from './@types/text.js';
 import type { CoverageModel } from './@types/tree.js';
 import { relative } from 'node:path';
 import process from 'node:process';
-import { lcovonly } from './reporters/lcovonly/index.js';
 import { colorForPct, colorize } from './reporters/shared/color.js';
 import { applyIstanbulBranches } from './reporters/shared/file-coverage.js';
+import { lcov } from './reporters/shared/lcov/index.js';
 import {
   aggregateLines,
   aggregateMetric,
@@ -145,10 +145,10 @@ const run = (context: ReporterContext): void => {
 
   if (!hasThreshold) return;
 
-  const lcovOutput = lcovonly.runtimes[context.runtime].produce(context);
+  const lcovOutput = lcov.runtimes[context.runtime].produce(context);
   if (lcovOutput.length === 0) return;
 
-  const model = lcovonly.parse(lcovOutput, context.cwd);
+  const model = lcov.parse(lcovOutput, context.cwd);
   if (model.length === 0) return;
 
   applyIstanbulBranches(model, context.produceCoverageMap());

@@ -1,7 +1,7 @@
 import type { CoverageOptions } from '../@types/coverage.js';
 import type { IDE, IDEUrlBuilders, UrlBuilder } from '../@types/ide.js';
 import { pathToFileURL } from 'node:url';
-import { supportsHyperlinks } from './terminal.js';
+import { terminal } from './terminal.js';
 
 const ideUrlBuilders: IDEUrlBuilders = {
   jetbrains: (filePath, lineNumber, columnNumber) =>
@@ -16,7 +16,7 @@ const ideUrlBuilders: IDEUrlBuilders = {
     `vscode://file${filePath}:${lineNumber}:${columnNumber}`,
 };
 
-export const buildFileLineUrl = (
+const buildFileLineUrl = (
   absolutePath: string,
   lineNumber: number,
   columnNumber: number,
@@ -29,11 +29,11 @@ export const buildFileLineUrl = (
   return `${fileUrl.href}#L${lineNumber}`;
 };
 
-export const resolveUrlBuilder = (
+const resolveUrlBuilder = (
   hyperlinksOption: CoverageOptions['hyperlinks']
 ): UrlBuilder | null => {
   if (hyperlinksOption === false) return null;
-  if (!supportsHyperlinks()) return null;
+  if (!terminal.supportsHyperlinks()) return null;
 
   const ideName =
     typeof hyperlinksOption === 'string' ? hyperlinksOption : undefined;
@@ -41,3 +41,5 @@ export const resolveUrlBuilder = (
   return (absolutePath, lineNumber, columnNumber) =>
     buildFileLineUrl(absolutePath, lineNumber, columnNumber, ideName);
 };
+
+export const ide = { buildFileLineUrl, resolveUrlBuilder } as const;

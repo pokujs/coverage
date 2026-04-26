@@ -7,7 +7,7 @@ import type { FileCoverage } from '../../@types/istanbul.js';
 import type { ReporterContext } from '../../@types/reporters.js';
 import { basename } from 'node:path';
 import { converters } from '../../converters/index.js';
-import { relativize, toPosix } from '../../utils/paths.js';
+import { paths } from '../../utils/paths.js';
 import { xml } from '../../utils/xml.js';
 import {
   branchCoverageByLine,
@@ -33,7 +33,7 @@ const aggregateFilesFunctions = (files: readonly FileCoverage[]) =>
 export const buildFromCoverageMap = (
   context: ReporterContext
 ): string | undefined => {
-  const coverageMap = converters.v8ToIstanbul(
+  const coverageMap = converters.v8ToIstanbul.convert(
     context.tempDir,
     context.cwd,
     context.preRemapFilter
@@ -97,7 +97,7 @@ export const buildFromCoverageMap = (
 
       builder.openTag('file', {
         name: basename(fileCoverage.path),
-        path: toPosix(relativize(fileCoverage.path, context.cwd)),
+        path: paths.toPosix(paths.relativize(fileCoverage.path, context.cwd)),
       });
 
       builder.inlineTag(

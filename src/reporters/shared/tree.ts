@@ -3,14 +3,15 @@ import type {
   FileCoverage,
   TreeNode,
 } from '../../@types/tree.js';
-import { relativize, toPosix } from '../../utils/paths.js';
+import { paths } from '../../utils/paths.js';
 
 export const buildTree = (model: CoverageModel, cwd: string): TreeNode => {
   const root: TreeNode = { segment: '', isFile: false, children: [] };
 
   for (const fileCoverage of model) {
-    const relativePath = relativize(fileCoverage.file, cwd);
-    const parts = toPosix(relativePath)
+    const relativePath = paths.relativize(fileCoverage.file, cwd);
+    const parts = paths
+      .toPosix(relativePath)
       .split('/')
       .filter((part) => part.length > 0);
 

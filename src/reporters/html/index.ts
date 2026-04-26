@@ -8,7 +8,7 @@ import type { TreeNode } from '../../@types/tree.js';
 import type { Watermarks } from '../../@types/watermarks.js';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, posix } from 'node:path';
-import { formatDatetime } from '../../utils/datetime.js';
+import { datetime } from '../../utils/datetime.js';
 import { emitDetailPages } from '../shared/html/emit-details.js';
 import {
   pagePathForDirectory,
@@ -156,7 +156,7 @@ const report: Report = (context) => {
   copyAssets(context.reportsDir);
 
   const title = 'All files';
-  const datetime = formatDatetime();
+  const formattedDatetime = datetime.format();
   const skipFull = context.options.skipFull === true;
   const skipEmpty = context.options.skipEmpty === true;
 
@@ -168,7 +168,7 @@ const report: Report = (context) => {
       istanbulByPath: byPath,
       skipFull,
       skipEmpty,
-      datetime,
+      datetime: formattedDatetime,
       runtime: context.runtime,
     },
     tree,
@@ -185,7 +185,7 @@ const report: Report = (context) => {
     istanbulByPath: byPath,
     skipFull,
     skipEmpty,
-    datetime,
+    datetime: formattedDatetime,
     runtime: context.runtime,
   });
 };

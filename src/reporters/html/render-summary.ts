@@ -5,7 +5,7 @@ import type {
 import type { Runtime } from '../../@types/reporters.js';
 import type { Metric } from '../../@types/text.js';
 import type { WatermarkMetric } from '../../@types/watermarks.js';
-import { htmlEscape } from '../../utils/html.js';
+import { html } from '../../utils/html.js';
 import { relativeHref } from '../shared/html/link-mapper.js';
 import {
   overallReportClass,
@@ -110,11 +110,11 @@ const summaryRow = (
     ? `${summaryChild.displayName}/`
     : summaryChild.displayName;
 
-  const href = htmlEscape(
+  const href = html.escape(
     relativeHref(pagePath, summaryChild.relativeLinkPath)
   );
 
-  const escapedName = htmlEscape(displayName);
+  const escapedName = html.escape(displayName);
 
   const statementsCell = summaryCell(
     summaryChild.metrics.statements,
@@ -218,7 +218,7 @@ export const renderSummaryPage = (input: HtmlSummaryPageInput): string => {
     return `${metricName}: ${formatPct(pctValue(metric))}`;
   }).join(' · ');
 
-  const signature = `<!-- ${htmlEscape(formattedTotals)} -->\n`;
+  const signature = `<!-- ${html.escape(formattedTotals)} -->\n`;
 
   return `${header}${signature}${TABLE_HEADER}\n${childRows.join('')}${TABLE_FOOTER}${footer}`;
 };

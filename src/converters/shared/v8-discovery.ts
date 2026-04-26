@@ -6,7 +6,7 @@ import type {
 import { existsSync, readdirSync } from 'node:fs';
 import { join, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { isBannedPath } from '../../utils/paths.js';
+import { paths } from '../../utils/paths.js';
 
 export const findV8JsonFiles = (tempDir: string): string[] => {
   let entries: string[];
@@ -90,7 +90,7 @@ export const resolveFilePath = (
   const cwdPrefix = cwd.endsWith(sep) ? cwd : cwd + sep;
 
   if (!absolutePath.startsWith(cwdPrefix)) return undefined;
-  if (isBannedPath(absolutePath)) return undefined;
+  if (paths.isBanned(absolutePath)) return undefined;
   if (!existsSync(absolutePath)) return undefined;
   return absolutePath;
 };

@@ -1,3 +1,4 @@
+import type { V8AggregationResult } from '../../@types/aggregation.js';
 import type { ResolvedFileFilter } from '../../@types/file-filter.js';
 import type { SourceMapInput } from '../../@types/source-map.js';
 import type {
@@ -20,12 +21,7 @@ import { passesPreRemapFilter } from '../shared/pre-remap-filter.js';
 import { sourceMapRemap } from '../shared/remap.js';
 import { sourceCache } from '../shared/source-cache.js';
 import { findV8JsonFiles, parseV8Json } from '../shared/v8-discovery.js';
-import { absorbFunctions, computeLineHits } from './extraction.js';
-
-export type V8AggregationResult = {
-  aggregations: Map<string, FileAggregation>;
-  sources: Map<string, string>;
-};
+import { v8Extraction } from './extraction.js';
 
 const recordScriptFunctions = (
   perFile: Map<string, PerFileCollection>,
@@ -107,9 +103,14 @@ const extractPerFileAggregation = (
   const sourceLength = source.length;
   const ignoredLines = ignoreDirectives.parseSource(source);
 
-  aggregation.lineHits = computeLineHits(source, syntheticScript);
+  aggregation.lineHits = v8Extraction.computeLineHits(source, syntheticScript);
 
-  absorbFunctions(aggregation, syntheticScript, lineStartTable, sourceLength);
+  v8Extraction.absorbFunctions(
+    aggregation,
+    syntheticScript,
+    lineStartTable,
+    sourceLength
+  );
   lineHits.applyIgnoredLines(aggregation.lineHits, ignoredLines);
 
   return aggregation;

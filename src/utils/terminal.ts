@@ -4,7 +4,7 @@ import process from 'node:process';
 const OSC_PREFIX = '\x1b]';
 const STRING_TERMINATOR = '\x1b\\';
 
-export const hyperlink = (
+const hyperlink = (
   text: string,
   absolutePath: string,
   lineNumber: number,
@@ -15,7 +15,7 @@ export const hyperlink = (
   return `${OSC_PREFIX}8;;${url}${STRING_TERMINATOR}${text}${OSC_PREFIX}8;;${STRING_TERMINATOR}`;
 };
 
-export const supportsHyperlinks = (): boolean => {
+const supportsHyperlinks = (): boolean => {
   if (
     process.env.NO_HYPERLINKS !== undefined &&
     process.env.NO_HYPERLINKS !== ''
@@ -63,3 +63,5 @@ export const supportsHyperlinks = (): boolean => {
 
   return false;
 };
+
+export const terminal = { hyperlink, supportsHyperlinks } as const;

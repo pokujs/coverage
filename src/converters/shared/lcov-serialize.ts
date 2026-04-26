@@ -1,5 +1,5 @@
 import type { CoverageMap, FileCoverage } from '../../@types/istanbul.js';
-import { relativize, toPosix } from '../../utils/paths.js';
+import { paths } from '../../utils/paths.js';
 
 const serializeFileRecord = (
   filePath: string,
@@ -9,7 +9,7 @@ const serializeFileRecord = (
   const record: string[] = [];
 
   record.push('TN:');
-  record.push(`SF:${toPosix(relativize(filePath, cwd))}`);
+  record.push(`SF:${paths.toPosix(paths.relativize(filePath, cwd))}`);
 
   const functionKeys = Object.keys(fileCoverage.fnMap);
   const userFunctions = functionKeys

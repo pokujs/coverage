@@ -1,8 +1,7 @@
-import type { ReporterContext } from '../../../@types/reporters.js';
-import { allFiles } from '../../../all-files.js';
-import { lcovSerialize } from '../../../converters/shared/lcov-serialize.js';
+import type { ReporterContext } from '../../../../@types/reporters.js';
+import { allFiles } from '../../../../all-files.js';
+import { lcovSerialize } from '../../../../converters/shared/lcov-serialize.js';
 import { filter } from '../filter.js';
-import { writeLcovFile } from '../writer.js';
 
 const produce = (context: ReporterContext): string => {
   const coverageMap = context.produceCoverageMap();
@@ -24,8 +23,4 @@ const produce = (context: ReporterContext): string => {
   );
 };
 
-const run = (context: ReporterContext): void => {
-  writeLcovFile(context.reportsDir, produce(context));
-};
-
-export const v8ConverterRuntime = { produce, run } as const;
+export const v8ConverterRuntime = { produce } as const;

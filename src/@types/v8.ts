@@ -76,6 +76,11 @@ export type SourceMapCacheEntry = {
   url?: string;
 };
 
+export type SourceMapPayload = {
+  sources?: unknown;
+  sourcesContent?: unknown;
+};
+
 export type SourceMapCache = Record<string, SourceMapCacheEntry>;
 
 export type V8CoverageDocument = {

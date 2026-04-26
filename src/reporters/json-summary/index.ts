@@ -12,9 +12,9 @@ import type { Metric } from '../../@types/text.js';
 import type { FileCoverage } from '../../@types/tree.js';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { relativize, toPosix } from '../../utils/paths.js';
-import { lcovonly } from '../lcovonly/index.js';
+import { paths } from '../../utils/paths.js';
 import { applyIstanbulBranches } from '../shared/file-coverage.js';
+import { lcov } from '../shared/lcov/index.js';
 import {
   aggregateLines,
   aggregateMetric,
@@ -45,10 +45,10 @@ const summarizeFile = (file: FileCoverage): FileSummary => {
 };
 
 const report: Report = (context) => {
-  const lcovOutput = lcovonly.runtimes[context.runtime].produce(context);
+  const lcovOutput = lcov.runtimes[context.runtime].produce(context);
   if (lcovOutput.length === 0) return;
 
-  const model = lcovonly.parse(lcovOutput, context.cwd);
+  const model = lcov.parse(lcovOutput, context.cwd);
   if (model.length === 0) return;
 
   applyIstanbulBranches(model, context.produceCoverageMap());
@@ -67,7 +67,8 @@ const report: Report = (context) => {
   };
 
   for (const file of model)
-    payload[toPosix(relativize(file.file, context.cwd))] = summarizeFile(file);
+    payload[paths.toPosix(paths.relativize(file.file, context.cwd))] =
+      summarizeFile(file);
 
   mkdirSync(context.reportsDir, { recursive: true });
   writeFileSync(

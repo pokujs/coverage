@@ -3,7 +3,7 @@ import { offsets } from '../../utils/offsets.js';
 import { sourceLines } from '../../utils/source-lines.js';
 import { nonExecutableLines } from '../shared/non-executable-lines.js';
 
-export const computeLineHits = (
+const computeLineHits = (
   source: string,
   script: V8ScriptCoverage
 ): Map<number, number> => {
@@ -129,7 +129,7 @@ export const computeLineHits = (
   return result;
 };
 
-export const absorbFunctions = (
+const absorbFunctions = (
   fileAggregation: FileAggregation,
   script: V8ScriptCoverage,
   lineStarts: number[],
@@ -203,3 +203,5 @@ export const absorbFunctions = (
     }
   }
 };
+
+export const v8Extraction = { computeLineHits, absorbFunctions } as const;

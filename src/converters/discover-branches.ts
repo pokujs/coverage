@@ -1,10 +1,13 @@
 import type { Node, Program } from 'acorn';
 import type { TypedNode } from '../@types/acorn-nodes.js';
 import type {
+  AppendDiscoveryInputs,
   AstArmRange,
   AstBranchEntry,
   BranchArmPosition,
   DiscoveredBranch,
+  RangeProbe,
+  ScriptCoverageData,
 } from '../@types/branch-discovery.js';
 import type { ResolvedFileFilter } from '../@types/file-filter.js';
 import type { SourceMapInput, TraceMap } from '../@types/source-map.js';
@@ -102,16 +105,6 @@ const collectBranchEntries = (programTree: Program): AstBranchEntry[] => {
   return entries;
 };
 
-type AppendDiscoveryInputs = {
-  discoveredByPath: Map<string, DiscoveredBranch[]>;
-  originalPath: string;
-  startLine: number;
-  startColumn: number;
-  endLine: number;
-  endColumn: number;
-  arms: readonly BranchArmPosition[];
-};
-
 const appendDiscovery = (inputs: AppendDiscoveryInputs): void => {
   const entry: DiscoveredBranch = {
     line: inputs.startLine,
@@ -129,8 +122,6 @@ const appendDiscovery = (inputs: AppendDiscoveryInputs): void => {
 
   existing.push(entry);
 };
-
-type RangeProbe = (originalByteOffset: number) => number;
 
 const buildIdentityProbe = (): RangeProbe => (originalByteOffset) =>
   originalByteOffset;
@@ -175,12 +166,7 @@ const buildSourceMapProbe = (
 const collectScriptRanges = (script: V8ScriptCoverage): readonly V8Range[] =>
   script.functions.flatMap((scriptFunction) => scriptFunction.ranges);
 
-type ScriptCoverageData = {
-  resolved: ResolvedScriptSource;
-  perProcessRanges: V8Range[][];
-};
-
-export const discoverBranches = (
+const run = (
   tempDir: string,
   cwd: string,
   preRemapFilter: ResolvedFileFilter
@@ -301,3 +287,5 @@ export const discoverBranches = (
 
   return discoveredByPath;
 };
+
+export const discoverBranches = { run } as const;

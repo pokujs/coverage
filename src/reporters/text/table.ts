@@ -10,7 +10,7 @@ import type {
 } from '../../@types/text.js';
 import type { CoverageModel } from '../../@types/tree.js';
 import type { Watermarks } from '../../@types/watermarks.js';
-import { hyperlink } from '../../utils/terminal.js';
+import { terminal } from '../../utils/terminal.js';
 import { colorEnabled, colorForPct, colorize } from '../shared/color.js';
 import {
   aggregateLines,
@@ -105,7 +105,7 @@ const buildUncoveredDisplay = (
 
       const linked =
         urlBuilder && absolutePath
-          ? hyperlink(
+          ? terminal.hyperlink(
               text,
               absolutePath,
               entry.kind === 'range' ? entry.range.start : entry.position.line,

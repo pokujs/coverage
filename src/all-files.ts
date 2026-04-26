@@ -1,10 +1,11 @@
 import type { CoverageMap, FileCoverage } from './@types/istanbul.js';
 import type { ReporterContext, Runtime } from './@types/reporters.js';
+import type { SourceContents } from './@types/source-discovery.js';
 import { readdirSync, readFileSync } from 'node:fs';
 import { isAbsolute, join, resolve } from 'node:path';
 import { nonExecutableLines } from './converters/shared/non-executable-lines.js';
 import { fileFilter } from './file-filter.js';
-import { relativize, toPosix } from './utils/paths.js';
+import { paths } from './utils/paths.js';
 import { sourceLines as sourceLinesUtil } from './utils/source-lines.js';
 
 const DEFAULT_SOURCE_EXTENSIONS: readonly string[] = [
@@ -104,11 +105,6 @@ const discover = (context: ReporterContext): Set<string> => {
   return collected;
 };
 
-type SourceContents = {
-  source: string;
-  lines: readonly string[];
-};
-
 const readSourceContents = (absolutePath: string): SourceContents | null => {
   try {
     const source = readFileSync(absolutePath, 'utf8');
@@ -161,7 +157,7 @@ const buildZeroLcovRecord = (
 ): string => {
   const lines: string[] = [
     'TN:',
-    `SF:${toPosix(relativize(absolutePath, cwd))}`,
+    `SF:${paths.toPosix(paths.relativize(absolutePath, cwd))}`,
     'FNF:0',
     'FNH:0',
   ];
@@ -210,7 +206,6 @@ const buildZeroFileCoverage = (
 ): FileCoverage => {
   const statementMap: FileCoverage['statementMap'] = Object.create(null);
   const statementCounts: FileCoverage['s'] = Object.create(null);
-
   const executableLineNumbers = collectExecutableLineNumbers(contents);
   const sortedLines = Array.from(executableLineNumbers).sort(
     (left, right) => left - right

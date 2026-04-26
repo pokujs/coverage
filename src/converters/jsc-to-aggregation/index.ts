@@ -8,7 +8,7 @@ import type { FileAggregation } from '../../@types/v8.js';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { fileFilter } from '../../file-filter.js';
 import { offsets } from '../../utils/offsets.js';
-import { isBannedPath } from '../../utils/paths.js';
+import { paths } from '../../utils/paths.js';
 import { sourceMapComment } from '../../utils/source-map-comment.js';
 import { traceMap } from '../../utils/source-map/index.js';
 import { astCache } from '../shared/ast-cache.js';
@@ -110,7 +110,7 @@ const run = (
     const scriptUrl = fileUrlFromScriptUrl(scriptBlocks.url);
     const absoluteScriptPath = absolutePathFromScriptUrl(scriptUrl);
 
-    if (isBannedPath(absoluteScriptPath)) continue;
+    if (paths.isBanned(absoluteScriptPath)) continue;
 
     const rawSourceMapDocument = sourceMapComment.fromSource(wrappedSource);
     if (rawSourceMapDocument === null) continue;

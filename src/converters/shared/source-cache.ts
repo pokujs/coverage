@@ -2,6 +2,7 @@ import type {
   ResolvedScriptSource,
   SourceCacheResolveInputs,
   SourceMapCacheEntry,
+  SourceMapPayload,
 } from '../../@types/v8.js';
 import { existsSync, readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
@@ -9,7 +10,7 @@ import { join } from 'node:path';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
 import { offsets } from '../../utils/offsets.js';
-import { isBannedPath } from '../../utils/paths.js';
+import { paths } from '../../utils/paths.js';
 import { sourceMapComment } from '../../utils/source-map-comment.js';
 import { resolveFilePath } from './v8-discovery.js';
 
@@ -31,11 +32,6 @@ const hasSourceMapPayload = (
 ): entry is SourceMapCacheEntry & { data: object } => {
   if (entry === undefined) return false;
   return typeof entry.data === 'object' && entry.data !== null;
-};
-
-type SourceMapPayload = {
-  sources?: unknown;
-  sourcesContent?: unknown;
 };
 
 const extractOriginalContents = (
@@ -71,7 +67,7 @@ const extractOriginalContents = (
   const cwdPrefix = cwd.endsWith('/') ? cwd : `${cwd}/`;
 
   if (!absoluteSourcePath.startsWith(cwdPrefix)) return undefined;
-  if (isBannedPath(absoluteSourcePath)) return undefined;
+  if (paths.isBanned(absoluteSourcePath)) return undefined;
 
   return { filePath: absoluteSourcePath, source: rawContent };
 };

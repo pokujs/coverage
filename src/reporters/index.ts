@@ -4,7 +4,7 @@ import type {
   ReporterContext,
   Runtime,
 } from '../@types/reporters.js';
-import { warnOnce } from '../utils/warn-once.js';
+import { warnings } from '../utils/warnings.js';
 import { clover } from './clover/index.js';
 import { cobertura } from './cobertura/index.js';
 import { htmlSpa } from './html-spa/index.js';
@@ -63,7 +63,7 @@ const run = (reporterList: Reporter[], context: ReporterContext): void => {
     const reporter = registry.get(reporterName);
 
     if (!reporter) {
-      warnOnce(
+      warnings.once(
         `unknown-${reporterName}`,
         `[@pokujs/coverage] unknown reporter "${reporterName}", skipping.`
       );

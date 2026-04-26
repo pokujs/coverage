@@ -7,9 +7,9 @@ import type { ReporterContext } from '../../@types/reporters.js';
 import type { Metric } from '../../@types/text.js';
 import type { FileCoverage } from '../../@types/tree.js';
 import { basename } from 'node:path';
-import { relativize, toPosix } from '../../utils/paths.js';
+import { paths } from '../../utils/paths.js';
 import { xml } from '../../utils/xml.js';
-import { lcovonly } from '../lcovonly/index.js';
+import { lcov } from '../shared/lcov/index.js';
 import {
   aggregateLines,
   aggregateMetric,
@@ -30,10 +30,10 @@ const sortedLineHits = (lcovFile: FileCoverage): Array<[number, number]> =>
   );
 
 export const buildFromLcov = (context: ReporterContext): string | undefined => {
-  const lcovOutput = lcovonly.runtimes[context.runtime].produce(context);
+  const lcovOutput = lcov.runtimes[context.runtime].produce(context);
   if (lcovOutput.length === 0) return undefined;
 
-  const model = lcovonly.parse(lcovOutput, context.cwd);
+  const model = lcov.parse(lcovOutput, context.cwd);
   if (model.length === 0) return undefined;
 
   const rootLines = aggregateLines(model);
@@ -86,7 +86,7 @@ export const buildFromLcov = (context: ReporterContext): string | undefined => {
 
       builder.openTag('file', {
         name: basename(lcovFile.file),
-        path: toPosix(relativize(lcovFile.file, context.cwd)),
+        path: paths.toPosix(paths.relativize(lcovFile.file, context.cwd)),
       });
 
       builder.inlineTag(

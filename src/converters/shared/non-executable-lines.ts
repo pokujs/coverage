@@ -1,4 +1,5 @@
-import type { Node, SourceLocation } from 'acorn';
+import type { Node } from 'acorn';
+import type { WithLocation } from '../../@types/acorn-nodes.js';
 import { astCache } from './ast-cache.js';
 import { astWalk } from './ast-walk.js';
 
@@ -14,8 +15,6 @@ const FUNCTION_LIKE_TYPES: ReadonlySet<string> = new Set([
   'FunctionExpression',
   'ArrowFunctionExpression',
 ]);
-
-type WithLocation = Node & { loc: SourceLocation };
 
 const hasLocation = (node: Node): node is WithLocation =>
   node.loc !== null && node.loc !== undefined;

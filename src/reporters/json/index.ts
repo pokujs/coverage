@@ -10,7 +10,7 @@ import { converters } from '../../converters/index.js';
 import { prepareCoverageMap } from '../shared/file-coverage.js';
 
 const report: Report = (context) => {
-  const coverageMap = converters.v8ToIstanbul(
+  const coverageMap = converters.v8ToIstanbul.convert(
     context.tempDir,
     context.cwd,
     context.preRemapFilter

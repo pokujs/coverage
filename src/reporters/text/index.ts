@@ -1,17 +1,17 @@
 import type { Report } from '../../@types/reporters.js';
-import { resolveUrlBuilder } from '../../utils/ide.js';
-import { lcovonly } from '../lcovonly/index.js';
+import { ide } from '../../utils/ide.js';
 import {
   applyIstanbulBranches,
   applyIstanbulFunctions,
 } from '../shared/file-coverage.js';
+import { lcov } from '../shared/lcov/index.js';
 import { renderTable } from './table.js';
 
 const report: Report = (context) => {
-  const lcovOutput = lcovonly.runtimes[context.runtime].produce(context);
+  const lcovOutput = lcov.runtimes[context.runtime].produce(context);
   if (lcovOutput.length === 0) return;
 
-  const model = lcovonly.parse(lcovOutput, context.cwd);
+  const model = lcov.parse(lcovOutput, context.cwd);
   if (model.length === 0) return;
 
   const coverageMap = context.produceCoverageMap();
@@ -19,7 +19,7 @@ const report: Report = (context) => {
   applyIstanbulBranches(model, coverageMap);
   applyIstanbulFunctions(model, coverageMap);
 
-  const urlBuilder = resolveUrlBuilder(context.options.hyperlinks);
+  const urlBuilder = ide.resolveUrlBuilder(context.options.hyperlinks);
 
   const table = renderTable(
     model,
