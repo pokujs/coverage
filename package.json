@@ -69,7 +69,7 @@
     "domhandler": "^6.0.1",
     "dts-bundle-generator": "^9.5.1",
     "esbuild": "^0.28.0",
-    "fast-xml-parser": "^5.7.1",
+    "fast-xml-parser": "^5.7.2",
     "htmlparser2": "^12.0.0",
     "lcov-parse": "^1.0.0",
     "packages-update": "^2.0.0",
