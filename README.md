@@ -429,6 +429,28 @@ poku --coverage test/
 > - For config file discovery: `--coverageConfig` (**CLI**) > `config` (plugin option) > auto-discovery
 > - For coverage options: plugin options > config file options
 
+### Using with `@pokujs/multi-suite`
+
+Place the `coverage` plugin at the **root level**, before `multiSuite`:
+
+```js
+import { coverage } from '@pokujs/coverage';
+import { multiSuite } from '@pokujs/multi-suite';
+import { defineConfig } from 'poku';
+
+export default defineConfig({
+  plugins: [
+    coverage({ include: ['src/**'] }),
+    multiSuite([
+      defineConfig({ include: ['test/unit'], concurrency: 8 }),
+      defineConfig({ include: ['test/e2e'], sequential: true }),
+    ]),
+  ],
+});
+```
+
+> Since `coverage` sets `NODE_V8_COVERAGE` during `setup`, every test process across all sub-suites writes to the same temp directory — `teardown` then merges everything into a single report.
+
 ---
 
 ## 🍞 Why Bun Users Should Care
