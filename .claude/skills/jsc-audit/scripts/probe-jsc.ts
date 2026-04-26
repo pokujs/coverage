@@ -31,11 +31,19 @@
  *   - flat:   <jsc-dir>/*.jsc.json
  *   - nested: <jsc-dir>/<sub>/*.jsc.json
  */
-import type { SourceMapInput } from '@jridgewell/trace-mapping';
+import type {
+  GeneratedMapping,
+  InvalidGeneratedMapping,
+  SourceMapInput,
+} from '@jridgewell/trace-mapping';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { isAbsolute, join, relative, resolve } from 'node:path';
 import process from 'node:process';
-import { generatedPositionFor, TraceMap } from '@jridgewell/trace-mapping';
+import {
+  generatedPositionFor,
+  LEAST_UPPER_BOUND,
+  TraceMap,
+} from '@jridgewell/trace-mapping';
 
 type JscBasicBlock = {
   startOffset: number;
@@ -199,6 +207,34 @@ for (const lineText of transpiledLines) {
   transpiledLineStarts.push(cumulativeOffset);
 }
 
+const mapColumnRobust = (
+  originalLine: number,
+  originalColumn: number
+): GeneratedMapping | InvalidGeneratedMapping => {
+  const greatestLowerBound = generatedPositionFor(traceMap, {
+    source: sourceUrl,
+    line: originalLine,
+    column: originalColumn,
+  });
+  if (greatestLowerBound.line !== null) return greatestLowerBound;
+
+  return generatedPositionFor(traceMap, {
+    source: sourceUrl,
+    line: originalLine,
+    column: originalColumn,
+    bias: LEAST_UPPER_BOUND,
+  });
+};
+
+const transpiledOffsetForMapping = (mapping: GeneratedMapping): number =>
+  transpiledLineStarts[mapping.line - 1] + mapping.column;
+
+const lineEndOffset = (transpiledLine: number): number => {
+  const nextLineStart = transpiledLineStarts[transpiledLine];
+  if (nextLineStart === undefined) return located.dump.source.length;
+  return nextLineStart - 1;
+};
+
 const formatIntersectingBlocks = (
   probeStart: number,
   probeEnd: number
@@ -235,34 +271,54 @@ for (const lineNumber of targetLines) {
     console.log('  Empty line (no executable position to probe)');
     continue;
   }
-  const firstNonWhitespaceCol = lineText.search(/\S/);
-  if (firstNonWhitespaceCol < 0) {
+  const firstNonWhitespaceColumn = lineText.search(/\S/);
+  if (firstNonWhitespaceColumn < 0) {
     console.log('  Whitespace-only line');
     continue;
   }
-  const lastNonWhitespaceCol = lineText.replace(/\s+$/, '').length - 1;
+  const lastNonWhitespaceColumn = lineText.replace(/\s+$/, '').length - 1;
 
-  const generatedStart = generatedPositionFor(traceMap, {
-    source: sourceUrl,
-    line: lineNumber,
-    column: firstNonWhitespaceCol,
-  });
-  const generatedEnd = generatedPositionFor(traceMap, {
-    source: sourceUrl,
-    line: lineNumber,
-    column: Math.max(lastNonWhitespaceCol, firstNonWhitespaceCol),
-  });
+  const mappingStart = mapColumnRobust(lineNumber, firstNonWhitespaceColumn);
+  const mappingEnd = mapColumnRobust(
+    lineNumber,
+    Math.max(lastNonWhitespaceColumn, firstNonWhitespaceColumn)
+  );
 
-  if (generatedStart.line === null || generatedEnd.line === null) {
+  if (mappingStart.line === null && mappingEnd.line === null) {
     console.log('  Could not map original position to transpiled source');
     continue;
   }
 
-  const probeStart =
-    transpiledLineStarts[generatedStart.line - 1] + generatedStart.column;
-  const probeEnd =
-    transpiledLineStarts[generatedEnd.line - 1] + generatedEnd.column + 1;
+  const annotations: string[] = [];
+  let probeStart: number;
+  let probeEnd: number;
 
-  console.log(`  Mapped to transpiled offsets [${probeStart}, ${probeEnd}]`);
+  if (mappingStart.line !== null && mappingEnd.line === null) {
+    probeStart = transpiledOffsetForMapping(mappingStart);
+    probeEnd = lineEndOffset(mappingStart.line);
+    annotations.push('end-clamped');
+  } else if (mappingStart.line === null && mappingEnd.line !== null) {
+    probeStart = transpiledLineStarts[mappingEnd.line - 1];
+    probeEnd = transpiledOffsetForMapping(mappingEnd) + 1;
+    annotations.push('start-clamped');
+  } else {
+    const validStart = mappingStart as GeneratedMapping;
+    const validEnd = mappingEnd as GeneratedMapping;
+    probeStart = transpiledOffsetForMapping(validStart);
+    const rawProbeEnd = transpiledOffsetForMapping(validEnd) + 1;
+    const startLineEnd = lineEndOffset(validStart.line);
+    if (rawProbeEnd > startLineEnd) {
+      probeEnd = startLineEnd;
+      annotations.push('cross-line clamped');
+    } else {
+      probeEnd = rawProbeEnd;
+    }
+  }
+
+  const annotationSuffix =
+    annotations.length === 0 ? '' : ` (${annotations.join(', ')})`;
+  console.log(
+    `  Mapped to transpiled offsets [${probeStart}, ${probeEnd}]${annotationSuffix}`
+  );
   formatIntersectingBlocks(probeStart, probeEnd);
 }

@@ -12,11 +12,18 @@ export type JscBasicBlock = {
   executionCount: number;
 };
 
+export type JscBreakableLocation = {
+  scriptId: string;
+  lineNumber: number;
+  columnNumber?: number;
+};
+
 export type JscScriptBlocks = {
   url: string;
   scriptId: string;
   source: string;
   blocks: JscBasicBlock[];
+  breakablePositions?: JscBreakableLocation[];
 };
 
 export type JscFunctionContainer = {
@@ -49,6 +56,7 @@ export type JscInspectorResponse = {
   result?: {
     basicBlocks?: JscBasicBlock[];
     scriptSource?: string;
+    locations?: JscBreakableLocation[];
   };
   error?: {
     code: number;

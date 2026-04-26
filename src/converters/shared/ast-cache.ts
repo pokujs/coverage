@@ -2,7 +2,12 @@ import type { Options, Program } from 'acorn';
 import { tsPlugin } from '@sveltejs/acorn-typescript';
 import { Parser } from 'acorn';
 
-const TypeScriptParser = Parser.extend(tsPlugin());
+const TypeScriptParser = Parser.extend(
+  tsPlugin({
+    dts: false,
+    jsx: true,
+  })
+);
 
 const ACORN_OPTIONS: Options = {
   ecmaVersion: 'latest',

@@ -55,6 +55,7 @@ const inferName = (parent: Node | undefined, functionNode: Node): string => {
     typedFunction.id !== null
   ) {
     const ownId = typedFunction.id as TypedNode;
+
     if (ownId.type === 'Identifier') return ownId.name;
   }
 
@@ -64,12 +65,14 @@ const inferName = (parent: Node | undefined, functionNode: Node): string => {
 
   if (typedParent.type === 'VariableDeclarator') {
     const id = typedParent.id as TypedNode;
+
     if (id.type === 'Identifier') return id.name;
     return '';
   }
 
   if (typedParent.type === 'AssignmentExpression') {
     const left = typedParent.left as TypedNode;
+
     if (left.type === 'Identifier') return left.name;
     if (left.type === 'MemberExpression') return readKeyName(left.property);
     return '';
@@ -323,6 +326,19 @@ const findLineIndex = (
   return low;
 };
 
+const buildBreakableLineSet = (
+  scriptBlocks: JscScriptBlocks
+): Set<number> | undefined => {
+  if (scriptBlocks.breakablePositions === undefined) return undefined;
+
+  const breakableLines = new Set<number>();
+
+  for (const breakableLocation of scriptBlocks.breakablePositions)
+    breakableLines.add(breakableLocation.lineNumber + 1);
+
+  return breakableLines;
+};
+
 const computeLineHitsFromBlocks = (
   scriptBlocks: JscScriptBlocks,
   functionContainers: readonly JscFunctionContainer[],
@@ -333,6 +349,7 @@ const computeLineHitsFromBlocks = (
   const functionContainerList = functionContainers.filter(
     (container) => !container.isModuleFunction
   );
+  const breakableLineSet = buildBreakableLineSet(scriptBlocks);
 
   const isFunctionRangeBlock = (basicBlock: JscBasicBlock): boolean => {
     for (const container of functionContainerList) {
@@ -346,10 +363,76 @@ const computeLineHitsFromBlocks = (
     return false;
   };
 
+  const eligibleBlocks: JscBasicBlock[] = [];
   for (const basicBlock of scriptBlocks.blocks) {
     if (basicBlock.endOffset <= basicBlock.startOffset) continue;
     if (isFunctionRangeBlock(basicBlock)) continue;
+    eligibleBlocks.push(basicBlock);
+  }
 
+  const positiveMaxByLine = new Map<number, number>();
+  const linesWithContradictingZero = new Set<number>();
+
+  if (breakableLineSet !== undefined) {
+    for (const basicBlock of eligibleBlocks) {
+      const hasExecuted =
+        basicBlock.hasExecuted || basicBlock.executionCount > 0;
+      const blockSpan = basicBlock.endOffset - basicBlock.startOffset;
+      const linesTouched = new Set<number>();
+
+      for (
+        let byteOffset = basicBlock.startOffset;
+        byteOffset < basicBlock.endOffset;
+        byteOffset++
+      ) {
+        const lineIndex = findLineIndex(lineStartTable, byteOffset);
+        const lineStartByteOffset = lineStartTable[lineIndex];
+
+        if (lineStartByteOffset >= byteOffset) continue;
+
+        const lineNumber = lineIndex + 1;
+
+        if (lineNumber < 1 || lineNumber > totalLines) continue;
+        if (breakableLineSet.has(lineNumber)) continue;
+
+        linesTouched.add(lineNumber);
+      }
+
+      if (linesTouched.size === 0) continue;
+
+      if (hasExecuted) {
+        for (const lineNumber of linesTouched) {
+          const previousMax = positiveMaxByLine.get(lineNumber) ?? 0;
+
+          if (basicBlock.executionCount > previousMax)
+            positiveMaxByLine.set(lineNumber, basicBlock.executionCount);
+        }
+
+        continue;
+      }
+
+      for (const lineNumber of linesTouched) {
+        for (const otherBlock of eligibleBlocks) {
+          if (otherBlock === basicBlock) continue;
+
+          const otherHasExecuted =
+            otherBlock.hasExecuted || otherBlock.executionCount > 0;
+
+          if (!otherHasExecuted) continue;
+          if (otherBlock.startOffset > basicBlock.startOffset) continue;
+          if (otherBlock.endOffset < basicBlock.endOffset) continue;
+
+          const otherSpan = otherBlock.endOffset - otherBlock.startOffset;
+          if (otherSpan <= blockSpan) continue;
+
+          linesWithContradictingZero.add(lineNumber);
+          break;
+        }
+      }
+    }
+  }
+
+  for (const basicBlock of eligibleBlocks) {
     const hasExecuted = basicBlock.hasExecuted || basicBlock.executionCount > 0;
     const min = Math.min(basicBlock.startOffset, basicBlock.endOffset);
     const max = Math.max(basicBlock.startOffset, basicBlock.endOffset);
@@ -362,6 +445,15 @@ const computeLineHitsFromBlocks = (
 
       const lineNumber = lineIndex + 1;
       if (lineNumber < 1 || lineNumber > totalLines) continue;
+
+      if (breakableLineSet !== undefined && !breakableLineSet.has(lineNumber)) {
+        if (lineHits.has(lineNumber)) continue;
+        const positiveMax = positiveMaxByLine.get(lineNumber) ?? 0;
+        if (positiveMax === 0) continue;
+        if (linesWithContradictingZero.has(lineNumber)) continue;
+        lineHits.set(lineNumber, positiveMax);
+        continue;
+      }
 
       const existing = lineHits.get(lineNumber);
 
