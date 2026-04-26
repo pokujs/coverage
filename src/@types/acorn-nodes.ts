@@ -99,13 +99,16 @@ export type LoopStatementNode = Node & {
     | 'WhileStatement'
     | 'DoWhileStatement';
   body: Node;
+  test?: Node;
 };
 
 export type CatchClauseNode = Node & { type: 'CatchClause'; body: Node };
 
 export type TryStatementNode = Node & {
   type: 'TryStatement';
+  block: Node;
   handler: CatchClauseNode | null;
+  finalizer: Node | null;
 };
 
 export type TypedNode =

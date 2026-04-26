@@ -13,6 +13,7 @@ import { offsets } from '../../utils/offsets.js';
 import { traceMap } from '../../utils/source-map/index.js';
 import { v8Merge } from '../../utils/v8-merge/merge.js';
 import { astCache } from '../shared/ast-cache.js';
+import { boundaryLines } from '../shared/boundary-lines.js';
 import { branchBlocks } from '../shared/branch-blocks.js';
 import { functionNames } from '../shared/function-names.js';
 import { ignoreDirectives } from '../shared/ignore-directives.js';
@@ -104,13 +105,13 @@ const extractPerFileAggregation = (
   const ignoredLines = ignoreDirectives.parseSource(source);
 
   aggregation.lineHits = v8Extraction.computeLineHits(source, syntheticScript);
-
   v8Extraction.absorbFunctions(
     aggregation,
     syntheticScript,
     lineStartTable,
     sourceLength
   );
+  boundaryLines.fix(aggregation, source);
   lineHits.applyIgnoredLines(aggregation.lineHits, ignoredLines);
 
   return aggregation;
