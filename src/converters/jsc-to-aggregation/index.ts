@@ -1,6 +1,7 @@
 import type { ResolvedFileFilter } from '../../@types/file-filter.js';
 import type {
   JscAggregationResult,
+  JscBasicBlock,
   JscScriptBlocks,
 } from '../../@types/jsc.js';
 import type { SourceMapDocument } from '../../@types/source-map.js';
@@ -71,11 +72,29 @@ const resolveModuleCountFromAggregation = (
   return moduleCount;
 };
 
+const resolveModuleCountFromRawBlocks = (
+  rawBlocks: readonly JscBasicBlock[],
+  wrappedLength: number
+): number => {
+  let moduleCount = 0;
+
+  for (const basicBlock of rawBlocks) {
+    if (basicBlock.startOffset !== 0) continue;
+    if (basicBlock.endOffset < wrappedLength - 1) continue;
+    if (basicBlock.executionCount > moduleCount)
+      moduleCount = basicBlock.executionCount;
+  }
+
+  return moduleCount;
+};
+
 const applyModuleCountFallback = (
   aggregation: FileAggregation,
-  diskSource: string
+  diskSource: string,
+  rawModuleCount: number
 ): void => {
-  const moduleCount = resolveModuleCountFromAggregation(aggregation);
+  const aggregationModuleCount = resolveModuleCountFromAggregation(aggregation);
+  const moduleCount = Math.max(aggregationModuleCount, rawModuleCount);
   if (moduleCount === 0) return;
 
   const totalLines = diskSource.split('\n').length;
@@ -103,6 +122,7 @@ const run = (
   const blocksFiles = jscDiscovery.findBlocksFiles(tempDir);
   const fileAggregations = new Map<string, FileAggregation>();
   const diskSourceByPath = new Map<string, string>();
+  const rawModuleCountByPath = new Map<string, number>();
 
   for (const blocksPath of blocksFiles) {
     const scriptBlocks = jscDiscovery.parseBlocksFile(blocksPath);
@@ -241,6 +261,14 @@ const run = (
     } else {
       mergeAggregation(existingAggregation, diskAggregation);
     }
+
+    const rawModuleCount = resolveModuleCountFromRawBlocks(
+      scriptBlocks.blocks,
+      wrappedLength
+    );
+    const previousRawModuleCount = rawModuleCountByPath.get(diskPath) ?? 0;
+    if (rawModuleCount > previousRawModuleCount)
+      rawModuleCountByPath.set(diskPath, rawModuleCount);
   }
 
   for (const [diskPath, aggregation] of fileAggregations) {
@@ -263,7 +291,8 @@ const run = (
         `(anonymous_${anonymousIndex + 1})`;
     }
 
-    applyModuleCountFallback(aggregation, diskSource);
+    const rawModuleCount = rawModuleCountByPath.get(diskPath) ?? 0;
+    applyModuleCountFallback(aggregation, diskSource, rawModuleCount);
 
     const diskLineStartTable = offsets.lineStarts(diskSource);
     const diskContentExtents = offsets.lineContentExtents(
