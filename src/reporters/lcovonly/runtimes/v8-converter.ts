@@ -1,12 +1,15 @@
 import type { ReporterContext } from '../../../@types/reporters.js';
 import { allFiles } from '../../../all-files.js';
-import { converters } from '../../../converters/index.js';
+import { lcovSerialize } from '../../../converters/shared/lcov-serialize.js';
 import { filter } from '../filter.js';
 import { writeLcovFile } from '../writer.js';
 
 const produce = (context: ReporterContext): string => {
+  const coverageMap = context.produceCoverageMap();
+  if (coverageMap === null) return '';
+
   const filtered = filter(
-    converters.v8ToLcov(context.tempDir, context.cwd, context.preRemapFilter),
+    lcovSerialize.fromCoverageMap(coverageMap, context.cwd),
     context.testFiles,
     context.cwd,
     context.fileFilter

@@ -1,9 +1,13 @@
-import type { Program } from 'acorn';
-import { parse as acornParse } from 'acorn';
+import type { Options, Program } from 'acorn';
+import { tsPlugin } from '@sveltejs/acorn-typescript';
+import { Parser } from 'acorn';
 
-const ACORN_OPTIONS = {
+const TypeScriptParser = Parser.extend(tsPlugin());
+
+const ACORN_OPTIONS: Options = {
   ecmaVersion: 'latest',
   sourceType: 'module',
+  locations: true,
   allowHashBang: true,
   allowAwaitOutsideFunction: true,
   allowImportExportEverywhere: true,
@@ -19,7 +23,7 @@ const parse = (source: string): Program | null => {
 
   let program: Program | null;
   try {
-    program = acornParse(source, ACORN_OPTIONS);
+    program = TypeScriptParser.parse(source, ACORN_OPTIONS) as Program;
   } catch {
     program = null;
   }

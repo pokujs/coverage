@@ -5,27 +5,20 @@ const isArmCovered = (
   armEnd: number,
   allScriptRanges: readonly V8Range[]
 ): boolean => {
-  const armWidth = armEnd - armStart;
-  const midpoint =
-    armWidth > 0 ? armStart + Math.floor(armWidth / 2) : armStart;
-
-  let innermostRange: V8Range | null = null;
-  let innermostSpan = Number.POSITIVE_INFINITY;
+  const armWidth = Math.max(armEnd - armStart, 0);
 
   for (const candidateRange of allScriptRanges) {
-    if (candidateRange.startOffset > midpoint) continue;
-    if (candidateRange.endOffset <= midpoint) continue;
+    if (candidateRange.count > 0) continue;
+    if (candidateRange.startOffset > armStart) continue;
+    if (candidateRange.endOffset < armEnd) continue;
 
     const candidateSpan = candidateRange.endOffset - candidateRange.startOffset;
+    if (candidateSpan < armWidth) continue;
 
-    if (candidateSpan < innermostSpan) {
-      innermostSpan = candidateSpan;
-      innermostRange = candidateRange;
-    }
+    return false;
   }
 
-  if (innermostRange === null) return true;
-  return innermostRange.count > 0;
+  return true;
 };
 
 export const armCoverage = { isArmCovered } as const;

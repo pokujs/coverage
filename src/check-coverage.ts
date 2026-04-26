@@ -151,11 +151,7 @@ const run = (context: ReporterContext): void => {
   const model = lcovonly.parse(lcovOutput, context.cwd);
   if (model.length === 0) return;
 
-  applyIstanbulBranches(
-    model,
-    context.produceCoverageMap(),
-    context.produceBranchDiscoveries()
-  );
+  applyIstanbulBranches(model, context.produceCoverageMap());
 
   const failures = collectFailures(
     model,

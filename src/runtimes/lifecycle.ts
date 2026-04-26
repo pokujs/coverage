@@ -9,6 +9,7 @@ import { join, resolve } from 'node:path';
 import process from 'node:process';
 import { checkCoverage } from '../check-coverage.js';
 import { converters } from '../converters/index.js';
+import { discoveryMerge } from '../converters/shared/discovery-merge.js';
 import { fileFilter } from '../file-filter.js';
 import { reporters } from '../reporters/index.js';
 import { prepareCoverageMap } from '../reporters/shared/file-coverage.js';
@@ -104,9 +105,6 @@ export const teardown = (
       new Map();
 
     let cachedCoverageMap: CoverageMap | null | undefined;
-    let cachedBranchDiscoveries:
-      | ReadonlyMap<string, readonly DiscoveredBranch[]>
-      | undefined;
 
     const reporterContext: ReporterContext = {
       runtime,
@@ -120,7 +118,6 @@ export const teardown = (
       preRemapFilter: shouldFilterBeforeRemap ? userFilter : emptyFilter,
       userFilter,
       produceCoverageMap: () => null,
-      produceBranchDiscoveries: () => emptyDiscoveries,
     };
 
     reporterContext.produceCoverageMap = () => {
@@ -141,15 +138,7 @@ export const teardown = (
 
       prepareCoverageMap(coverageMap, reporterContext);
 
-      cachedCoverageMap = coverageMap;
-
-      return coverageMap;
-    };
-
-    reporterContext.produceBranchDiscoveries = () => {
-      if (cachedBranchDiscoveries !== undefined) return cachedBranchDiscoveries;
-
-      cachedBranchDiscoveries =
+      const discoveries =
         runtime === 'bun'
           ? emptyDiscoveries
           : converters.discoverBranches(
@@ -157,8 +146,11 @@ export const teardown = (
               context.cwd,
               reporterContext.preRemapFilter
             );
+      discoveryMerge.apply(coverageMap, discoveries);
 
-      return cachedBranchDiscoveries;
+      cachedCoverageMap = coverageMap;
+
+      return coverageMap;
     };
 
     if (reporterList.length > 0) reporters.run(reporterList, reporterContext);

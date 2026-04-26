@@ -8,6 +8,9 @@ export type BranchArmPosition = {
 
 export type DiscoveredBranch = {
   line: number;
+  column: number;
+  endLine: number;
+  endColumn: number;
   arms: readonly BranchArmPosition[];
 };
 
@@ -18,6 +21,7 @@ export type AstArmRange = {
 
 export type AstBranchEntry = {
   nodeStart: number;
+  nodeEnd: number;
   armStarts: readonly number[];
   armEnds: readonly number[];
 };

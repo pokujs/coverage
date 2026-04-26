@@ -1,7 +1,10 @@
 import type { Report } from '../../@types/reporters.js';
 import { resolveUrlBuilder } from '../../utils/ide.js';
 import { lcovonly } from '../lcovonly/index.js';
-import { applyIstanbulBranches } from '../shared/file-coverage.js';
+import {
+  applyIstanbulBranches,
+  applyIstanbulFunctions,
+} from '../shared/file-coverage.js';
 import { renderTable } from './table.js';
 
 const report: Report = (context) => {
@@ -11,11 +14,10 @@ const report: Report = (context) => {
   const model = lcovonly.parse(lcovOutput, context.cwd);
   if (model.length === 0) return;
 
-  applyIstanbulBranches(
-    model,
-    context.produceCoverageMap(),
-    context.produceBranchDiscoveries()
-  );
+  const coverageMap = context.produceCoverageMap();
+
+  applyIstanbulBranches(model, coverageMap);
+  applyIstanbulFunctions(model, coverageMap);
 
   const urlBuilder = resolveUrlBuilder(context.options.hyperlinks);
 
@@ -31,7 +33,6 @@ const report: Report = (context) => {
 
   if (table.length === 0) return;
 
-  console.log('');
   console.log(table);
 };
 

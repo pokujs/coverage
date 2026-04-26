@@ -62,12 +62,12 @@ export type FunctionEntry = {
   isBlockCoverage: boolean;
   isModuleFunction: boolean;
   subRanges: Map<string, SubRangeEntry>;
-  blocks: BranchBlockEntry[];
 };
 
 export type FileAggregation = {
   lineHits: Map<number, number>;
   functions: Map<string, FunctionEntry>;
+  blocks: BranchBlockEntry[];
 };
 
 export type SourceMapCacheEntry = {
@@ -88,6 +88,7 @@ export type ResolvedScriptSource = {
   source: string;
   sourceMapData: unknown;
   sourceMapUrl: string;
+  transpiledLineStarts: number[];
 };
 
 export type SourceCacheResolveInputs = {

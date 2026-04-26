@@ -3,10 +3,12 @@ import { generateDtsBundle } from 'dts-bundle-generator';
 import * as esbuild from 'esbuild';
 import packageJson from '../package.json' with { type: 'json' };
 
+const INLINE_DEPENDENCIES = new Set(['@sveltejs/acorn-typescript']);
+
 const external = [
   ...Object.keys(packageJson.dependencies ?? Object.create(null)),
   ...Object.keys(packageJson.peerDependencies ?? Object.create(null)),
-];
+].filter((dependencyName) => !INLINE_DEPENDENCIES.has(dependencyName));
 
 const [dtsBundle] = generateDtsBundle(
   [

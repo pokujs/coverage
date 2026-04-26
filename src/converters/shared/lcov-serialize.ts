@@ -1,9 +1,9 @@
-import type { FileAggregation } from '../../@types/v8.js';
+import type { CoverageMap, FileCoverage } from '../../@types/istanbul.js';
 import { relativize, toPosix } from '../../utils/paths.js';
 
 const serializeFileRecord = (
   filePath: string,
-  aggregation: FileAggregation,
+  fileCoverage: FileCoverage,
   cwd: string
 ): string => {
   const record: string[] = [];
@@ -11,24 +11,39 @@ const serializeFileRecord = (
   record.push('TN:');
   record.push(`SF:${toPosix(relativize(filePath, cwd))}`);
 
-  const userFunctions = Array.from(aggregation.functions.values())
-    .filter((functionEntry) => !functionEntry.isModuleFunction)
-    .sort((left, right) => left.line - right.line);
+  const functionKeys = Object.keys(fileCoverage.fnMap);
+  const userFunctions = functionKeys
+    .map((functionKey) => {
+      const entry = fileCoverage.fnMap[functionKey];
+      const hits = fileCoverage.f[functionKey] ?? 0;
+      return { entry, hits };
+    })
+    .sort((left, right) => left.entry.line - right.entry.line);
 
   for (const userFunction of userFunctions)
-    record.push(`FN:${userFunction.line},${userFunction.name}`);
+    record.push(`FN:${userFunction.entry.line},${userFunction.entry.name}`);
 
   record.push(`FNF:${userFunctions.length}`);
   record.push(
-    `FNH:${
-      userFunctions.filter((userFunction) => userFunction.outerCount > 0).length
-    }`
+    `FNH:${userFunctions.filter((userFunction) => userFunction.hits > 0).length}`
   );
 
   for (const userFunction of userFunctions)
-    record.push(`FNDA:${userFunction.outerCount},${userFunction.name}`);
+    record.push(`FNDA:${userFunction.hits},${userFunction.entry.name}`);
 
-  const sortedLines = Array.from(aggregation.lineHits.entries()).sort(
+  const linesByNumber = new Map<number, number>();
+
+  for (const statementKey of Object.keys(fileCoverage.statementMap)) {
+    const entry = fileCoverage.statementMap[statementKey];
+    const hits = fileCoverage.s[statementKey] ?? 0;
+    const lineNumber = entry.start.line;
+    const previous = linesByNumber.get(lineNumber);
+
+    if (previous === undefined || previous < hits)
+      linesByNumber.set(lineNumber, hits);
+  }
+
+  const sortedLines = Array.from(linesByNumber.entries()).sort(
     (left, right) => left[0] - right[0]
   );
 
@@ -38,33 +53,22 @@ const serializeFileRecord = (
   record.push(`LF:${sortedLines.length}`);
   record.push(`LH:${sortedLines.filter(([, hits]) => hits > 0).length}`);
 
-  const branchFunctions = Array.from(aggregation.functions.values())
-    .filter(
-      (functionEntry) =>
-        functionEntry.isBlockCoverage && functionEntry.blocks.length > 0
-    )
-    .sort((left, right) => left.line - right.line);
-
+  const branchKeys = Object.keys(fileCoverage.branchMap);
   let branchesFound = 0;
   let branchesHit = 0;
-  let blockId = 0;
 
-  for (const branchFunction of branchFunctions) {
-    const sortedBlocks = [...branchFunction.blocks].sort(
-      (left, right) => left.order - right.order
-    );
+  for (let blockId = 0; blockId < branchKeys.length; blockId++) {
+    const branchKey = branchKeys[blockId];
+    const armCounts = fileCoverage.b[branchKey] ?? [];
+    const entry = fileCoverage.branchMap[branchKey];
 
-    for (const block of sortedBlocks) {
-      for (let armIndex = 0; armIndex < block.arms.length; armIndex++) {
-        const arm = block.arms[armIndex];
+    for (let armIndex = 0; armIndex < entry.locations.length; armIndex++) {
+      const armCount = armCounts[armIndex] ?? 0;
+      const armLine = entry.locations[armIndex].start.line;
 
-        record.push(
-          `BRDA:${arm.line},${blockId},${armIndex},${arm.takenCount}`
-        );
-        branchesFound++;
-        if (arm.takenCount > 0) branchesHit++;
-      }
-      blockId++;
+      record.push(`BRDA:${armLine},${blockId},${armIndex},${armCount}`);
+      branchesFound++;
+      if (armCount > 0) branchesHit++;
     }
   }
 
@@ -75,25 +79,20 @@ const serializeFileRecord = (
   return record.join('\n');
 };
 
-const serialize = (
-  fileAggregations: Map<string, FileAggregation>,
-  cwd: string
-): string => {
-  if (fileAggregations.size === 0) return '';
+const fromCoverageMap = (coverageMap: CoverageMap, cwd: string): string => {
+  const filePaths = Object.keys(coverageMap).sort();
+  if (filePaths.length === 0) return '';
 
   const chunks: string[] = [];
-  const sortedFilePaths = Array.from(fileAggregations.keys()).sort();
 
-  for (const filePath of sortedFilePaths) {
-    const aggregation = fileAggregations.get(filePath);
-    if (!aggregation) continue;
-    if (aggregation.lineHits.size === 0 && aggregation.functions.size === 0)
-      continue;
+  for (const filePath of filePaths) {
+    const fileCoverage = coverageMap[filePath];
+    if (Object.keys(fileCoverage.statementMap).length === 0) continue;
 
-    chunks.push(serializeFileRecord(filePath, aggregation, cwd));
+    chunks.push(serializeFileRecord(filePath, fileCoverage, cwd));
   }
 
   return chunks.length === 0 ? '' : chunks.join('\n') + '\n';
 };
 
-export const lcovSerialize = { serialize } as const;
+export const lcovSerialize = { fromCoverageMap } as const;

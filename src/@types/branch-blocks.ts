@@ -16,6 +16,8 @@ export type PendingBlock = {
 
 export type BranchArmEntry = {
   line: number;
+  startOffset: number;
+  endOffset: number;
   takenCount: number;
 };
 

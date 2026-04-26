@@ -50,6 +50,9 @@ const mergeAggregation = (
 
     target.functions.set(key, functionEntry);
   }
+
+  if (source.blocks.length > 0 && target.blocks.length === 0)
+    target.blocks = source.blocks;
 };
 
 const resolveModuleCountFromAggregation = (
@@ -162,6 +165,7 @@ const run = (
     const wrappedAggregation: FileAggregation = {
       lineHits: new Map(),
       functions: new Map(),
+      blocks: [],
     };
 
     lineHits.merge(
@@ -214,9 +218,20 @@ const run = (
     const diskSource = diskSourceByPath.get(diskPath);
     if (diskSource === undefined) continue;
 
-    for (const [key, functionEntry] of aggregation.functions) {
-      if (functionEntry.isModuleFunction) continue;
-      if (functionEntry.name === '') aggregation.functions.delete(key);
+    const anonymousEntries = Array.from(aggregation.functions.values())
+      .filter(
+        (functionEntry) =>
+          !functionEntry.isModuleFunction && functionEntry.name === ''
+      )
+      .sort((left, right) => left.startOffset - right.startOffset);
+
+    for (
+      let anonymousIndex = 0;
+      anonymousIndex < anonymousEntries.length;
+      anonymousIndex++
+    ) {
+      anonymousEntries[anonymousIndex].name =
+        `(anonymous_${anonymousIndex + 1})`;
     }
 
     applyModuleCountFallback(aggregation, diskSource);

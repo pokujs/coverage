@@ -73,6 +73,7 @@ export const buildHtmlSpaNode = (
             lines: { total: null, hit: null },
             uncoveredRanges: [],
             uncoveredBranchPositions: [],
+            uncoveredFunctionPositions: [],
           },
           input.resolvedWatermarks
         ),

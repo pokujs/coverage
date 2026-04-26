@@ -169,7 +169,7 @@ const injectBaselineRanges = (
 };
 
 const project = (inputs: RemapInputs): RemappedScriptEntry[] => {
-  const transpiledLineStarts = offsets.lineStarts(inputs.transpiledSource);
+  const transpiledLineStarts = inputs.transpiledLineStarts;
   const stateMap = new Map<string, OriginalFileState>();
   const baselineCount = baselineCountForScript(inputs.script);
 

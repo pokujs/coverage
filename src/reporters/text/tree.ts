@@ -34,14 +34,29 @@ export const walkTree = (
 
     if (child.isFile && child.file) {
       const fileLines = linesMetric(child.file.lineHits);
-      const branchPositionLines = new Set<number>();
+      const positionalLines = new Set<number>();
 
       for (const position of child.file.uncoveredBranchPositions)
-        branchPositionLines.add(position.line);
+        positionalLines.add(position.line);
+      for (const position of child.file.uncoveredFunctionPositions)
+        positionalLines.add(position.line);
 
       const uncoveredLineNumbers = extractUncoveredLines(
         child.file.lineHits
-      ).filter((lineNumber) => !branchPositionLines.has(lineNumber));
+      ).filter((lineNumber) => !positionalLines.has(lineNumber));
+
+      const totalExecutable = child.file.lineHits.size;
+      const uncoveredRanges =
+        totalExecutable > 0 &&
+        uncoveredLineNumbers.length === totalExecutable &&
+        uncoveredLineNumbers.length > 0
+          ? [
+              {
+                start: uncoveredLineNumbers[0],
+                end: uncoveredLineNumbers[uncoveredLineNumbers.length - 1],
+              },
+            ]
+          : collapseRanges(uncoveredLineNumbers);
 
       rows.push({
         name,
@@ -51,8 +66,9 @@ export const walkTree = (
           branches: child.file.branches,
           functions: child.file.functions,
           lines: fileLines,
-          uncoveredRanges: collapseRanges(uncoveredLineNumbers),
+          uncoveredRanges,
           uncoveredBranchPositions: child.file.uncoveredBranchPositions,
+          uncoveredFunctionPositions: child.file.uncoveredFunctionPositions,
         },
       });
     } else {
@@ -74,6 +90,7 @@ export const walkTree = (
           lines: descendantLines,
           uncoveredRanges: [],
           uncoveredBranchPositions: [],
+          uncoveredFunctionPositions: [],
         },
       });
     }

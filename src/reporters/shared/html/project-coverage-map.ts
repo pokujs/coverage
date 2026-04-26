@@ -24,6 +24,7 @@ export const projectCoverageMap = (
       functions: fileFunctionsMetric(istanbulFile),
       branches: fileBranchesMetric(istanbulFile),
       uncoveredBranchPositions: [],
+      uncoveredFunctionPositions: [],
     };
 
     model.push(fileCoverage);

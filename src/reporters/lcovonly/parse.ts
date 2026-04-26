@@ -25,6 +25,7 @@ export const parse = (content: string, cwd: string): CoverageModel => {
           functions: emptyMetric(),
           branches: emptyMetric(),
           uncoveredBranchPositions: [],
+          uncoveredFunctionPositions: [],
         };
 
         filesByPath.set(path, file);

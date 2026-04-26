@@ -1,5 +1,7 @@
 import type { FileAggregation, V8ScriptCoverage } from '../../@types/v8.js';
 import { offsets } from '../../utils/offsets.js';
+import { sourceLines } from '../../utils/source-lines.js';
+import { nonExecutableLines } from '../shared/non-executable-lines.js';
 
 export const computeLineHits = (
   source: string,
@@ -7,19 +9,50 @@ export const computeLineHits = (
 ): Map<number, number> => {
   const lineStartTable = offsets.lineStarts(source);
   const contentExtents = offsets.lineContentExtents(source, lineStartTable);
+  const commentOnlyLines = sourceLines.findCommentOnlyLines(source);
+  const delimiterOnlyLines = sourceLines.findDelimiterOnlyLines(source);
+  const syntacticallyNonExecutableLines = nonExecutableLines.find(source);
   const totalLines = source.split('\n').length;
   const lineCounts = new Map<number, number>();
   const lineRangeSize = new Map<number, number>();
+  const zeroWidthHitMarkers = new Map<number, number>();
+  const linesPartiallyZero = new Set<number>();
 
   for (const scriptFunction of script.functions) {
     for (const range of scriptFunction.ranges) {
-      if (range.endOffset <= range.startOffset) continue;
+      if (range.endOffset === range.startOffset) {
+        if (range.count <= 0) continue;
+
+        const markerLocation = offsets.toLocation(
+          range.startOffset,
+          lineStartTable
+        );
+        const markerLine = markerLocation.line;
+
+        if (markerLine < 1 || markerLine > totalLines) continue;
+
+        const previousMarker = zeroWidthHitMarkers.get(markerLine) ?? 0;
+        if (range.count > previousMarker)
+          zeroWidthHitMarkers.set(markerLine, range.count);
+
+        continue;
+      }
+
+      if (range.endOffset < range.startOffset) continue;
 
       const [firstLine, lastLine] = offsets.rangeLines(
         range.startOffset,
         range.endOffset,
         lineStartTable
       );
+
+      if (range.count === 0) {
+        for (let lineNumber = firstLine; lineNumber <= lastLine; lineNumber++) {
+          if (lineNumber < 1 || lineNumber > totalLines) continue;
+          if (contentExtents[lineNumber - 1] === null) continue;
+          linesPartiallyZero.add(lineNumber);
+        }
+      }
 
       const size = range.endOffset - range.startOffset;
 
@@ -53,13 +86,44 @@ export const computeLineHits = (
     result.set(lineNumber, count);
   }
 
+  for (const [lineNumber, markerCount] of zeroWidthHitMarkers) {
+    const existing = result.get(lineNumber);
+    if (existing === undefined || existing === 0)
+      result.set(lineNumber, markerCount);
+  }
+
   const moduleFunction = script.functions.find(
     (scriptFunction) => scriptFunction.functionName === ''
   );
   const moduleCount = moduleFunction?.ranges[0]?.count ?? 0;
 
   for (let lineNumber = 1; lineNumber <= totalLines; lineNumber++) {
-    if (!result.has(lineNumber)) result.set(lineNumber, moduleCount);
+    if (contentExtents[lineNumber - 1] === null) {
+      result.delete(lineNumber);
+      continue;
+    }
+
+    if (commentOnlyLines.has(lineNumber)) {
+      result.delete(lineNumber);
+      continue;
+    }
+
+    if (delimiterOnlyLines.has(lineNumber)) {
+      result.delete(lineNumber);
+      continue;
+    }
+
+    if (syntacticallyNonExecutableLines.has(lineNumber)) {
+      result.delete(lineNumber);
+      continue;
+    }
+
+    if (!result.has(lineNumber)) {
+      result.set(
+        lineNumber,
+        linesPartiallyZero.has(lineNumber) ? 0 : moduleCount
+      );
+    }
   }
 
   return result;
@@ -96,7 +160,6 @@ export const absorbFunctions = (
         isBlockCoverage: scriptFunction.isBlockCoverage,
         isModuleFunction,
         subRanges: new Map(),
-        blocks: [],
       };
 
       fileAggregation.functions.set(functionKey, functionEntry);

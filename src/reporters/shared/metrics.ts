@@ -43,7 +43,7 @@ export const resolveDisplayPct = (
 
   if (percentage !== null) return percentage;
   if (runtime === 'bun' && metricName === 'branches') return null;
-  return null;
+  return 100;
 };
 
 export const formatPct = (value: number | null): string =>

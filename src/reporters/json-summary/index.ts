@@ -51,11 +51,7 @@ const report: Report = (context) => {
   const model = lcovonly.parse(lcovOutput, context.cwd);
   if (model.length === 0) return;
 
-  applyIstanbulBranches(
-    model,
-    context.produceCoverageMap(),
-    context.produceBranchDiscoveries()
-  );
+  applyIstanbulBranches(model, context.produceCoverageMap());
 
   const aggregatedLines = aggregateLines(model);
   const aggregatedBranches = aggregateMetric(model, (file) => file.branches);

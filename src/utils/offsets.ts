@@ -1,14 +1,14 @@
 import type { LineColumn } from '../@types/offsets.js';
 
 const lineStarts = (source: string): number[] => {
-  const buffer = Buffer.from(source, 'utf8');
   const starts: number[] = [0];
 
-  for (let byteIndex = 0; byteIndex < buffer.length; byteIndex++) {
-    if (buffer[byteIndex] === 0x0a /* \n */) starts.push(byteIndex + 1);
+  for (let charIndex = 0; charIndex < source.length; charIndex++) {
+    if (source.charCodeAt(charIndex) === 0x0a /* \n */)
+      starts.push(charIndex + 1);
   }
 
-  starts.push(buffer.length);
+  starts.push(source.length);
   return starts;
 };
 
@@ -73,7 +73,6 @@ const lineContentExtents = (
   source: string,
   lineStartTable: number[]
 ): Array<[number, number] | null> => {
-  const buffer = Buffer.from(source, 'utf8');
   const totalLines = lineStartTable.length - 1;
   const extents: Array<[number, number] | null> = new Array(totalLines);
 
@@ -81,50 +80,50 @@ const lineContentExtents = (
     const lineStart = lineStartTable[lineIndex];
     const lineEnd = lineStartTable[lineIndex + 1];
 
-    let firstContentByte = -1;
+    let firstContentChar = -1;
 
-    for (let byteIndex = lineStart; byteIndex < lineEnd; byteIndex++) {
-      const byteValue = buffer[byteIndex];
+    for (let charIndex = lineStart; charIndex < lineEnd; charIndex++) {
+      const codeUnit = source.charCodeAt(charIndex);
 
       if (
-        byteValue === 0x20 ||
-        byteValue === 0x09 ||
-        byteValue === 0x0a ||
-        byteValue === 0x0d
+        codeUnit === 0x20 ||
+        codeUnit === 0x09 ||
+        codeUnit === 0x0a ||
+        codeUnit === 0x0d
       )
         continue;
 
-      firstContentByte = byteIndex;
+      firstContentChar = charIndex;
       break;
     }
 
-    if (firstContentByte === -1) {
+    if (firstContentChar === -1) {
       extents[lineIndex] = null;
       continue;
     }
 
-    let lastContentByte = firstContentByte;
+    let lastContentChar = firstContentChar;
 
     for (
-      let byteIndex = lineEnd - 1;
-      byteIndex > firstContentByte;
-      byteIndex--
+      let charIndex = lineEnd - 1;
+      charIndex > firstContentChar;
+      charIndex--
     ) {
-      const byteValue = buffer[byteIndex];
+      const codeUnit = source.charCodeAt(charIndex);
 
       if (
-        byteValue === 0x20 ||
-        byteValue === 0x09 ||
-        byteValue === 0x0a ||
-        byteValue === 0x0d
+        codeUnit === 0x20 ||
+        codeUnit === 0x09 ||
+        codeUnit === 0x0a ||
+        codeUnit === 0x0d
       )
         continue;
 
-      lastContentByte = byteIndex;
+      lastContentChar = charIndex;
       break;
     }
 
-    extents[lineIndex] = [firstContentByte, lastContentByte];
+    extents[lineIndex] = [firstContentChar, lastContentChar];
   }
 
   return extents;

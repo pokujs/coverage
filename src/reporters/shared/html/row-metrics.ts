@@ -15,6 +15,7 @@ export const emptyRowMetrics = (): RowMetrics => ({
   lines: emptyMetric(),
   uncoveredRanges: [],
   uncoveredBranchPositions: [],
+  uncoveredFunctionPositions: [],
 });
 
 export const metricsForFile = (fileCoverage: FileCoverage): RowMetrics => {
@@ -27,6 +28,7 @@ export const metricsForFile = (fileCoverage: FileCoverage): RowMetrics => {
     lines,
     uncoveredRanges: [],
     uncoveredBranchPositions: [],
+    uncoveredFunctionPositions: [],
   };
 };
 
@@ -43,5 +45,6 @@ export const metricsForSubtree = (node: TreeNode): RowMetrics => {
     lines,
     uncoveredRanges: [],
     uncoveredBranchPositions: [],
+    uncoveredFunctionPositions: [],
   };
 };

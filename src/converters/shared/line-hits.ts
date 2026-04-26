@@ -14,13 +14,25 @@ const applyIgnoredBranches = (
   ignoredLines: Set<number>
 ): void => {
   if (ignoredLines.size === 0) return;
+  if (fileAggregation.blocks.length === 0) return;
 
-  for (const functionEntry of fileAggregation.functions.values()) {
-    if (functionEntry.blocks.length === 0) continue;
+  fileAggregation.blocks = fileAggregation.blocks.filter(
+    (block) => !ignoredLines.has(block.line)
+  );
+};
 
-    functionEntry.blocks = functionEntry.blocks.filter(
-      (block) => !ignoredLines.has(block.line)
-    );
+const promoteFromBranches = (fileAggregation: FileAggregation): void => {
+  if (fileAggregation.blocks.length === 0) return;
+
+  for (const block of fileAggregation.blocks) {
+    for (const arm of block.arms) {
+      if (arm.takenCount <= 0) continue;
+
+      const existing = fileAggregation.lineHits.get(arm.line);
+      if (existing !== undefined && existing > 0) continue;
+
+      fileAggregation.lineHits.set(arm.line, arm.takenCount);
+    }
   }
 };
 
@@ -35,5 +47,6 @@ const merge = (
 export const lineHits = {
   applyIgnoredLines,
   applyIgnoredBranches,
+  promoteFromBranches,
   merge,
 } as const;
