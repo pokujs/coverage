@@ -27,6 +27,7 @@ The first code coverage package that targets Node.js (V8), Bun (JSC), and Deno (
 
 - **Prefer `type` over `interface`.**
 - **Put 100% of `type` definitions under [src/@types/](src/@types/), one file per domain.** Open the directory to see the current inventory. If a new type does not fit any existing domain, create a new file.
+  - The only exceptions: `.claude/skills/` and `./tools/`.
   - Never a `misc.ts`. Never an `index.ts` barrel.
 - **Always `import type { ... }` from `@types/`.** Every consumer imports directly from the domain file, never from an aggregator.
 - **No `any`. No `as unknown as T` (or variants).** Direct `as T` only at real boundaries (`JSON.parse(content) as MyShape`), never to force compatibility between types you own.
@@ -119,3 +120,10 @@ Always ask before regenerating snapshots after a deliberate change to a reporter
 ```sh
 npm run build:snapshots
 ```
+
+---
+
+### Skills
+
+- [.claude/skills/v8-audit/SKILL.md](.claude/skills/v8-audit/SKILL.md): audits uncovered lines/branches/functions of a project against raw V8.
+  - **Usage:** `/v8-audit <project-path> <coverage-path>` (require `lcov` and `v8` reporter outputs)

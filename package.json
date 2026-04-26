@@ -38,7 +38,7 @@
   },
   "scripts": {
     "build": "tsx tools/build.ts",
-    "typecheck": "tsc && tsc -p test && tsc -p tools",
+    "typecheck": "tsc && tsc -p test && tsc -p tools && tsc -p .claude/skills",
     "build:snapshots": "cross-env UPDATE_SNAPSHOTS=1 npm test",
     "postbuild:snapshots": "tsx tools/postbuild-snapshots.ts",
     "lint": "prettier --check .",
