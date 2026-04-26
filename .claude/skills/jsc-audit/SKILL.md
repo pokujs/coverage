@@ -77,18 +77,19 @@ The script reports for each line:
 
 - The path of the `.jsc.json` dump whose `url` matches the source file, or `Dump: not found` if no dump exists for that file.
 - The transpiled offsets `[start, end]` that the line maps to via the dump's inline source map.
-- A list of every block in `dump.blocks` whose `[startOffset, endOffset]` envelopes that range, with raw `executionCount` and `hasExecuted` values from JSC.
+- A list of every block in `dump.blocks` that has any non-empty intersection with that range. Each block is marked as `envelops` (covers the line range entirely) or `intersects` (covers only part of it; the overlapping transpiled offsets are printed alongside). Raw `executionCount` and `hasExecuted` are reported as JSC emitted them.
 
-The script does not pick a "best" block, does not filter by span, does not derive a verdict. Interpretation is your job.
+The script does not pick a "best" block, does not filter by span, does not derive a verdict. Interpretation is your job. Partial-intersection blocks matter: sub-statement scopes such as catch arms, ternary branches, and dead `return` paths often appear as count=0 sub-blocks that intersect a line without enveloping it.
 
 ### 4. Interpret raw block data
 
 For each probed line, decide whether the lcov entry is consistent with what JSC reported. Useful patterns:
 
 - **`Dump: not found`** — JSC never observed this file. Lcov reporting any coverage entries for it is a divergence: the pipeline is fabricating coverage. Treat as a finding.
-- **All containing blocks have `executionCount = 0`** — JSC saw the position and reports it as not executed. Consistent with lcov uncovered.
-- **All containing blocks have `executionCount > 0`** — JSC reports execution at the position. This may or may not be a divergence: read the source slice covered by the smallest enveloping block. If the block spans a whole function or the whole module, an `executionCount > 0` only means the function/module was loaded or invoked at least once, not that this specific line ran. If the smallest enveloping block is a sub-statement scope, then `executionCount > 0` is concrete evidence of execution and the lcov uncovered entry is a real divergence.
-- **Blocks with mixed counts** — list them all in the report and reason from spans and snippets.
+- **All intersecting blocks have `executionCount = 0`** — JSC saw the position and reports it as not executed. Consistent with lcov uncovered.
+- **All intersecting blocks have `executionCount > 0`** — JSC reports execution everywhere on the line. This may or may not be a divergence: read the source slice covered by the smallest block. If the smallest block spans a whole function or the whole module, an `executionCount > 0` only means the function/module was loaded or invoked at least once, not that this specific line ran. If the smallest block is a sub-statement scope and `intersects` (covers part of the line), `executionCount > 0` is concrete evidence the covered portion ran.
+- **Mixed counts (some blocks > 0, some = 0)** — common pattern. A block marked `intersects` with `executionCount = 0` means JSC reports the _covered_ sub-range as never executed; if that sub-range contains the statement-significant portion of the line (the call, the assignment, the return), then the line did not execute and lcov uncovered is correct. If the count=0 block intersects only trivial trailing characters (a final `;` or `\n`), the rest of the line may still have executed.
+- **Always inspect the snippet covered by the smallest block** before concluding. Span alone is not enough — you need to see what the bytes mean.
 
 ### 5. Produce the report
 

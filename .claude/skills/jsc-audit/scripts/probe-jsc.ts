@@ -14,12 +14,18 @@
  *   - Decodes the inline source-map appended to dump.source.
  *   - Maps (line, firstNonWhitespaceCol)..(line, lastNonWhitespaceCol) from the
  *     original source to a [start, end] range in the transpiled dump.source.
- *   - Lists every block in dump.blocks whose [startOffset, endOffset] envelopes
- *     that range, with executionCount and hasExecuted as reported by JSC.
+ *   - Lists every block in dump.blocks that has any non-empty intersection
+ *     with that range, marking each as `envelops` (covers the line range
+ *     entirely) or `intersects` (covers only part of it; the overlapping
+ *     transpiled offsets are printed alongside). For each block,
+ *     executionCount and hasExecuted are reported as JSC emitted them.
  *
  * The script does not pick a "best" block, does not filter blocks by span,
  * and does not derive a verdict. It reports the raw JSC data; interpretation
- * is the caller's job.
+ * is the caller's job. Partial-intersection blocks are essential for JSC
+ * audits because sub-statement blocks (catch arms, ternary branches, dead
+ * returns) often appear as count=0 sub-blocks that intersect a line without
+ * enveloping it.
  *
  * Two layouts are supported for <jsc-dir>:
  *   - flat:   <jsc-dir>/*.jsc.json
@@ -193,14 +199,25 @@ for (const lineText of transpiledLines) {
   transpiledLineStarts.push(cumulativeOffset);
 }
 
-const formatBlocksContaining = (probeStart: number, probeEnd: number): void => {
-  const containing = located.dump.blocks.filter(
-    (block) => block.startOffset <= probeStart && block.endOffset >= probeEnd
+const formatIntersectingBlocks = (
+  probeStart: number,
+  probeEnd: number
+): void => {
+  const intersecting = located.dump.blocks.filter(
+    (block) => block.endOffset > probeStart && block.startOffset < probeEnd
   );
-  console.log(`  Containing blocks: ${containing.length}`);
-  for (const block of containing) {
+  console.log(`  Intersecting blocks: ${intersecting.length}`);
+  for (const block of intersecting) {
+    const envelops =
+      block.startOffset <= probeStart && block.endOffset >= probeEnd;
+    const relation = envelops ? 'envelops  ' : 'intersects';
+    const overlapStart = Math.max(block.startOffset, probeStart);
+    const overlapEnd = Math.min(block.endOffset, probeEnd);
+    const overlapNote = envelops
+      ? ''
+      : `  (covers transpiled offsets [${overlapStart}, ${overlapEnd}])`;
     console.log(
-      `    [${block.startOffset}, ${block.endOffset}]    executionCount=${block.executionCount}  hasExecuted=${block.hasExecuted}`
+      `    ${relation}  [${block.startOffset}, ${block.endOffset}]    executionCount=${block.executionCount}  hasExecuted=${block.hasExecuted}${overlapNote}`
     );
   }
 };
@@ -247,5 +264,5 @@ for (const lineNumber of targetLines) {
     transpiledLineStarts[generatedEnd.line - 1] + generatedEnd.column + 1;
 
   console.log(`  Mapped to transpiled offsets [${probeStart}, ${probeEnd}]`);
-  formatBlocksContaining(probeStart, probeEnd);
+  formatIntersectingBlocks(probeStart, probeEnd);
 }
