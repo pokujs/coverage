@@ -1,6 +1,12 @@
 import type { AstArmRange } from './branch-discovery.js';
 import type { SubRangeEntry } from './v8.js';
 
+export type BoundaryLine = {
+  line: number;
+  startOffset: number;
+  endOffset: number;
+};
+
 export type BlockTemplate = {
   nodeStart: number;
   nodeEnd: number;
