@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.7.0](https://github.com/pokujs/coverage/compare/v0.6.1...v0.7.0) (2026-04-26)
+
+
+### Features
+
+* support for JSX and TSX ([#26](https://github.com/pokujs/coverage/issues/26)) ([dbfa3e2](https://github.com/pokujs/coverage/commit/dbfa3e2c6d09c6f82ede5dd991ce6c640568f09f))
+
+
+### Bug Fixes
+
+* **bun:** improve Lines and Functions metrics ([#23](https://github.com/pokujs/coverage/issues/23)) ([7f51942](https://github.com/pokujs/coverage/commit/7f5194277b2471d28afae8b63012356d9de5a538))
+* **v8:** catch boundary lines ([#25](https://github.com/pokujs/coverage/issues/25)) ([4f2d0b9](https://github.com/pokujs/coverage/commit/4f2d0b9b18036712349254b07ec05f21aa13f66b))
+
 ## [0.6.1](https://github.com/pokujs/coverage/compare/v0.6.0...v0.6.1) (2026-04-26)
 
 
