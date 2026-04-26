@@ -2,8 +2,8 @@ import type {
   FileFilterOptions,
   ResolvedFileFilter,
 } from './@types/file-filter.js';
-import { compileGlobs, matchesAnyGlob } from './utils/globs.js';
-import { relativize, toPosix } from './utils/paths.js';
+import { globs } from './utils/globs.js';
+import { paths } from './utils/paths.js';
 
 /*
  * Extends exclude list adapted from @istanbuljs/schema.
@@ -57,8 +57,8 @@ const resolve = (options: FileFilterOptions): ResolvedFileFilter => {
   const includeList = normalizePatternList(options.include ?? []);
 
   return {
-    includeRegexes: compileGlobs(includeList),
-    excludeRegexes: compileGlobs(excludeList),
+    includeRegexes: globs.compile(includeList),
+    excludeRegexes: globs.compile(excludeList),
   };
 };
 
@@ -67,15 +67,15 @@ const matches = (
   absolutePath: string,
   cwd: string
 ): boolean => {
-  const relativePath = toPosix(relativize(absolutePath, cwd));
+  const relativePath = paths.toPosix(paths.relativize(absolutePath, cwd));
 
   if (
     resolved.includeRegexes.length > 0 &&
-    !matchesAnyGlob(resolved.includeRegexes, relativePath)
+    !globs.matchesAny(resolved.includeRegexes, relativePath)
   )
     return false;
 
-  if (matchesAnyGlob(resolved.excludeRegexes, relativePath)) return false;
+  if (globs.matchesAny(resolved.excludeRegexes, relativePath)) return false;
 
   return true;
 };

@@ -3,23 +3,23 @@ import type { Metric } from '../../@types/text.js';
 import type { CoverageModel } from '../../@types/tree.js';
 import type { WatermarkMetric } from '../../@types/watermarks.js';
 
-export const emptyMetric = (): Metric => ({ total: null, hit: null });
+const empty = (): Metric => ({ total: null, hit: null });
 
-export const metricTotal = (metric: Metric): number => metric.total ?? 0;
+const total = (metric: Metric): number => metric.total ?? 0;
 
-export const metricCovered = (metric: Metric): number => metric.hit ?? 0;
+const covered = (metric: Metric): number => metric.hit ?? 0;
 
-export const metricRate = (metric: Metric): number | null => {
-  const total = metric.total ?? 0;
-  if (total === 0) return null;
+const rate = (metric: Metric): number | null => {
+  const sum = metric.total ?? 0;
+  if (sum === 0) return null;
 
   const hit = metric.hit ?? 0;
 
-  return Math.round((hit / total) * 10000) / 10000;
+  return Math.round((hit / sum) * 10000) / 10000;
 };
 
-export const linesMetric = (lineHits: Map<number, number>): Metric => {
-  if (lineHits.size === 0) return emptyMetric();
+const fromLineHits = (lineHits: Map<number, number>): Metric => {
+  if (lineHits.size === 0) return empty();
 
   return {
     total: lineHits.size,
@@ -28,32 +28,32 @@ export const linesMetric = (lineHits: Map<number, number>): Metric => {
   };
 };
 
-export const pctValue = (metric: Metric): number | null => {
+const computePercentage = (metric: Metric): number | null => {
   if (metric.total === null || metric.hit === null) return null;
   if (metric.total === 0) return null;
   return (metric.hit / metric.total) * 100;
 };
 
-export const resolveDisplayPct = (
+const resolveDisplayPercentage = (
   metric: Metric,
   runtime: Runtime,
   metricName: WatermarkMetric
 ): number | null => {
-  const percentage = pctValue(metric);
+  const percentage = computePercentage(metric);
 
   if (percentage !== null) return percentage;
   if (runtime === 'bun' && metricName === 'branches') return null;
-  return null;
+  return 100;
 };
 
-export const formatPct = (value: number | null): string =>
+const formatPercentage = (value: number | null): string =>
   value === null ? '-' : `${value.toFixed(2)} %`;
 
-export const aggregateMetric = <SourceFile>(
+const aggregateBy = <SourceFile>(
   files: readonly SourceFile[],
   pickMetric: (sourceFile: SourceFile) => Metric
 ): Metric => {
-  let total = 0;
+  let totalSum = 0;
   let hit = 0;
   let hasMetrics = false;
 
@@ -61,27 +61,40 @@ export const aggregateMetric = <SourceFile>(
     const metric = pickMetric(sourceFile);
     if (metric.total === null || metric.hit === null) continue;
 
-    total += metric.total;
+    totalSum += metric.total;
     hit += metric.hit;
     hasMetrics = true;
   }
 
-  return hasMetrics ? { total, hit } : emptyMetric();
+  return hasMetrics ? { total: totalSum, hit } : empty();
 };
 
-export const aggregateLines = (files: CoverageModel): Metric => {
-  let total = 0;
+const aggregateLines = (files: CoverageModel): Metric => {
+  let totalSum = 0;
   let hit = 0;
   let hasMetrics = false;
 
   for (const sourceFile of files) {
-    const metric = linesMetric(sourceFile.lineHits);
+    const metric = fromLineHits(sourceFile.lineHits);
     if (metric.total === null || metric.hit === null) continue;
 
-    total += metric.total;
+    totalSum += metric.total;
     hit += metric.hit;
     hasMetrics = true;
   }
 
-  return hasMetrics ? { total, hit } : emptyMetric();
+  return hasMetrics ? { total: totalSum, hit } : empty();
 };
+
+export const metrics = {
+  empty,
+  total,
+  covered,
+  rate,
+  fromLineHits,
+  computePercentage,
+  resolveDisplayPercentage,
+  formatPercentage,
+  aggregateBy,
+  aggregateLines,
+} as const;

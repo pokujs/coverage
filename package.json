@@ -38,7 +38,7 @@
   },
   "scripts": {
     "build": "tsx tools/build.ts",
-    "typecheck": "tsc && tsc -p test && tsc -p tools",
+    "typecheck": "tsc && tsc -p test && tsc -p tools && tsc -p .claude/skills",
     "build:snapshots": "cross-env UPDATE_SNAPSHOTS=1 npm test",
     "postbuild:snapshots": "tsx tools/postbuild-snapshots.ts",
     "lint": "prettier --check .",
@@ -48,7 +48,10 @@
     "test:node": "poku -t=\"node:\"",
     "test:bun": "bun --bun poku -t=\"bun:\"",
     "update": "pu && npm i && npm update && (npm audit fix || true)",
-    "postupdate": "npm run lint:fix"
+    "postupdate": "npm run lint:fix",
+    "prepg": "rm -rf playground/coverage playground-ts/coverage; npm run build",
+    "pg": "npm --prefix playground run test:node; npm --prefix playground-ts run test:node;",
+    "pg:deno": "npm run prepg; npm --prefix playground run test:deno; npm --prefix playground-ts run test:deno;"
   },
   "dependencies": {
     "acorn": "^8.16.0",
@@ -61,6 +64,8 @@
   },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
+    "@jridgewell/trace-mapping": "^0.3.31",
+    "@sveltejs/acorn-typescript": "^1.0.9",
     "@types/lcov-parse": "^1.0.2",
     "@types/node": "^25.6.0",
     "cross-env": "^10.1.0",
@@ -100,6 +105,7 @@
     "interoperability",
     "codecov",
     "codacy",
+    "sonar",
     "lcovonly",
     "text-lcov",
     "text-summary",

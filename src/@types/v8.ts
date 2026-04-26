@@ -62,18 +62,23 @@ export type FunctionEntry = {
   isBlockCoverage: boolean;
   isModuleFunction: boolean;
   subRanges: Map<string, SubRangeEntry>;
-  blocks: BranchBlockEntry[];
 };
 
 export type FileAggregation = {
   lineHits: Map<number, number>;
   functions: Map<string, FunctionEntry>;
+  blocks: BranchBlockEntry[];
 };
 
 export type SourceMapCacheEntry = {
   lineLengths?: number[];
   data?: unknown;
   url?: string;
+};
+
+export type SourceMapPayload = {
+  sources?: unknown;
+  sourcesContent?: unknown;
 };
 
 export type SourceMapCache = Record<string, SourceMapCacheEntry>;
@@ -88,6 +93,7 @@ export type ResolvedScriptSource = {
   source: string;
   sourceMapData: unknown;
   sourceMapUrl: string;
+  transpiledLineStarts: number[];
 };
 
 export type SourceCacheResolveInputs = {

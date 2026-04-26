@@ -1,14 +1,13 @@
 import type { PackageGroup } from '../../@types/reporters.js';
-import { relativize, toPosix } from '../../utils/paths.js';
+import { paths } from '../../utils/paths.js';
 
 const directoryOf = (relativePath: string): string => {
-  const normalized = toPosix(relativePath);
+  const normalized = paths.toPosix(relativePath);
   const lastSlash = normalized.lastIndexOf('/');
   return lastSlash === -1 ? '' : normalized.slice(0, lastSlash);
 };
 
-/** Mirrors istanbul-lib-report's `pkg` summarizer (direct children only). */
-export const groupByPackage = <Entry>(
+const groupBy = <Entry>(
   entries: readonly Entry[],
   getPath: (entry: Entry) => string,
   cwd: string
@@ -17,7 +16,7 @@ export const groupByPackage = <Entry>(
 
   for (const entry of entries) {
     const absolutePath = getPath(entry);
-    const relativePath = relativize(absolutePath, cwd);
+    const relativePath = paths.relativize(absolutePath, cwd);
     const relativeDir = directoryOf(relativePath);
     const packageName =
       relativeDir.length === 0 ? 'main' : relativeDir.replaceAll('/', '.');
@@ -34,3 +33,5 @@ export const groupByPackage = <Entry>(
     left.relativeDir.localeCompare(right.relativeDir)
   );
 };
+
+export const packages = { groupBy } as const;

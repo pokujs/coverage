@@ -1,17 +1,12 @@
 import type { Report } from '../../@types/reporters.js';
-import { filter } from './filter.js';
-import { parse } from './parse.js';
-import { bun } from './runtimes/bun.js';
-import { deno } from './runtimes/deno.js';
-import { node } from './runtimes/node.js';
+import { lcov } from '../shared/lcov/index.js';
+import { writeLcovFile } from './writer.js';
 
-const runtimes = { node, deno, bun } as const;
+const report: Report = (context) => {
+  writeLcovFile(
+    context.reportsDir,
+    lcov.runtimes[context.runtime].produce(context)
+  );
+};
 
-const report: Report = (context) => runtimes[context.runtime].run(context);
-
-export const lcovonly = {
-  parse,
-  filter,
-  runtimes,
-  report,
-} as const;
+export const lcovonly = { report } as const;

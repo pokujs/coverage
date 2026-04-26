@@ -2,28 +2,28 @@
   "reporter": "clover",
   "totals": {
     "statements": {
-      "total": 156,
-      "covered": 132,
-      "missed": 24,
-      "pct": "84.62 %"
+      "total": 93,
+      "covered": 75,
+      "missed": 18,
+      "pct": "80.65 %"
     },
     "branches": {
-      "total": 68,
-      "covered": 62,
+      "total": 61,
+      "covered": 55,
       "missed": 6,
-      "pct": "91.18 %"
+      "pct": "90.16 %"
     },
     "functions": {
-      "total": 27,
-      "covered": 26,
+      "total": 28,
+      "covered": 27,
       "missed": 1,
-      "pct": "96.30 %"
+      "pct": "96.43 %"
     },
     "lines": {
-      "total": 156,
-      "covered": 132,
-      "missed": 24,
-      "pct": "84.62 %"
+      "total": 93,
+      "covered": 75,
+      "missed": 18,
+      "pct": "80.65 %"
     }
   },
   "files": {}

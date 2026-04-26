@@ -3,7 +3,7 @@ import type {
   HtmlLineOnlyDetailPageInput,
 } from '../../../@types/html.js';
 import { readFileSync } from 'node:fs';
-import { htmlEscape } from '../../../utils/html.js';
+import { html } from '../../../utils/html.js';
 import { overallReportClass, renderFooter, renderHeader } from './templates.js';
 
 const readSourceText = (filePath: string): string => {
@@ -58,7 +58,7 @@ const buildLineCoverage = (
 const buildSourceLines = (sourceText: string): string[] => {
   const splitLines = sourceText.split(/(?:\r?\n)|\r/);
 
-  return splitLines.map((sourceLine) => htmlEscape(sourceLine) || '&nbsp;');
+  return splitLines.map((sourceLine) => html.escape(sourceLine) || '&nbsp;');
 };
 
 export const renderDetailPageLineOnly = (

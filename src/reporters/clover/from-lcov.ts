@@ -7,22 +7,18 @@ import type { ReporterContext } from '../../@types/reporters.js';
 import type { Metric } from '../../@types/text.js';
 import type { FileCoverage } from '../../@types/tree.js';
 import { basename } from 'node:path';
-import { relativize, toPosix } from '../../utils/paths.js';
+import { paths } from '../../utils/paths.js';
 import { xml } from '../../utils/xml.js';
-import { lcovonly } from '../lcovonly/index.js';
-import {
-  aggregateLines,
-  aggregateMetric,
-  linesMetric,
-} from '../shared/metrics.js';
-import { groupByPackage } from '../shared/packages.js';
+import { lcov } from '../shared/lcov/index.js';
+import { metrics } from '../shared/metrics.js';
+import { packages } from '../shared/packages.js';
 import { baseMetrics, rootMetrics } from './attrs.js';
 
 const aggregateFilesBranches = (files: FileCoverage[]): Metric =>
-  aggregateMetric(files, (lcovFile) => lcovFile.branches);
+  metrics.aggregateBy(files, (lcovFile) => lcovFile.branches);
 
 const aggregateFilesFunctions = (files: FileCoverage[]): Metric =>
-  aggregateMetric(files, (lcovFile) => lcovFile.functions);
+  metrics.aggregateBy(files, (lcovFile) => lcovFile.functions);
 
 const sortedLineHits = (lcovFile: FileCoverage): Array<[number, number]> =>
   Array.from(lcovFile.lineHits.entries()).sort(
@@ -30,17 +26,17 @@ const sortedLineHits = (lcovFile: FileCoverage): Array<[number, number]> =>
   );
 
 export const buildFromLcov = (context: ReporterContext): string | undefined => {
-  const lcovOutput = lcovonly.runtimes[context.runtime].produce(context);
+  const lcovOutput = lcov.runtimes[context.runtime].produce(context);
   if (lcovOutput.length === 0) return undefined;
 
-  const model = lcovonly.parse(lcovOutput, context.cwd);
+  const model = lcov.parse(lcovOutput, context.cwd);
   if (model.length === 0) return undefined;
 
-  const rootLines = aggregateLines(model);
+  const rootLines = metrics.aggregateLines(model);
   const rootBranches = aggregateFilesBranches(model);
   const rootFunctions = aggregateFilesFunctions(model);
 
-  const groups = groupByPackage(
+  const groups = packages.groupBy(
     model,
     (lcovFile) => lcovFile.file,
     context.cwd
@@ -71,7 +67,7 @@ export const buildFromLcov = (context: ReporterContext): string | undefined => {
   );
 
   for (const group of groups) {
-    const groupLines = aggregateLines(group.files);
+    const groupLines = metrics.aggregateLines(group.files);
     const groupBranches = aggregateFilesBranches(group.files);
     const groupFunctions = aggregateFilesFunctions(group.files);
 
@@ -82,11 +78,11 @@ export const buildFromLcov = (context: ReporterContext): string | undefined => {
     );
 
     for (const lcovFile of group.files) {
-      const fileLines = linesMetric(lcovFile.lineHits);
+      const fileLines = metrics.fromLineHits(lcovFile.lineHits);
 
       builder.openTag('file', {
         name: basename(lcovFile.file),
-        path: toPosix(relativize(lcovFile.file, context.cwd)),
+        path: paths.toPosix(paths.relativize(lcovFile.file, context.cwd)),
       });
 
       builder.inlineTag(

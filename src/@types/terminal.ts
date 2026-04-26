@@ -1,3 +1,15 @@
+export type ColorName =
+  | 'red'
+  | 'yellow'
+  | 'green'
+  | 'gray'
+  | 'blue'
+  | 'dim'
+  | 'dimGray'
+  | 'pink'
+  | 'purple'
+  | 'white';
+
 export type IDE =
   | 'jetbrains'
   | 'cursor'

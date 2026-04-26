@@ -110,7 +110,6 @@ const rebaseFunction = (
       ...functionEntry,
       line: 1,
       subRanges: rebaseSubRanges(functionEntry.subRanges, traceMapInstance),
-      blocks: rebaseBlocks(functionEntry.blocks, traceMapInstance),
     };
   }
 
@@ -121,7 +120,6 @@ const rebaseFunction = (
     ...functionEntry,
     line: diskLine,
     subRanges: rebaseSubRanges(functionEntry.subRanges, traceMapInstance),
-    blocks: rebaseBlocks(functionEntry.blocks, traceMapInstance),
   };
 };
 
@@ -132,6 +130,7 @@ const toDisk = (
   const diskAggregation: FileAggregation = {
     lineHits: rebaseLineHits(wrappedAggregation.lineHits, traceMapInstance),
     functions: new Map(),
+    blocks: rebaseBlocks(wrappedAggregation.blocks, traceMapInstance),
   };
 
   for (const [key, functionEntry] of wrappedAggregation.functions) {

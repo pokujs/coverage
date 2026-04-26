@@ -3,7 +3,7 @@ import type { CoverageMap } from '../@types/istanbul.js';
 import { aggregationToIstanbul } from './aggregation-to-istanbul/index.js';
 import { jscToAggregation } from './jsc-to-aggregation/index.js';
 
-export const jscToIstanbul = (
+const convert = (
   tempDir: string,
   cwd: string,
   preRemapFilter: ResolvedFileFilter
@@ -17,3 +17,5 @@ export const jscToIstanbul = (
   if (aggregations.size === 0) return Object.create(null);
   return aggregationToIstanbul.convert(aggregations, sources);
 };
+
+export const jscToIstanbul = { convert } as const;

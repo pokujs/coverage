@@ -1,7 +1,4 @@
-import type {
-  BranchArmPosition,
-  DiscoveredBranch,
-} from '../../@types/branch-discovery.js';
+import type { BranchArmPosition } from '../../@types/branch-discovery.js';
 import type { ResolvedFileFilter } from '../../@types/file-filter.js';
 import type { CoverageMap, FileCoverage } from '../../@types/istanbul.js';
 import type { ReporterContext } from '../../@types/reporters.js';
@@ -12,7 +9,7 @@ import { allFiles } from '../../all-files.js';
 import { ignoreDirectives } from '../../converters/shared/ignore-directives.js';
 import { fileFilter } from '../../file-filter.js';
 
-export const filterCoverageMap = (
+const filterCoverageMap = (
   coverageMap: CoverageMap,
   testFiles: ReadonlySet<string>,
   resolvedFilter: ResolvedFileFilter,
@@ -25,7 +22,7 @@ export const filterCoverageMap = (
       delete coverageMap[absolutePath];
 };
 
-export const prepareCoverageMap = (
+const prepareCoverageMap = (
   coverageMap: CoverageMap,
   context: ReporterContext
 ): void => {
@@ -40,9 +37,7 @@ export const prepareCoverageMap = (
     allFiles.injectCoverageMap(coverageMap, allFiles.discover(context));
 };
 
-export const lineCoverage = (
-  fileCoverage: FileCoverage
-): Map<number, number> => {
+const lineCoverage = (fileCoverage: FileCoverage): Map<number, number> => {
   const perLine = new Map<number, number>();
 
   for (const statementKey of Object.keys(fileCoverage.statementMap)) {
@@ -58,7 +53,7 @@ export const lineCoverage = (
   return perLine;
 };
 
-export const branchCoverageByLine = (
+const branchCoverageByLine = (
   fileCoverage: FileCoverage
 ): Map<number, { covered: number; total: number }> => {
   const perLine = new Map<number, { covered: number; total: number }>();
@@ -85,7 +80,7 @@ export const branchCoverageByLine = (
   return perLine;
 };
 
-export const fileStatementsMetric = (fileCoverage: FileCoverage): Metric => {
+const statementsMetric = (fileCoverage: FileCoverage): Metric => {
   const statementKeys = Object.keys(fileCoverage.statementMap);
 
   const total = statementKeys.length;
@@ -99,7 +94,7 @@ export const fileStatementsMetric = (fileCoverage: FileCoverage): Metric => {
   return { total, hit };
 };
 
-export const fileFunctionsMetric = (fileCoverage: FileCoverage): Metric => {
+const functionsMetric = (fileCoverage: FileCoverage): Metric => {
   const functionKeys = Object.keys(fileCoverage.fnMap);
 
   const total = functionKeys.length;
@@ -113,7 +108,7 @@ export const fileFunctionsMetric = (fileCoverage: FileCoverage): Metric => {
   return { total, hit };
 };
 
-export const fileBranchesMetric = (fileCoverage: FileCoverage): Metric => {
+const branchesMetric = (fileCoverage: FileCoverage): Metric => {
   let total = 0;
   let hit = 0;
 
@@ -130,90 +125,129 @@ export const fileBranchesMetric = (fileCoverage: FileCoverage): Metric => {
   return { total, hit };
 };
 
-const branchedLinesFor = (istanbulFile: FileCoverage): Set<number> => {
-  const branchedLines = new Set<number>();
+const createIgnoredLinesLoader = (): ((
+  filePath: string
+) => ReadonlySet<number>) => {
+  const cache = new Map<string, ReadonlySet<number>>();
 
-  for (const branchKey of Object.keys(istanbulFile.branchMap)) {
-    branchedLines.add(istanbulFile.branchMap[branchKey].line);
-  }
-
-  return branchedLines;
-};
-
-export const applyIstanbulBranches = (
-  lcovModel: CoverageModel,
-  coverageMap: CoverageMap | null,
-  discoveries: ReadonlyMap<string, readonly DiscoveredBranch[]>
-): void => {
-  if (coverageMap === null) return;
-
-  const ignoredLinesByPath = new Map<string, ReadonlySet<number>>();
-  const getIgnoredLines = (filePath: string): ReadonlySet<number> => {
-    const cached = ignoredLinesByPath.get(filePath);
+  return (filePath: string): ReadonlySet<number> => {
+    const cached = cache.get(filePath);
     if (cached !== undefined) return cached;
 
     try {
       const source = readFileSync(filePath, 'utf8');
       const parsed = ignoreDirectives.parseSource(source);
 
-      ignoredLinesByPath.set(filePath, parsed);
+      cache.set(filePath, parsed);
 
       return parsed;
     } catch {
       const empty: ReadonlySet<number> = new Set();
 
-      ignoredLinesByPath.set(filePath, empty);
+      cache.set(filePath, empty);
 
       return empty;
     }
   };
+};
+
+const applyIstanbulBranches = (
+  lcovModel: CoverageModel,
+  coverageMap: CoverageMap | null
+): void => {
+  if (coverageMap === null) return;
+
+  const getIgnoredLines = createIgnoredLinesLoader();
 
   for (const lcovFile of lcovModel) {
     const istanbulFile = coverageMap[lcovFile.file];
     if (istanbulFile === undefined) continue;
 
     const uncoveredArms: BranchArmPosition[] = [];
-    const istanbulMetric = fileBranchesMetric(istanbulFile);
-    const fileDiscoveries = discoveries.get(lcovFile.file);
+    const ignoredLines = getIgnoredLines(lcovFile.file);
+    const metric = branchesMetric(istanbulFile);
 
-    let total = istanbulMetric.total ?? 0;
-    let hit = istanbulMetric.hit ?? 0;
+    for (const branchKey of Object.keys(istanbulFile.branchMap)) {
+      const branchEntry = istanbulFile.branchMap[branchKey];
+      const armCounts = istanbulFile.b[branchKey] ?? [];
 
-    if (fileDiscoveries !== undefined && fileDiscoveries.length > 0) {
-      const branchedLines = branchedLinesFor(istanbulFile);
-      const ignoredLines = getIgnoredLines(lcovFile.file);
+      for (
+        let armIndex = 0;
+        armIndex < branchEntry.locations.length;
+        armIndex++
+      ) {
+        const armTaken = armCounts[armIndex] ?? 0;
+        if (armTaken > 0) continue;
 
-      for (const discovery of fileDiscoveries) {
-        const lineAlreadyCounted = branchedLines.has(discovery.line);
-        const discoveryExecuted = discovery.arms.some((arm) => arm.covered);
+        const armLocation = branchEntry.locations[armIndex];
+        if (ignoredLines.has(armLocation.start.line)) continue;
 
-        for (const arm of discovery.arms) {
-          if (ignoredLines.has(arm.line)) continue;
-
-          if (!lineAlreadyCounted) {
-            total++;
-            if (arm.covered) hit++;
-          }
-
-          if (arm.covered) continue;
-
-          const lineExecuted =
-            (lcovFile.lineHits.get(arm.line) ?? 0) > 0 || discoveryExecuted;
-          if (!lineExecuted) continue;
-
-          uncoveredArms.push({
-            line: arm.line,
-            column: arm.column,
-            endLine: arm.endLine,
-            endColumn: arm.endColumn,
-            covered: false,
-          });
-        }
+        uncoveredArms.push({
+          line: armLocation.start.line,
+          column: armLocation.start.column,
+          endLine: armLocation.end.line,
+          endColumn: armLocation.end.column,
+          covered: false,
+        });
       }
     }
 
     lcovFile.uncoveredBranchPositions = uncoveredArms;
-    lcovFile.branches =
-      total === 0 ? { total: null, hit: null } : { total, hit };
+    lcovFile.branches = metric;
   }
 };
+
+const applyIstanbulFunctions = (
+  lcovModel: CoverageModel,
+  coverageMap: CoverageMap | null
+): void => {
+  if (coverageMap === null) return;
+
+  const getIgnoredLines = createIgnoredLinesLoader();
+
+  for (const lcovFile of lcovModel) {
+    const istanbulFile = coverageMap[lcovFile.file];
+    if (istanbulFile === undefined) continue;
+
+    const functionsTotal = lcovFile.functions.total ?? 0;
+    const functionsHit = lcovFile.functions.hit ?? 0;
+
+    if (functionsTotal === 0 || functionsHit >= functionsTotal) {
+      lcovFile.uncoveredFunctionPositions = [];
+      continue;
+    }
+
+    const uncoveredFunctions: BranchArmPosition[] = [];
+    const ignoredLines = getIgnoredLines(lcovFile.file);
+
+    for (const functionKey of Object.keys(istanbulFile.fnMap)) {
+      const hits = istanbulFile.f[functionKey] ?? 0;
+      if (hits > 0) continue;
+
+      const declaration = istanbulFile.fnMap[functionKey].decl;
+      if (ignoredLines.has(declaration.start.line)) continue;
+
+      uncoveredFunctions.push({
+        line: declaration.start.line,
+        column: declaration.start.column,
+        endLine: declaration.end.line,
+        endColumn: declaration.end.column,
+        covered: false,
+      });
+    }
+
+    lcovFile.uncoveredFunctionPositions = uncoveredFunctions;
+  }
+};
+
+export const fileCoverage = {
+  filterCoverageMap,
+  prepareCoverageMap,
+  lineCoverage,
+  branchCoverageByLine,
+  statementsMetric,
+  functionsMetric,
+  branchesMetric,
+  applyIstanbulBranches,
+  applyIstanbulFunctions,
+} as const;

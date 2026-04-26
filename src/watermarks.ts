@@ -1,3 +1,4 @@
+import type { ColorName } from './@types/terminal.js';
 import type {
   WatermarkLevel,
   WatermarkMetric,
@@ -49,6 +50,23 @@ const classForPercent = (
   return 'medium';
 };
 
+const LEVEL_COLORS: Record<WatermarkLevel, ColorName> = {
+  low: 'pink',
+  medium: 'purple',
+  high: 'white',
+};
+
+const colorForPercent = (
+  resolved: Watermarks,
+  metric: WatermarkMetric,
+  value: number | null
+): ColorName => {
+  const level = classForPercent(resolved, metric, value);
+
+  if (level === null) return 'white';
+  return LEVEL_COLORS[level];
+};
+
 const normalize = (custom: Partial<Watermarks> | undefined): Watermarks => {
   const resolved = getDefault();
   if (!custom) return resolved;
@@ -64,5 +82,6 @@ const normalize = (custom: Partial<Watermarks> | undefined): Watermarks => {
 export const watermarks = {
   getDefault,
   classForPercent,
+  colorForPercent,
   normalize,
 } as const;

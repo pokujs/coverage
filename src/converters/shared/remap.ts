@@ -11,7 +11,7 @@ import type { V8Range, V8ScriptCoverage } from '../../@types/v8.js';
 import { isAbsolute, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { offsets } from '../../utils/offsets.js';
-import { isBannedPath } from '../../utils/paths.js';
+import { paths } from '../../utils/paths.js';
 
 const isValidMapping = (
   mapping: OriginalMapping | InvalidOriginalMapping
@@ -27,7 +27,7 @@ const pathFromResolvedSource = (
   const cwdPrefix = cwd.endsWith(sep) ? cwd : cwd + sep;
 
   if (!resolvedSource.startsWith(cwdPrefix)) return undefined;
-  if (isBannedPath(resolvedSource)) return undefined;
+  if (paths.isBanned(resolvedSource)) return undefined;
 
   return resolvedSource;
 };
@@ -169,7 +169,7 @@ const injectBaselineRanges = (
 };
 
 const project = (inputs: RemapInputs): RemappedScriptEntry[] => {
-  const transpiledLineStarts = offsets.lineStarts(inputs.transpiledSource);
+  const transpiledLineStarts = inputs.transpiledLineStarts;
   const stateMap = new Map<string, OriginalFileState>();
   const baselineCount = baselineCountForScript(inputs.script);
 

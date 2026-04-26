@@ -1,9 +1,12 @@
 import type { CoverageMap, FileCoverage } from './@types/istanbul.js';
 import type { ReporterContext, Runtime } from './@types/reporters.js';
+import type { SourceContents } from './@types/source-discovery.js';
 import { readdirSync, readFileSync } from 'node:fs';
 import { isAbsolute, join, resolve } from 'node:path';
+import { nonExecutableLines } from './converters/shared/non-executable-lines.js';
 import { fileFilter } from './file-filter.js';
-import { relativize, toPosix } from './utils/paths.js';
+import { paths } from './utils/paths.js';
+import { sourceLines as sourceLinesUtil } from './utils/source-lines.js';
 
 const DEFAULT_SOURCE_EXTENSIONS: readonly string[] = [
   '.js',
@@ -102,12 +105,35 @@ const discover = (context: ReporterContext): Set<string> => {
   return collected;
 };
 
-const readSourceLines = (absolutePath: string): string[] | null => {
+const readSourceContents = (absolutePath: string): SourceContents | null => {
   try {
-    return readFileSync(absolutePath, 'utf8').split('\n');
+    const source = readFileSync(absolutePath, 'utf8');
+    return { source, lines: source.split('\n') };
   } catch {
     return null;
   }
+};
+
+const collectExecutableLineNumbers = (
+  contents: SourceContents
+): Set<number> => {
+  const commentOnly = sourceLinesUtil.findCommentOnlyLines(contents.source);
+  const delimiterOnly = sourceLinesUtil.findDelimiterOnlyLines(contents.source);
+  const syntacticallyNonExecutable = nonExecutableLines.find(contents.source);
+  const executable = new Set<number>();
+
+  for (let lineIndex = 0; lineIndex < contents.lines.length; lineIndex++) {
+    const lineNumber = lineIndex + 1;
+
+    if (contents.lines[lineIndex].trim().length === 0) continue;
+    if (commentOnly.has(lineNumber)) continue;
+    if (delimiterOnly.has(lineNumber)) continue;
+    if (syntacticallyNonExecutable.has(lineNumber)) continue;
+
+    executable.add(lineNumber);
+  }
+
+  return executable;
 };
 
 const extractExistingSourceFiles = (lcov: string, cwd: string): Set<string> => {
@@ -126,26 +152,24 @@ const extractExistingSourceFiles = (lcov: string, cwd: string): Set<string> => {
 const buildZeroLcovRecord = (
   cwd: string,
   absolutePath: string,
-  sourceLines: readonly string[],
+  contents: SourceContents,
   runtime: Runtime
 ): string => {
   const lines: string[] = [
     'TN:',
-    `SF:${toPosix(relativize(absolutePath, cwd))}`,
+    `SF:${paths.toPosix(paths.relativize(absolutePath, cwd))}`,
     'FNF:0',
     'FNH:0',
   ];
 
-  let executable = 0;
+  const executableLineNumbers = collectExecutableLineNumbers(contents);
+  const sortedLines = Array.from(executableLineNumbers).sort(
+    (left, right) => left - right
+  );
 
-  for (let lineIndex = 0; lineIndex < sourceLines.length; lineIndex++) {
-    if (sourceLines[lineIndex].trim().length === 0) continue;
+  for (const lineNumber of sortedLines) lines.push(`DA:${lineNumber},0`);
 
-    lines.push(`DA:${lineIndex + 1},0`);
-    executable++;
-  }
-
-  lines.push(`LF:${executable}`, 'LH:0');
+  lines.push(`LF:${executableLineNumbers.size}`, 'LH:0');
   if (runtime !== 'bun') lines.push('BRF:0', 'BRH:0');
   lines.push('end_of_record');
 
@@ -166,10 +190,10 @@ const injectLcov = (
   for (const absolutePath of discovered) {
     if (existing.has(absolutePath)) continue;
 
-    const sourceLines = readSourceLines(absolutePath);
-    if (sourceLines === null) continue;
+    const contents = readSourceContents(absolutePath);
+    if (contents === null) continue;
 
-    appended.push(buildZeroLcovRecord(cwd, absolutePath, sourceLines, runtime));
+    appended.push(buildZeroLcovRecord(cwd, absolutePath, contents, runtime));
   }
 
   if (appended.length === 0) return lcov;
@@ -178,22 +202,24 @@ const injectLcov = (
 
 const buildZeroFileCoverage = (
   absolutePath: string,
-  sourceLines: readonly string[]
+  contents: SourceContents
 ): FileCoverage => {
   const statementMap: FileCoverage['statementMap'] = Object.create(null);
   const statementCounts: FileCoverage['s'] = Object.create(null);
+  const executableLineNumbers = collectExecutableLineNumbers(contents);
+  const sortedLines = Array.from(executableLineNumbers).sort(
+    (left, right) => left - right
+  );
 
   let statementId = 0;
 
-  for (let lineIndex = 0; lineIndex < sourceLines.length; lineIndex++) {
-    const sourceLine = sourceLines[lineIndex];
-    if (sourceLine.trim().length === 0) continue;
-
+  for (const lineNumber of sortedLines) {
+    const sourceLine = contents.lines[lineNumber - 1];
     const statementKey = String(statementId++);
 
     statementMap[statementKey] = {
-      start: { line: lineIndex + 1, column: 0 },
-      end: { line: lineIndex + 1, column: sourceLine.length },
+      start: { line: lineNumber, column: 0 },
+      end: { line: lineNumber, column: sourceLine.length },
     };
 
     statementCounts[statementKey] = 0;
@@ -218,13 +244,10 @@ const injectCoverageMap = (
   for (const absolutePath of discovered) {
     if (coverageMap[absolutePath] !== undefined) continue;
 
-    const sourceLines = readSourceLines(absolutePath);
-    if (sourceLines === null) continue;
+    const contents = readSourceContents(absolutePath);
+    if (contents === null) continue;
 
-    coverageMap[absolutePath] = buildZeroFileCoverage(
-      absolutePath,
-      sourceLines
-    );
+    coverageMap[absolutePath] = buildZeroFileCoverage(absolutePath, contents);
   }
 };
 

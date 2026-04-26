@@ -5,19 +5,19 @@
 
 import type { Metric } from '../../@types/text.js';
 import type { XmlAttrs } from '../../@types/xml.js';
-import { metricCovered, metricTotal } from '../shared/metrics.js';
+import { metrics } from '../shared/metrics.js';
 
 export const baseMetrics = (
   lines: Metric,
   branches: Metric,
   functions: Metric
 ): XmlAttrs => ({
-  statements: metricTotal(lines),
-  coveredstatements: metricCovered(lines),
-  conditionals: metricTotal(branches),
-  coveredconditionals: metricCovered(branches),
-  methods: metricTotal(functions),
-  coveredmethods: metricCovered(functions),
+  statements: metrics.total(lines),
+  coveredstatements: metrics.covered(lines),
+  conditionals: metrics.total(branches),
+  coveredconditionals: metrics.covered(branches),
+  methods: metrics.total(functions),
+  coveredmethods: metrics.covered(functions),
 });
 
 export const rootMetrics = (
@@ -27,10 +27,13 @@ export const rootMetrics = (
   packages: number,
   files: number
 ): XmlAttrs => {
-  const linesTotal = metricTotal(lines);
-  const elements = linesTotal + metricTotal(branches) + metricTotal(functions);
+  const linesTotal = metrics.total(lines);
+  const elements =
+    linesTotal + metrics.total(branches) + metrics.total(functions);
   const coveredElements =
-    metricCovered(lines) + metricCovered(branches) + metricCovered(functions);
+    metrics.covered(lines) +
+    metrics.covered(branches) +
+    metrics.covered(functions);
   return {
     ...baseMetrics(lines, branches, functions),
     elements,

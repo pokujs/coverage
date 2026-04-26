@@ -1,5 +1,4 @@
 import type { PluginContext } from 'poku/plugins';
-import type { DiscoveredBranch } from './branch-discovery.js';
 import type { CoverageOptions } from './coverage.js';
 import type { ResolvedFileFilter } from './file-filter.js';
 import type { CoverageMap } from './istanbul.js';
@@ -19,10 +18,6 @@ export type ReporterContext = {
   preRemapFilter: ResolvedFileFilter;
   userFilter: ResolvedFileFilter;
   produceCoverageMap: () => CoverageMap | null;
-  produceBranchDiscoveries: () => ReadonlyMap<
-    string,
-    readonly DiscoveredBranch[]
-  >;
 };
 
 export type Report = (context: ReporterContext) => void;

@@ -1,4 +1,5 @@
 import type { Node } from 'acorn';
+import type { TypedNode } from '../../@types/acorn-nodes.js';
 import type {
   JscBasicBlock,
   JscFunctionContainer,
@@ -6,7 +7,14 @@ import type {
 } from '../../@types/jsc.js';
 import type { FileAggregation } from '../../@types/v8.js';
 import { offsets } from '../../utils/offsets.js';
-import { astWalk } from '../shared/ast-walk.js';
+
+const SKIP_KEYS: ReadonlySet<string> = new Set([
+  'type',
+  'start',
+  'end',
+  'loc',
+  'range',
+]);
 
 const FUNCTION_NODE_TYPES: ReadonlySet<string> = new Set([
   'FunctionDeclaration',
@@ -17,87 +25,68 @@ const FUNCTION_NODE_TYPES: ReadonlySet<string> = new Set([
 const isFunctionNode = (node: Node): boolean =>
   FUNCTION_NODE_TYPES.has(node.type);
 
-const readKeyName = (keyNode: Node | null): string => {
-  if (keyNode === null) return '';
+const isNode = (candidate: unknown): candidate is Node =>
+  candidate !== null &&
+  typeof candidate === 'object' &&
+  typeof (candidate as { type?: unknown }).type === 'string';
 
-  if (keyNode.type === 'Identifier') {
-    const identifierName: unknown = Reflect.get(keyNode, 'name');
+const readKeyName = (keyNode: Node): string => {
+  const typed = keyNode as TypedNode;
 
-    return typeof identifierName === 'string' ? identifierName : '';
+  if (typed.type === 'Identifier') return typed.name;
+
+  if (typed.type === 'Literal') {
+    if (typeof typed.value === 'string') return typed.value;
+    if (typeof typed.value === 'number') return String(typed.value);
+    return '';
   }
 
-  if (keyNode.type === 'Literal') {
-    const literalValue: unknown = Reflect.get(keyNode, 'value');
-
-    if (typeof literalValue === 'string') return literalValue;
-    if (typeof literalValue === 'number') return String(literalValue);
-  }
-
-  if (keyNode.type === 'PrivateIdentifier') {
-    const privateName: unknown = Reflect.get(keyNode, 'name');
-
-    return typeof privateName === 'string' ? `#${privateName}` : '';
-  }
+  if (typed.type === 'PrivateIdentifier') return `#${typed.name}`;
 
   return '';
 };
 
 const inferName = (parent: Node | undefined, functionNode: Node): string => {
-  const ownId = Reflect.get(functionNode, 'id') as Node | null;
+  const typedFunction = functionNode as TypedNode;
 
-  if (ownId !== null && ownId.type === 'Identifier') {
-    const identifierName: unknown = Reflect.get(ownId, 'name');
-
-    if (typeof identifierName === 'string') return identifierName;
+  if (
+    (typedFunction.type === 'FunctionDeclaration' ||
+      typedFunction.type === 'FunctionExpression') &&
+    typedFunction.id !== null
+  ) {
+    const ownId = typedFunction.id as TypedNode;
+    if (ownId.type === 'Identifier') return ownId.name;
   }
 
   if (parent === undefined) return '';
 
-  if (parent.type === 'VariableDeclarator') {
-    const id = Reflect.get(parent, 'id') as Node | null;
+  const typedParent = parent as TypedNode;
 
-    if (id !== null && id.type === 'Identifier') {
-      const identifierName: unknown = Reflect.get(id, 'name');
-
-      if (typeof identifierName === 'string') return identifierName;
-    }
-
+  if (typedParent.type === 'VariableDeclarator') {
+    const id = typedParent.id as TypedNode;
+    if (id.type === 'Identifier') return id.name;
     return '';
   }
 
-  if (parent.type === 'AssignmentExpression') {
-    const left = Reflect.get(parent, 'left') as Node | null;
-    if (left === null) return '';
-
-    if (left.type === 'Identifier') {
-      const identifierName: unknown = Reflect.get(left, 'name');
-
-      if (typeof identifierName === 'string') return identifierName;
-    }
-
-    if (left.type === 'MemberExpression') {
-      const property = Reflect.get(left, 'property') as Node | null;
-      const propertyName = readKeyName(property);
-
-      if (propertyName !== '') return propertyName;
-    }
-
+  if (typedParent.type === 'AssignmentExpression') {
+    const left = typedParent.left as TypedNode;
+    if (left.type === 'Identifier') return left.name;
+    if (left.type === 'MemberExpression') return readKeyName(left.property);
     return '';
   }
 
-  if (parent.type === 'Property' || parent.type === 'PropertyDefinition') {
-    const value = Reflect.get(parent, 'value') as Node | null;
-    if (value !== functionNode) return '';
-
-    const key = Reflect.get(parent, 'key') as Node | null;
-
-    return readKeyName(key);
+  if (typedParent.type === 'Property') {
+    if (typedParent.value !== functionNode) return '';
+    return readKeyName(typedParent.key);
   }
 
-  if (parent.type === 'MethodDefinition') {
-    const key = Reflect.get(parent, 'key') as Node | null;
+  if (typedParent.type === 'PropertyDefinition') {
+    if (typedParent.value !== functionNode) return '';
+    return readKeyName(typedParent.key);
+  }
 
-    return readKeyName(key);
+  if (typedParent.type === 'MethodDefinition') {
+    return readKeyName(typedParent.key);
   }
 
   return '';
@@ -123,15 +112,13 @@ const collectFunctionContainers = (
     if (isFunctionNode(currentNode)) {
       const parent =
         ancestors.length > 0 ? ancestors[ancestors.length - 1] : undefined;
-      const body = Reflect.get(currentNode, 'body') as Node | null;
-      const bodyStart = body !== null ? body.start : currentNode.start;
-      const bodyEnd = body !== null ? body.end : currentNode.end;
+      const body = (currentNode as TypedNode & { body: Node }).body;
 
       containers.push({
         nodeStart: currentNode.start,
         nodeEnd: currentNode.end,
-        bodyStart,
-        bodyEnd,
+        bodyStart: body.start,
+        bodyEnd: body.end,
         name: inferName(parent, currentNode),
         isModuleFunction: false,
       });
@@ -140,27 +127,20 @@ const collectFunctionContainers = (
     ancestors.push(currentNode);
 
     for (const propertyKey of Object.keys(currentNode)) {
-      if (
-        propertyKey === 'type' ||
-        propertyKey === 'start' ||
-        propertyKey === 'end' ||
-        propertyKey === 'loc' ||
-        propertyKey === 'range'
-      )
-        continue;
+      if (SKIP_KEYS.has(propertyKey)) continue;
 
-      const propertyValue: unknown = Reflect.get(currentNode, propertyKey);
+      const propertyValue = Reflect.get(currentNode, propertyKey);
       if (propertyValue === null || propertyValue === undefined) continue;
 
       if (Array.isArray(propertyValue)) {
-        for (const childCandidate of propertyValue) {
-          if (astWalk.isNodeLike(childCandidate)) visit(childCandidate);
+        for (const child of propertyValue) {
+          if (isNode(child)) visit(child);
         }
 
         continue;
       }
 
-      if (astWalk.isNodeLike(propertyValue)) visit(propertyValue);
+      if (isNode(propertyValue)) visit(propertyValue);
     }
 
     ancestors.pop();
@@ -296,7 +276,6 @@ const absorbBasicBlocks = (
         isBlockCoverage: true,
         isModuleFunction: container.isModuleFunction,
         subRanges: new Map(),
-        blocks: [],
       };
 
       fileAggregation.functions.set(functionKey, functionEntry);

@@ -4,18 +4,23 @@ import type {
   V8ScriptCoverage,
 } from '../../@types/v8.js';
 import { fileFilter } from '../../file-filter.js';
-import { resolveFilePath } from './v8-discovery.js';
+import { v8Discovery } from './v8-discovery.js';
 
-export const passesPreRemapFilter = (
+const passes = (
   script: V8ScriptCoverage,
   resolved: ResolvedScriptSource,
-  preRemapFilter: ResolvedFileFilter,
+  resolvedFilter: ResolvedFileFilter,
   cwd: string
 ): boolean => {
+  const transpiledPath = v8Discovery.resolveFilePath(script.url, cwd);
   const preRemapPath =
-    resolved.filePath !== ''
-      ? resolved.filePath
-      : resolveFilePath(script.url, cwd);
+    transpiledPath !== undefined
+      ? transpiledPath
+      : resolved.filePath !== ''
+        ? resolved.filePath
+        : undefined;
   if (preRemapPath === undefined) return true;
-  return fileFilter.matches(preRemapFilter, preRemapPath, cwd);
+  return fileFilter.matches(resolvedFilter, preRemapPath, cwd);
 };
+
+export const preRemapFilter = { passes } as const;

@@ -1,5 +1,5 @@
-import type { Metric } from '../../@types/text.js';
-import type { CoverageModel, FileCoverage } from '../../@types/tree.js';
+import type { Metric } from '../../../@types/text.js';
+import type { CoverageModel, FileCoverage } from '../../../@types/tree.js';
 import { isAbsolute, resolve } from 'node:path';
 
 const emptyMetric = (): Metric => ({ total: null, hit: null });
@@ -25,6 +25,7 @@ export const parse = (content: string, cwd: string): CoverageModel => {
           functions: emptyMetric(),
           branches: emptyMetric(),
           uncoveredBranchPositions: [],
+          uncoveredFunctionPositions: [],
         };
 
         filesByPath.set(path, file);

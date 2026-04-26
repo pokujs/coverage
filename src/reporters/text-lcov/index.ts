@@ -4,10 +4,10 @@
  */
 
 import type { Report } from '../../@types/reporters.js';
-import { lcovonly } from '../lcovonly/index.js';
+import { lcov } from '../shared/lcov/index.js';
 
 const report: Report = (context) => {
-  const output = lcovonly.runtimes[context.runtime].produce(context);
+  const output = lcov.runtimes[context.runtime].produce(context);
   if (output.length === 0) return;
 
   console.log(output);

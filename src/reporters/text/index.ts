@@ -1,23 +1,22 @@
 import type { Report } from '../../@types/reporters.js';
-import { resolveUrlBuilder } from '../../utils/ide.js';
-import { lcovonly } from '../lcovonly/index.js';
-import { applyIstanbulBranches } from '../shared/file-coverage.js';
+import { ide } from '../../utils/ide.js';
+import { fileCoverage } from '../shared/file-coverage.js';
+import { lcov } from '../shared/lcov/index.js';
 import { renderTable } from './table.js';
 
 const report: Report = (context) => {
-  const lcovOutput = lcovonly.runtimes[context.runtime].produce(context);
+  const lcovOutput = lcov.runtimes[context.runtime].produce(context);
   if (lcovOutput.length === 0) return;
 
-  const model = lcovonly.parse(lcovOutput, context.cwd);
+  const model = lcov.parse(lcovOutput, context.cwd);
   if (model.length === 0) return;
 
-  applyIstanbulBranches(
-    model,
-    context.produceCoverageMap(),
-    context.produceBranchDiscoveries()
-  );
+  const coverageMap = context.produceCoverageMap();
 
-  const urlBuilder = resolveUrlBuilder(context.options.hyperlinks);
+  fileCoverage.applyIstanbulBranches(model, coverageMap);
+  fileCoverage.applyIstanbulFunctions(model, coverageMap);
+
+  const urlBuilder = ide.resolveUrlBuilder(context.options.hyperlinks);
 
   const table = renderTable(
     model,
@@ -31,7 +30,6 @@ const report: Report = (context) => {
 
   if (table.length === 0) return;
 
-  console.log('');
   console.log(table);
 };
 

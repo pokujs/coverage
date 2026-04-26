@@ -14,7 +14,7 @@ import type {
   FileCoverage,
   Range,
 } from '../../../@types/istanbul.js';
-import { lineCoverage } from '../file-coverage.js';
+import { fileCoverage } from '../file-coverage.js';
 import { insertionText } from './insertion-text.js';
 
 const LT_PLACEHOLDER = '\u0001';
@@ -36,10 +36,10 @@ const customEscape = (value: string): string =>
     .replace(GT_PLACEHOLDER_REGEX, '>');
 
 const annotateLines = (
-  fileCoverage: FileCoverage,
+  coverageEntry: FileCoverage,
   structured: HtmlStructuredLine[]
 ): void => {
-  const hitsPerLine = lineCoverage(fileCoverage);
+  const hitsPerLine = fileCoverage.lineCoverage(coverageEntry);
 
   for (const [lineNumber, count] of hitsPerLine) {
     const entry = structured[lineNumber];
@@ -51,12 +51,12 @@ const annotateLines = (
 };
 
 const annotateStatements = (
-  fileCoverage: FileCoverage,
+  coverageEntry: FileCoverage,
   structured: HtmlStructuredLine[]
 ): void => {
-  for (const statementName of Object.keys(fileCoverage.statementMap)) {
-    const statementMeta = fileCoverage.statementMap[statementName];
-    const count = fileCoverage.s[statementName] ?? 0;
+  for (const statementName of Object.keys(coverageEntry.statementMap)) {
+    const statementMeta = coverageEntry.statementMap[statementName];
+    const count = coverageEntry.s[statementName] ?? 0;
     if (count > 0) continue;
 
     const startLine = statementMeta.start.line;
@@ -81,12 +81,12 @@ const annotateStatements = (
 };
 
 const annotateFunctions = (
-  fileCoverage: FileCoverage,
+  coverageEntry: FileCoverage,
   structured: HtmlStructuredLine[]
 ): void => {
-  for (const functionName of Object.keys(fileCoverage.fnMap)) {
-    const functionMeta = fileCoverage.fnMap[functionName];
-    const count = fileCoverage.f[functionName] ?? 0;
+  for (const functionName of Object.keys(coverageEntry.fnMap)) {
+    const functionMeta = coverageEntry.fnMap[functionName];
+    const count = coverageEntry.f[functionName] ?? 0;
     if (count > 0) continue;
 
     const declarationRange: Range = functionMeta.decl || functionMeta.loc;
@@ -120,12 +120,12 @@ const isFullLocation = (
   typeof location.end.column === 'number';
 
 const annotateBranches = (
-  fileCoverage: FileCoverage,
+  coverageEntry: FileCoverage,
   structured: HtmlStructuredLine[]
 ): void => {
-  for (const branchName of Object.keys(fileCoverage.b)) {
-    const branchArray = fileCoverage.b[branchName];
-    const branchMeta: BranchMapEntry = fileCoverage.branchMap[branchName];
+  for (const branchName of Object.keys(coverageEntry.b)) {
+    const branchArray = coverageEntry.b[branchName];
+    const branchMeta: BranchMapEntry = coverageEntry.branchMap[branchName];
     const sumCount = branchArray.reduce(
       (accumulator, currentCount) => accumulator + currentCount,
       0
@@ -215,7 +215,7 @@ const annotateBranches = (
 };
 
 const annotate = (
-  fileCoverage: FileCoverage,
+  coverageEntry: FileCoverage,
   sourceText: string
 ): HtmlAnnotationResult => {
   const code = sourceText.split(/(?:\r?\n)|\r/);
@@ -237,10 +237,10 @@ const annotate = (
       text: insertionText.create(code[codeIndex], true),
     });
 
-  annotateLines(fileCoverage, structured);
-  annotateBranches(fileCoverage, structured);
-  annotateFunctions(fileCoverage, structured);
-  annotateStatements(fileCoverage, structured);
+  annotateLines(coverageEntry, structured);
+  annotateBranches(coverageEntry, structured);
+  annotateFunctions(coverageEntry, structured);
+  annotateStatements(coverageEntry, structured);
 
   structured.shift();
 

@@ -5,9 +5,9 @@
 
 import type { Report } from '../../@types/reporters.js';
 import type { Metric } from '../../@types/text.js';
-import { lcovonly } from '../lcovonly/index.js';
-import { applyIstanbulBranches } from '../shared/file-coverage.js';
-import { aggregateLines, aggregateMetric } from '../shared/metrics.js';
+import { fileCoverage } from '../shared/file-coverage.js';
+import { lcov } from '../shared/lcov/index.js';
+import { metrics } from '../shared/metrics.js';
 
 const BLOCK_NAME = 'Code Coverage Summary';
 
@@ -18,21 +18,17 @@ const coveredValue = (metric: Metric): number => metric.hit ?? 0;
 const totalValue = (metric: Metric): number => metric.total ?? 0;
 
 const report: Report = (context) => {
-  const lcovOutput = lcovonly.runtimes[context.runtime].produce(context);
+  const lcovOutput = lcov.runtimes[context.runtime].produce(context);
   if (lcovOutput.length === 0) return;
 
-  const model = lcovonly.parse(lcovOutput, context.cwd);
+  const model = lcov.parse(lcovOutput, context.cwd);
   if (model.length === 0) return;
 
-  applyIstanbulBranches(
-    model,
-    context.produceCoverageMap(),
-    context.produceBranchDiscoveries()
-  );
+  fileCoverage.applyIstanbulBranches(model, context.produceCoverageMap());
 
-  const statementsAndLines = aggregateLines(model);
-  const branches = aggregateMetric(model, (file) => file.branches);
-  const functions = aggregateMetric(model, (file) => file.functions);
+  const statementsAndLines = metrics.aggregateLines(model);
+  const branches = metrics.aggregateBy(model, (file) => file.branches);
+  const functions = metrics.aggregateBy(model, (file) => file.functions);
 
   const lines: string[] = [
     '',

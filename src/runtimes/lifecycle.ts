@@ -9,9 +9,10 @@ import { join, resolve } from 'node:path';
 import process from 'node:process';
 import { checkCoverage } from '../check-coverage.js';
 import { converters } from '../converters/index.js';
+import { discoveryMerge } from '../converters/shared/discovery-merge.js';
 import { fileFilter } from '../file-filter.js';
 import { reporters } from '../reporters/index.js';
-import { prepareCoverageMap } from '../reporters/shared/file-coverage.js';
+import { fileCoverage } from '../reporters/shared/file-coverage.js';
 import { watermarks } from '../watermarks.js';
 
 const ensureSourceMaps = (state: CoverageState): void => {
@@ -34,7 +35,7 @@ const ensureSourceMaps = (state: CoverageState): void => {
   process.env.NODE_OPTIONS = `${existingNodeOptions} ${ENABLE_SOURCE_MAPS_FLAG}`;
 };
 
-export const setup = (
+const setup = (
   options: CoverageOptions,
   state: CoverageState,
   runtime: Runtime,
@@ -61,7 +62,7 @@ export const setup = (
   state.enabled = true;
 };
 
-export const teardown = (
+const teardown = (
   context: PluginContext,
   options: CoverageOptions,
   state: CoverageState,
@@ -104,9 +105,6 @@ export const teardown = (
       new Map();
 
     let cachedCoverageMap: CoverageMap | null | undefined;
-    let cachedBranchDiscoveries:
-      | ReadonlyMap<string, readonly DiscoveredBranch[]>
-      | undefined;
 
     const reporterContext: ReporterContext = {
       runtime,
@@ -120,7 +118,6 @@ export const teardown = (
       preRemapFilter: shouldFilterBeforeRemap ? userFilter : emptyFilter,
       userFilter,
       produceCoverageMap: () => null,
-      produceBranchDiscoveries: () => emptyDiscoveries,
     };
 
     reporterContext.produceCoverageMap = () => {
@@ -128,37 +125,32 @@ export const teardown = (
 
       const coverageMap =
         runtime === 'bun'
-          ? converters.jscToIstanbul(
+          ? converters.jscToIstanbul.convert(
               state.tempDir,
               context.cwd,
               reporterContext.preRemapFilter
             )
-          : converters.v8ToIstanbul(
+          : converters.v8ToIstanbul.convert(
               state.tempDir,
               context.cwd,
               reporterContext.preRemapFilter
             );
 
-      prepareCoverageMap(coverageMap, reporterContext);
+      fileCoverage.prepareCoverageMap(coverageMap, reporterContext);
+
+      const discoveries =
+        runtime === 'bun'
+          ? emptyDiscoveries
+          : converters.discoverBranches.run(
+              state.tempDir,
+              context.cwd,
+              reporterContext.preRemapFilter
+            );
+      discoveryMerge.apply(coverageMap, discoveries);
 
       cachedCoverageMap = coverageMap;
 
       return coverageMap;
-    };
-
-    reporterContext.produceBranchDiscoveries = () => {
-      if (cachedBranchDiscoveries !== undefined) return cachedBranchDiscoveries;
-
-      cachedBranchDiscoveries =
-        runtime === 'bun'
-          ? emptyDiscoveries
-          : converters.discoverBranches(
-              state.tempDir,
-              context.cwd,
-              reporterContext.preRemapFilter
-            );
-
-      return cachedBranchDiscoveries;
     };
 
     if (reporterList.length > 0) reporters.run(reporterList, reporterContext);
@@ -168,3 +160,5 @@ export const teardown = (
     if (shouldClean) rmSync(state.tempDir, { recursive: true, force: true });
   }
 };
+
+export const lifecycle = { setup, teardown } as const;

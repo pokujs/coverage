@@ -27,6 +27,7 @@ The first code coverage package that targets Node.js (V8), Bun (JSC), and Deno (
 
 - **Prefer `type` over `interface`.**
 - **Put 100% of `type` definitions under [src/@types/](src/@types/), one file per domain.** Open the directory to see the current inventory. If a new type does not fit any existing domain, create a new file.
+  - The only exceptions: `.claude/skills/` and `./tools/`.
   - Never a `misc.ts`. Never an `index.ts` barrel.
 - **Always `import type { ... }` from `@types/`.** Every consumer imports directly from the domain file, never from an aggregator.
 - **No `any`. No `as unknown as T` (or variants).** Direct `as T` only at real boundaries (`JSON.parse(content) as MyShape`), never to force compatibility between types you own.
@@ -64,15 +65,15 @@ The first code coverage package that targets Node.js (V8), Bun (JSC), and Deno (
   - `shared/` subfolders under [src/reporters/](src/reporters/), [src/converters/](src/converters/), and [test/**utils**/readers/](test/__utils__/readers/) for cross-consumer helpers.
   - AST primitives live in [src/converters/shared/](src/converters/shared/).
 - **Promote on second consumer. Never duplicate. Never import from a sibling.** The moment a helper in `reporters/text/` is needed by `reporters/html/`, it moves to `reporters/shared/` in the same commit. A sibling reporter (or converter) reaching into another's internals is a bug to fix, not a shortcut to use.
-- **Single file vs. directory with `index.ts` barrel.** When a file accumulates distinct responsibilities (discovery, parsing, serialization, orchestration), promote it to a directory. `index.ts` is strictly the orchestrator and public entry. Each responsibility goes into its own file. Established patterns: [src/reporters/text/](src/reporters/text/), [src/converters/v8-to-lcov/](src/converters/v8-to-lcov/), [src/reporters/lcovonly/](src/reporters/lcovonly/), [src/configs/](src/configs/).
+- **Single file vs. directory with `index.ts` barrel.** When a file accumulates distinct responsibilities (discovery, parsing, serialization, orchestration), promote it to a directory. `index.ts` is strictly the orchestrator and public entry. Each responsibility goes into its own file. Established patterns: [src/reporters/text/](src/reporters/text/), [src/converters/v8-to-istanbul/](src/converters/v8-to-istanbul/), [src/reporters/shared/lcov/](src/reporters/shared/lcov/), [src/configs/](src/configs/).
 - **`index.ts` is never a type aggregator.** Types still come from `@types/`.
 
 ### Exports
 
 - **Prefer object-approach over prefixed functions.** `lcov.filter`, not `filterLcov`. `state.create`, not `createState`. `converters.v8ToLcov`, not `convertV8ToLcov`. Export a single `const` named after the module, aggregating the operations as properties.
   - Applies from day one, including single-method modules. The namespace is the future extension point AND the present consistency point.
-- **Pick the module by what the operation produces or transforms, not by who imports it.** `filterLcov` is LCOV to LCOV, so `lcov.filter`. `convertV8ToLcov` is V8 JSON to LCOV (distinct formats), so `converters.v8ToLcov`.
-  - A converter is a format to format transformation between distinct formats (V8 to LCOV, V8 to istanbul). Same-format transformations stay in their format's own domain, never under `converters/`.
+- **Pick the module by what the operation produces or transforms, not by who imports it.** `filterLcov` is LCOV to LCOV, so `lcov.filter`. `convertV8ToIstanbul` is V8 JSON to Istanbul `CoverageMap` (distinct formats), so `converters.v8ToIstanbul.convert`.
+  - A converter is a format to format transformation between distinct formats (V8 to istanbul, JSC to istanbul). Same-format transformations stay in their format's own domain, never under `converters/`.
 - **Wire external consumers through the namespace:** `lcov.parse(...)`, `reporters.run(...)`. Sibling files inside the same directory may import each other directly when going through `index.ts` would create a cycle. When importing the namespace shadows a local variable, rename the local, never the import (e.g. `state` to `coverageState`).
 - **Update this file in the same commit.** If you introduced a new pattern or structure, add it to the rules above. Architecture drift happens the moment a refactor is committed without the doc update.
 
@@ -119,3 +120,10 @@ Always ask before regenerating snapshots after a deliberate change to a reporter
 ```sh
 npm run build:snapshots
 ```
+
+---
+
+### Skills
+
+- [.claude/skills/v8-audit/SKILL.md](.claude/skills/v8-audit/SKILL.md): audits uncovered lines/branches/functions of a project against raw V8.
+  - **Usage:** `/v8-audit <project-path> <coverage-path>` (require `lcov` and `v8` reporter outputs)

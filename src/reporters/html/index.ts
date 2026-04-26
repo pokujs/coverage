@@ -8,7 +8,7 @@ import type { TreeNode } from '../../@types/tree.js';
 import type { Watermarks } from '../../@types/watermarks.js';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, posix } from 'node:path';
-import { formatDatetime } from '../../utils/datetime.js';
+import { datetime } from '../../utils/datetime.js';
 import { emitDetailPages } from '../shared/html/emit-details.js';
 import {
   pagePathForDirectory,
@@ -20,8 +20,8 @@ import {
 } from '../shared/html/row-metrics.js';
 import { htmlRuntimes } from '../shared/html/runtimes/index.js';
 import { computeWatermarkClasses } from '../shared/html/watermark-classes.js';
-import { shouldHideFileRow } from '../shared/skip.js';
-import { buildTree } from '../shared/tree.js';
+import { skip } from '../shared/skip.js';
+import { tree } from '../shared/tree.js';
 import { copyAssets } from './copy-assets.js';
 import { renderSummaryPage } from './render-summary.js';
 
@@ -103,7 +103,11 @@ const walkDirectory = (
 
     if (
       !summaryChild.isDirectory &&
-      shouldHideFileRow(summaryChild.metrics, input.skipFull, input.skipEmpty)
+      skip.shouldHideFileRow(
+        summaryChild.metrics,
+        input.skipFull,
+        input.skipEmpty
+      )
     )
       continue;
 
@@ -149,14 +153,14 @@ const report: Report = (context) => {
   const { model, byPath } = projectedCoverage;
   if (model.length === 0) return;
 
-  const tree = buildTree(model, context.cwd);
-  if (tree.children.length === 0) return;
+  const coverageTree = tree.build(model, context.cwd);
+  if (coverageTree.children.length === 0) return;
 
   mkdirSync(context.reportsDir, { recursive: true });
   copyAssets(context.reportsDir);
 
   const title = 'All files';
-  const datetime = formatDatetime();
+  const formattedDatetime = datetime.format();
   const skipFull = context.options.skipFull === true;
   const skipEmpty = context.options.skipEmpty === true;
 
@@ -168,16 +172,16 @@ const report: Report = (context) => {
       istanbulByPath: byPath,
       skipFull,
       skipEmpty,
-      datetime,
+      datetime: formattedDatetime,
       runtime: context.runtime,
     },
-    tree,
+    coverageTree,
     '',
     [],
     'All files'
   );
 
-  emitDetailPages(tree, {
+  emitDetailPages(coverageTree, {
     reportsDir: context.reportsDir,
     title,
     rootLabel: 'All files',
@@ -185,7 +189,7 @@ const report: Report = (context) => {
     istanbulByPath: byPath,
     skipFull,
     skipEmpty,
-    datetime,
+    datetime: formattedDatetime,
     runtime: context.runtime,
   });
 };

@@ -6,12 +6,12 @@
  */
 
 import type { IgnoreDirective } from '../../@types/ignore-directives.js';
+import { sourceLines } from '../../utils/source-lines.js';
 
 const IGNORE_NEXT_ALONE = /^\W*\/\* (v8|jsc) ignore next/;
 const IGNORE_NEXT_INLINE = /\/\* (v8|jsc) ignore next/;
 const IGNORE_START_STOP = /\/\* (v8|jsc) ignore (?<mode>start|stop)/;
 const IGNORE_NEXT_COUNT = /^\W*\/\* (v8|jsc) ignore next (?<count>[0-9]+)/;
-export const LINE_SPLIT = /(?<=\r?\n)/u;
 
 const parseIgnoreDirective = (
   lineText: string
@@ -34,7 +34,7 @@ const parseIgnoreDirective = (
 
 const parseSource = (source: string): Set<number> => {
   const ignoredLines = new Set<number>();
-  const splitLines = source.split(LINE_SPLIT);
+  const splitLines = source.split(sourceLines.LINE_SPLITTER);
 
   let remainingIgnoreCount = 0;
   let ignoreAllActive = false;

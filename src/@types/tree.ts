@@ -7,6 +7,7 @@ export type FileCoverage = {
   functions: Metric;
   branches: Metric;
   uncoveredBranchPositions: readonly BranchArmPosition[];
+  uncoveredFunctionPositions: readonly BranchArmPosition[];
 };
 
 export type CoverageModel = FileCoverage[];

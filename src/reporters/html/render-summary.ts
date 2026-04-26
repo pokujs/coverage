@@ -5,14 +5,14 @@ import type {
 import type { Runtime } from '../../@types/reporters.js';
 import type { Metric } from '../../@types/text.js';
 import type { WatermarkMetric } from '../../@types/watermarks.js';
-import { htmlEscape } from '../../utils/html.js';
+import { html } from '../../utils/html.js';
 import { relativeHref } from '../shared/html/link-mapper.js';
 import {
   overallReportClass,
   renderFooter,
   renderHeader,
 } from '../shared/html/templates.js';
-import { formatPct, pctValue, resolveDisplayPct } from '../shared/metrics.js';
+import { metrics } from '../shared/metrics.js';
 
 const METRIC_ORDER: readonly ['statements', 'branches', 'functions', 'lines'] =
   ['statements', 'branches', 'functions', 'lines'];
@@ -39,11 +39,11 @@ const summaryCell = (
   metricName: WatermarkMetric
 ): string => {
   const parts: string[] = [];
-  const percentage = pctValue(metric);
+  const percentage = metrics.computePercentage(metric);
 
   if (percentage === null) {
     const metricAbsent =
-      resolveDisplayPct(metric, runtime, metricName) === null;
+      metrics.resolveDisplayPercentage(metric, runtime, metricName) === null;
 
     if (metricAbsent) {
       if (showGraph) {
@@ -110,11 +110,11 @@ const summaryRow = (
     ? `${summaryChild.displayName}/`
     : summaryChild.displayName;
 
-  const href = htmlEscape(
+  const href = html.escape(
     relativeHref(pagePath, summaryChild.relativeLinkPath)
   );
 
-  const escapedName = htmlEscape(displayName);
+  const escapedName = html.escape(displayName);
 
   const statementsCell = summaryCell(
     summaryChild.metrics.statements,
@@ -215,10 +215,10 @@ export const renderSummaryPage = (input: HtmlSummaryPageInput): string => {
 
   const formattedTotals = METRIC_ORDER.map((metricName) => {
     const metric = input.metrics[metricName];
-    return `${metricName}: ${formatPct(pctValue(metric))}`;
+    return `${metricName}: ${metrics.formatPercentage(metrics.computePercentage(metric))}`;
   }).join(' · ');
 
-  const signature = `<!-- ${htmlEscape(formattedTotals)} -->\n`;
+  const signature = `<!-- ${html.escape(formattedTotals)} -->\n`;
 
   return `${header}${signature}${TABLE_HEADER}\n${childRows.join('')}${TABLE_FOOTER}${footer}`;
 };

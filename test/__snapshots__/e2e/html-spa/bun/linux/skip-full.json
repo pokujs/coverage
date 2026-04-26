@@ -2,10 +2,10 @@
   "reporter": "html-spa",
   "totals": {
     "statements": {
-      "total": 142,
-      "covered": 138,
+      "total": 137,
+      "covered": 133,
       "missed": 4,
-      "pct": "97.18 %"
+      "pct": "97.08 %"
     },
     "branches": {
       "total": 0,
@@ -14,25 +14,25 @@
       "pct": "100.00 %"
     },
     "functions": {
-      "total": 27,
-      "covered": 26,
+      "total": 28,
+      "covered": 27,
       "missed": 1,
-      "pct": "96.30 %"
+      "pct": "96.43 %"
     },
     "lines": {
-      "total": 142,
-      "covered": 138,
+      "total": 137,
+      "covered": 133,
       "missed": 4,
-      "pct": "97.18 %"
+      "pct": "97.08 %"
     }
   },
   "files": {
     "src/collections.js": {
       "statements": {
-        "total": 19,
-        "covered": 18,
+        "total": 18,
+        "covered": 17,
         "missed": 1,
-        "pct": "94.74 %"
+        "pct": "94.44 %"
       },
       "branches": {
         "total": 0,
@@ -41,26 +41,26 @@
         "pct": "100.00 %"
       },
       "functions": {
-        "total": 3,
-        "covered": 3,
+        "total": 4,
+        "covered": 4,
         "missed": 0,
         "pct": "100.00 %"
       },
       "lines": {
-        "total": 19,
-        "covered": 18,
+        "total": 18,
+        "covered": 17,
         "missed": 1,
-        "pct": "94.74 %"
+        "pct": "94.44 %"
       },
       "uncoveredLines": "7",
-      "coveredLines": "1-6,8-19"
+      "coveredLines": "1-6,8-18"
     },
     "src/strings.js": {
       "statements": {
-        "total": 17,
-        "covered": 14,
+        "total": 16,
+        "covered": 13,
         "missed": 3,
-        "pct": "82.35 %"
+        "pct": "81.25 %"
       },
       "branches": {
         "total": 0,
@@ -75,13 +75,13 @@
         "pct": "66.67 %"
       },
       "lines": {
-        "total": 17,
-        "covered": 14,
+        "total": 16,
+        "covered": 13,
         "missed": 3,
-        "pct": "82.35 %"
+        "pct": "81.25 %"
       },
       "uncoveredLines": "13-15",
-      "coveredLines": "1-12,16-17"
+      "coveredLines": "1-12,16"
     }
   }
 }

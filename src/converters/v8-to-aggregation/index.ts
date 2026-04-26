@@ -1,3 +1,4 @@
+import type { V8AggregationResult } from '../../@types/aggregation.js';
 import type { ResolvedFileFilter } from '../../@types/file-filter.js';
 import type { SourceMapInput } from '../../@types/source-map.js';
 import type {
@@ -15,13 +16,12 @@ import { astCache } from '../shared/ast-cache.js';
 import { branchBlocks } from '../shared/branch-blocks.js';
 import { functionNames } from '../shared/function-names.js';
 import { ignoreDirectives } from '../shared/ignore-directives.js';
-import { lcovSerialize } from '../shared/lcov-serialize.js';
 import { lineHits } from '../shared/line-hits.js';
-import { passesPreRemapFilter } from '../shared/pre-remap-filter.js';
+import { preRemapFilter } from '../shared/pre-remap-filter.js';
 import { sourceMapRemap } from '../shared/remap.js';
 import { sourceCache } from '../shared/source-cache.js';
-import { findV8JsonFiles, parseV8Json } from '../shared/v8-discovery.js';
-import { absorbFunctions, computeLineHits } from './extraction.js';
+import { v8Discovery } from '../shared/v8-discovery.js';
+import { v8Extraction } from './extraction.js';
 
 const recordScriptFunctions = (
   perFile: Map<string, PerFileCollection>,
@@ -67,7 +67,7 @@ const collectRemappedScript = (
 
   const projected = sourceMapRemap.project({
     script,
-    transpiledSource: resolved.source,
+    transpiledLineStarts: resolved.transpiledLineStarts,
     traceMapInstance,
     cwd,
   });
@@ -96,15 +96,21 @@ const extractPerFileAggregation = (
   const aggregation: FileAggregation = {
     lineHits: new Map(),
     functions: new Map(),
+    blocks: [],
   };
   const { source } = collection;
   const lineStartTable = offsets.lineStarts(source);
-  const sourceLength = Buffer.byteLength(source, 'utf8');
+  const sourceLength = source.length;
   const ignoredLines = ignoreDirectives.parseSource(source);
 
-  aggregation.lineHits = computeLineHits(source, syntheticScript);
+  aggregation.lineHits = v8Extraction.computeLineHits(source, syntheticScript);
 
-  absorbFunctions(aggregation, syntheticScript, lineStartTable, sourceLength);
+  v8Extraction.absorbFunctions(
+    aggregation,
+    syntheticScript,
+    lineStartTable,
+    sourceLength
+  );
   lineHits.applyIgnoredLines(aggregation.lineHits, ignoredLines);
 
   return aggregation;
@@ -123,19 +129,24 @@ const finalizeAggregations = (
 
     branchBlocks.build(aggregation, source, lineStartTable);
     lineHits.applyIgnoredBranches(aggregation, ignoredLines);
+    lineHits.promoteFromBranches(aggregation);
     functionNames.resolve(aggregation, source);
   }
 };
 
-export const v8ToLcov = (
+const run = (
   tempDir: string,
   cwd: string,
-  preRemapFilter: ResolvedFileFilter
-): string => {
+  resolvedFilter: ResolvedFileFilter
+): V8AggregationResult => {
   astCache.reset();
 
-  const jsonFiles = findV8JsonFiles(tempDir);
-  if (jsonFiles.length === 0) return '';
+  const fileAggregations = new Map<string, FileAggregation>();
+  const sourceByPath = new Map<string, string>();
+
+  const jsonFiles = v8Discovery.findJsonFiles(tempDir);
+  if (jsonFiles.length === 0)
+    return { aggregations: fileAggregations, sources: sourceByPath };
 
   const perFile = new Map<string, PerFileCollection>();
 
@@ -148,7 +159,7 @@ export const v8ToLcov = (
       continue;
     }
 
-    const document = parseV8Json(content);
+    const document = v8Discovery.parseJson(content);
 
     for (const script of document.scripts) {
       const resolved = sourceCache.resolve({
@@ -159,7 +170,7 @@ export const v8ToLcov = (
 
       if (resolved === undefined) continue;
 
-      if (!passesPreRemapFilter(script, resolved, preRemapFilter, cwd))
+      if (!preRemapFilter.passes(script, resolved, resolvedFilter, cwd))
         continue;
 
       if (resolved.sourceMapData !== undefined) {
@@ -169,9 +180,6 @@ export const v8ToLcov = (
       }
     }
   }
-
-  const fileAggregations = new Map<string, FileAggregation>();
-  const sourceByPath = new Map<string, string>();
 
   for (const [filePath, collection] of perFile) {
     fileAggregations.set(
@@ -183,5 +191,7 @@ export const v8ToLcov = (
 
   finalizeAggregations(fileAggregations, sourceByPath);
 
-  return lcovSerialize.serialize(fileAggregations, cwd);
+  return { aggregations: fileAggregations, sources: sourceByPath };
 };
+
+export const v8ToAggregation = { run } as const;

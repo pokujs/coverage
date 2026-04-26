@@ -1,87 +1,82 @@
 import type { Node, Program } from 'acorn';
+import type { TypedNode } from '../@types/acorn-nodes.js';
 import type {
+  AppendDiscoveryInputs,
   AstArmRange,
   AstBranchEntry,
   BranchArmPosition,
   DiscoveredBranch,
+  RangeProbe,
+  ScriptCoverageData,
 } from '../@types/branch-discovery.js';
 import type { ResolvedFileFilter } from '../@types/file-filter.js';
 import type { SourceMapInput, TraceMap } from '../@types/source-map.js';
-import type { V8Range } from '../@types/v8.js';
+import type {
+  ResolvedScriptSource,
+  V8Range,
+  V8ScriptCoverage,
+} from '../@types/v8.js';
 import { readFileSync } from 'node:fs';
-import { isAbsolute, sep } from 'node:path';
 import { offsets } from '../utils/offsets.js';
-import { isBannedPath } from '../utils/paths.js';
 import { traceMap } from '../utils/source-map/index.js';
 import { armCoverage } from './shared/arm-coverage.js';
 import { astCache } from './shared/ast-cache.js';
 import { astWalk } from './shared/ast-walk.js';
-import { passesPreRemapFilter } from './shared/pre-remap-filter.js';
+import { preRemapFilter } from './shared/pre-remap-filter.js';
 import { sourceCache } from './shared/source-cache.js';
-import { findV8JsonFiles, parseV8Json } from './shared/v8-discovery.js';
+import { v8Discovery } from './shared/v8-discovery.js';
 
-const getChildNode = (parentNode: Node, propertyName: string): Node | null => {
-  const value: unknown = Reflect.get(parentNode, propertyName);
+const TS_TYPE_WRAPPER_TYPES: ReadonlySet<string> = new Set([
+  'TSAsExpression',
+  'TSSatisfiesExpression',
+  'TSNonNullExpression',
+  'TSTypeAssertion',
+  'TSInstantiationExpression',
+]);
 
-  if (value === null || value === undefined) return null;
-  return astWalk.isNodeLike(value) ? value : null;
+const unwrapTypeAssertion = (node: Node): Node => {
+  let current: Node = node;
+
+  while (TS_TYPE_WRAPPER_TYPES.has(current.type)) {
+    const inner = Reflect.get(current, 'expression');
+    if (inner === null || inner === undefined) break;
+    if (typeof inner !== 'object') break;
+    current = inner as Node;
+  }
+
+  return current;
 };
 
-const getChildNodes = (parentNode: Node, propertyName: string): Node[] => {
-  const value: unknown = Reflect.get(parentNode, propertyName);
-
-  if (!Array.isArray(value)) return [];
-  return value.filter(astWalk.isNodeLike);
+const armOf = (node: Node): AstArmRange => {
+  const unwrapped = unwrapTypeAssertion(node);
+  return { armStart: unwrapped.start, armEnd: unwrapped.end };
 };
 
 const computeArmRanges = (currentNode: Node): readonly AstArmRange[] => {
-  if (currentNode.type === 'LogicalExpression') {
-    const leftNode = getChildNode(currentNode, 'left');
-    const rightNode = getChildNode(currentNode, 'right');
+  const typed = currentNode as TypedNode;
 
-    if (leftNode === null || rightNode === null) return [];
-    return [
-      { armStart: leftNode.start, armEnd: leftNode.end },
-      { armStart: rightNode.start, armEnd: rightNode.end },
-    ];
+  if (typed.type === 'LogicalExpression') {
+    return [armOf(typed.left), armOf(typed.right)];
   }
 
-  if (currentNode.type === 'ConditionalExpression') {
-    const consequentNode = getChildNode(currentNode, 'consequent');
-    const alternateNode = getChildNode(currentNode, 'alternate');
-
-    if (consequentNode === null || alternateNode === null) return [];
-    return [
-      { armStart: consequentNode.start, armEnd: consequentNode.end },
-      { armStart: alternateNode.start, armEnd: alternateNode.end },
-    ];
+  if (typed.type === 'ConditionalExpression') {
+    return [armOf(typed.consequent), armOf(typed.alternate)];
   }
 
-  if (currentNode.type === 'AssignmentPattern') {
-    const rightNode = getChildNode(currentNode, 'right');
-
-    if (rightNode === null) return [];
-    return [{ armStart: rightNode.start, armEnd: rightNode.end }];
+  if (typed.type === 'AssignmentPattern') {
+    return [armOf(typed.right)];
   }
 
-  if (currentNode.type === 'IfStatement') {
-    const consequentNode = getChildNode(currentNode, 'consequent');
-    if (consequentNode === null) return [];
-
-    const alternateNode = getChildNode(currentNode, 'alternate');
-    if (alternateNode !== null)
-      return [
-        { armStart: consequentNode.start, armEnd: consequentNode.end },
-        { armStart: alternateNode.start, armEnd: alternateNode.end },
-      ];
-    return [{ armStart: consequentNode.start, armEnd: consequentNode.end }];
+  if (typed.type === 'IfStatement') {
+    if (typed.alternate !== null)
+      return [armOf(typed.consequent), armOf(typed.alternate)];
+    return [armOf(typed.consequent)];
   }
 
-  if (currentNode.type === 'SwitchStatement') {
-    const cases = getChildNodes(currentNode, 'cases');
-    if (cases.length === 0) return [];
+  if (typed.type === 'SwitchStatement') {
+    if (typed.cases.length === 0) return [];
 
-    return cases.map((caseNode) => ({
+    return typed.cases.map((caseNode) => ({
       armStart: caseNode.start,
       armEnd: caseNode.end,
     }));
@@ -101,6 +96,7 @@ const collectBranchEntries = (programTree: Program): AstBranchEntry[] => {
 
     entries.push({
       nodeStart: currentNode.start,
+      nodeEnd: currentNode.end,
       armStarts: armRanges.map((range) => range.armStart),
       armEnds: armRanges.map((range) => range.armEnd),
     });
@@ -109,63 +105,78 @@ const collectBranchEntries = (programTree: Program): AstBranchEntry[] => {
   return entries;
 };
 
-const remapToOriginal = (
-  byteIndex: number,
-  transpiledLineStarts: number[],
-  traceMapInstance: TraceMap,
-  cwd: string
-): { originalPath: string; line: number; column: number } | null => {
-  const location = offsets.toLocation(byteIndex, transpiledLineStarts);
-  const mapping = traceMapInstance.originalPositionFor(location);
-
-  if (
-    mapping.source === null ||
-    mapping.line === null ||
-    mapping.column === null
-  )
-    return null;
-
-  if (!isAbsolute(mapping.source)) return null;
-
-  const cwdPrefix = cwd.endsWith(sep) ? cwd : cwd + sep;
-
-  if (!mapping.source.startsWith(cwdPrefix)) return null;
-  if (isBannedPath(mapping.source)) return null;
-
-  // mapping.column is 0-indexed per source-map spec; +1 for 1-indexed IDE URLs
-  return {
-    originalPath: mapping.source,
-    line: mapping.line,
-    column: mapping.column + 1,
+const appendDiscovery = (inputs: AppendDiscoveryInputs): void => {
+  const entry: DiscoveredBranch = {
+    line: inputs.startLine,
+    column: inputs.startColumn,
+    endLine: inputs.endLine,
+    endColumn: inputs.endColumn,
+    arms: inputs.arms,
   };
-};
 
-const appendDiscovery = (
-  discoveredByPath: Map<string, DiscoveredBranch[]>,
-  originalPath: string,
-  lineNumber: number,
-  arms: readonly BranchArmPosition[]
-): void => {
-  const existing = discoveredByPath.get(originalPath);
+  const existing = inputs.discoveredByPath.get(inputs.originalPath);
   if (existing === undefined) {
-    discoveredByPath.set(originalPath, [{ line: lineNumber, arms }]);
+    inputs.discoveredByPath.set(inputs.originalPath, [entry]);
     return;
   }
 
-  existing.push({ line: lineNumber, arms });
+  existing.push(entry);
 };
 
-export const discoverBranches = (
+const buildIdentityProbe = (): RangeProbe => (originalByteOffset) =>
+  originalByteOffset;
+
+const buildSourceMapProbe = (
+  resolved: ResolvedScriptSource,
+  originalLineStarts: number[]
+): RangeProbe | null => {
+  const traceMapInstance: TraceMap = traceMap.create(
+    resolved.sourceMapData as SourceMapInput,
+    resolved.sourceMapUrl
+  );
+
+  const sourceIndex = traceMapInstance.resolvedSources.indexOf(
+    resolved.filePath
+  );
+  if (sourceIndex === -1) return null;
+
+  const matchedSource = traceMapInstance.resolvedSources[sourceIndex];
+
+  return (originalByteOffset: number): number => {
+    const originalLocation = offsets.toLocation(
+      originalByteOffset,
+      originalLineStarts
+    );
+
+    const generated = traceMapInstance.generatedPositionFor({
+      source: matchedSource,
+      line: originalLocation.line,
+      column: originalLocation.column,
+    });
+
+    if (generated.line === null || generated.column === null) return -1;
+
+    return offsets.toOffset(
+      { line: generated.line, column: generated.column },
+      resolved.transpiledLineStarts
+    );
+  };
+};
+
+const collectScriptRanges = (script: V8ScriptCoverage): readonly V8Range[] =>
+  script.functions.flatMap((scriptFunction) => scriptFunction.ranges);
+
+const run = (
   tempDir: string,
   cwd: string,
-  preRemapFilter: ResolvedFileFilter
+  resolvedFilter: ResolvedFileFilter
 ): Map<string, readonly DiscoveredBranch[]> => {
   astCache.reset();
 
   const discoveredByPath = new Map<string, DiscoveredBranch[]>();
-  const processedScriptUrls = new Set<string>();
+  const byUrl = new Map<string, ScriptCoverageData>();
 
-  const jsonFiles = findV8JsonFiles(tempDir);
+  const jsonFiles = v8Discovery.findJsonFiles(tempDir);
   if (jsonFiles.length === 0) return discoveredByPath;
 
   for (const jsonPath of jsonFiles) {
@@ -177,162 +188,104 @@ export const discoverBranches = (
       continue;
     }
 
-    const document = parseV8Json(jsonContent);
+    const document = v8Discovery.parseJson(jsonContent);
 
     for (const script of document.scripts) {
-      if (processedScriptUrls.has(script.url)) continue;
-
       const resolved = sourceCache.resolve({
         script,
         sourceMapCache: document.sourceMapCache,
         cwd,
       });
       if (resolved === undefined) continue;
-
-      if (!passesPreRemapFilter(script, resolved, preRemapFilter, cwd))
-        continue;
-
-      processedScriptUrls.add(script.url);
-
-      const programTree = astCache.parse(resolved.source);
-      if (programTree === null) continue;
-
-      const branchEntries = collectBranchEntries(programTree);
-      if (branchEntries.length === 0) continue;
-
-      const allScriptRanges: V8Range[] = script.functions.flatMap(
-        (scriptFunction) => scriptFunction.ranges
-      );
-
-      if (resolved.sourceMapData !== undefined) {
-        const traceMapInstance = traceMap.create(
-          resolved.sourceMapData as SourceMapInput,
-          resolved.sourceMapUrl
-        );
-
-        const transpiledLineStarts = offsets.lineStarts(resolved.source);
-
-        for (const branchEntry of branchEntries) {
-          const nodeResult = remapToOriginal(
-            branchEntry.nodeStart,
-            transpiledLineStarts,
-            traceMapInstance,
-            cwd
-          );
-
-          if (nodeResult === null) continue;
-
-          const armPositions: BranchArmPosition[] = [];
-
-          for (
-            let armIndex = 0;
-            armIndex < branchEntry.armStarts.length;
-            armIndex++
-          ) {
-            const armStart = branchEntry.armStarts[armIndex];
-            const armEnd = branchEntry.armEnds[armIndex];
-            const armStartResult = remapToOriginal(
-              armStart,
-              transpiledLineStarts,
-              traceMapInstance,
-              cwd
-            );
-
-            if (armStartResult === null) continue;
-            if (armStartResult.originalPath !== nodeResult.originalPath)
-              continue;
-
-            const armEndResult = remapToOriginal(
-              armEnd,
-              transpiledLineStarts,
-              traceMapInstance,
-              cwd
-            );
-
-            const endLine =
-              armEndResult !== null &&
-              armEndResult.originalPath === nodeResult.originalPath
-                ? armEndResult.line
-                : armStartResult.line;
-
-            const endColumn =
-              armEndResult !== null &&
-              armEndResult.originalPath === nodeResult.originalPath
-                ? armEndResult.column
-                : armStartResult.column + 1;
-
-            armPositions.push({
-              line: armStartResult.line,
-              column: armStartResult.column,
-              endLine,
-              endColumn,
-              covered: armCoverage.isArmCovered(
-                armStart,
-                armEnd,
-                allScriptRanges
-              ),
-            });
-          }
-
-          if (armPositions.length === 0) continue;
-
-          appendDiscovery(
-            discoveredByPath,
-            nodeResult.originalPath,
-            nodeResult.line,
-            armPositions
-          );
-        }
-
-        continue;
-      }
-
       if (resolved.filePath === '') continue;
 
-      const directLineStarts = offsets.lineStarts(resolved.source);
+      if (!preRemapFilter.passes(script, resolved, resolvedFilter, cwd))
+        continue;
 
-      for (const branchEntry of branchEntries) {
-        const nodeLocation = offsets.toLocation(
-          branchEntry.nodeStart,
-          directLineStarts
-        );
-
-        const armPositions: BranchArmPosition[] = [];
-
-        for (
-          let armIndex = 0;
-          armIndex < branchEntry.armStarts.length;
-          armIndex++
-        ) {
-          const armStart = branchEntry.armStarts[armIndex];
-          const armEnd = branchEntry.armEnds[armIndex];
-          const startLocation = offsets.toLocation(armStart, directLineStarts);
-          const endLocation = offsets.toLocation(armEnd, directLineStarts);
-
-          armPositions.push({
-            line: startLocation.line,
-            column: startLocation.column + 1,
-            endLine: endLocation.line,
-            endColumn: endLocation.column + 1,
-            covered: armCoverage.isArmCovered(
-              armStart,
-              armEnd,
-              allScriptRanges
-            ),
-          });
-        }
-
-        if (armPositions.length === 0) continue;
-
-        appendDiscovery(
-          discoveredByPath,
-          resolved.filePath,
-          nodeLocation.line,
-          armPositions
-        );
+      let entry = byUrl.get(script.url);
+      if (entry === undefined) {
+        entry = { resolved, perProcessRanges: [] };
+        byUrl.set(script.url, entry);
       }
+      entry.perProcessRanges.push(collectScriptRanges(script).slice());
+    }
+  }
+
+  for (const data of byUrl.values()) {
+    const { resolved, perProcessRanges } = data;
+
+    const programTree = astCache.parse(resolved.source);
+    if (programTree === null) continue;
+
+    const branchEntries = collectBranchEntries(programTree);
+    if (branchEntries.length === 0) continue;
+
+    const originalLineStarts = offsets.lineStarts(resolved.source);
+
+    const probe =
+      resolved.sourceMapData === undefined
+        ? buildIdentityProbe()
+        : buildSourceMapProbe(resolved, originalLineStarts);
+
+    if (probe === null) continue;
+
+    for (const branchEntry of branchEntries) {
+      const nodeStartLocation = offsets.toLocation(
+        branchEntry.nodeStart,
+        originalLineStarts
+      );
+      const nodeEndLocation = offsets.toLocation(
+        branchEntry.nodeEnd,
+        originalLineStarts
+      );
+
+      const armPositions: BranchArmPosition[] = [];
+
+      for (
+        let armIndex = 0;
+        armIndex < branchEntry.armStarts.length;
+        armIndex++
+      ) {
+        const armStart = branchEntry.armStarts[armIndex];
+        const armEnd = branchEntry.armEnds[armIndex];
+
+        const startLocation = offsets.toLocation(armStart, originalLineStarts);
+        const endLocation = offsets.toLocation(armEnd, originalLineStarts);
+
+        const probedStart = probe(armStart);
+        const probedEnd = probe(armEnd);
+
+        const covered =
+          probedStart === -1 || probedEnd === -1
+            ? true
+            : perProcessRanges.some((scriptRanges) =>
+                armCoverage.isArmCovered(probedStart, probedEnd, scriptRanges)
+              );
+
+        armPositions.push({
+          line: startLocation.line,
+          column: startLocation.column + 1,
+          endLine: endLocation.line,
+          endColumn: endLocation.column + 1,
+          covered,
+        });
+      }
+
+      if (armPositions.length === 0) continue;
+
+      appendDiscovery({
+        discoveredByPath,
+        originalPath: resolved.filePath,
+        startLine: nodeStartLocation.line,
+        startColumn: nodeStartLocation.column,
+        endLine: nodeEndLocation.line,
+        endColumn: nodeEndLocation.column,
+        arms: armPositions,
+      });
     }
   }
 
   return discoveredByPath;
 };
+
+export const discoverBranches = { run } as const;

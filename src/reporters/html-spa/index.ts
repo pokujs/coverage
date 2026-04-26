@@ -2,10 +2,10 @@ import type { HtmlSpaMetricName } from '../../@types/html.js';
 import type { Report, Runtime } from '../../@types/reporters.js';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { formatDatetime } from '../../utils/datetime.js';
+import { datetime } from '../../utils/datetime.js';
 import { emitDetailPages } from '../shared/html/emit-details.js';
 import { htmlRuntimes } from '../shared/html/runtimes/index.js';
-import { buildTree } from '../shared/tree.js';
+import { tree } from '../shared/tree.js';
 import { buildHtmlSpaNode } from './build-data.js';
 import { copyAssets } from './copy-assets.js';
 import { renderShell } from './render-shell.js';
@@ -22,18 +22,18 @@ const report: Report = (context) => {
   const { model, byPath } = projectedCoverage;
   if (model.length === 0) return;
 
-  const tree = buildTree(model, context.cwd);
-  if (tree.children.length === 0) return;
+  const coverageTree = tree.build(model, context.cwd);
+  if (coverageTree.children.length === 0) return;
 
   mkdirSync(context.reportsDir, { recursive: true });
   copyAssets(context.reportsDir);
 
   const title = 'All files';
-  const datetime = formatDatetime();
+  const formattedDatetime = datetime.format();
   const skipFull = context.options.skipFull === true;
   const skipEmpty = context.options.skipEmpty === true;
 
-  emitDetailPages(tree, {
+  emitDetailPages(coverageTree, {
     reportsDir: context.reportsDir,
     title,
     rootLabel: 'All files',
@@ -41,12 +41,12 @@ const report: Report = (context) => {
     istanbulByPath: byPath,
     skipFull,
     skipEmpty,
-    datetime,
+    datetime: formattedDatetime,
     backBreadcrumb: true,
     runtime: context.runtime,
   });
 
-  const data = buildHtmlSpaNode(tree, {
+  const data = buildHtmlSpaNode(coverageTree, {
     resolvedWatermarks: context.watermarks,
     skipFull,
     skipEmpty,
@@ -54,7 +54,7 @@ const report: Report = (context) => {
 
   const shell = renderShell({
     data,
-    datetime,
+    datetime: formattedDatetime,
     metricsToShow: metricsFor(context.runtime),
   });
 

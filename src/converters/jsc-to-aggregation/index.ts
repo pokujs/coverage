@@ -8,7 +8,7 @@ import type { FileAggregation } from '../../@types/v8.js';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { fileFilter } from '../../file-filter.js';
 import { offsets } from '../../utils/offsets.js';
-import { isBannedPath } from '../../utils/paths.js';
+import { paths } from '../../utils/paths.js';
 import { sourceMapComment } from '../../utils/source-map-comment.js';
 import { traceMap } from '../../utils/source-map/index.js';
 import { astCache } from '../shared/ast-cache.js';
@@ -50,6 +50,9 @@ const mergeAggregation = (
 
     target.functions.set(key, functionEntry);
   }
+
+  if (source.blocks.length > 0 && target.blocks.length === 0)
+    target.blocks = source.blocks;
 };
 
 const resolveModuleCountFromAggregation = (
@@ -107,7 +110,7 @@ const run = (
     const scriptUrl = fileUrlFromScriptUrl(scriptBlocks.url);
     const absoluteScriptPath = absolutePathFromScriptUrl(scriptUrl);
 
-    if (isBannedPath(absoluteScriptPath)) continue;
+    if (paths.isBanned(absoluteScriptPath)) continue;
 
     const rawSourceMapDocument = sourceMapComment.fromSource(wrappedSource);
     if (rawSourceMapDocument === null) continue;
@@ -162,6 +165,7 @@ const run = (
     const wrappedAggregation: FileAggregation = {
       lineHits: new Map(),
       functions: new Map(),
+      blocks: [],
     };
 
     lineHits.merge(
@@ -214,9 +218,20 @@ const run = (
     const diskSource = diskSourceByPath.get(diskPath);
     if (diskSource === undefined) continue;
 
-    for (const [key, functionEntry] of aggregation.functions) {
-      if (functionEntry.isModuleFunction) continue;
-      if (functionEntry.name === '') aggregation.functions.delete(key);
+    const anonymousEntries = Array.from(aggregation.functions.values())
+      .filter(
+        (functionEntry) =>
+          !functionEntry.isModuleFunction && functionEntry.name === ''
+      )
+      .sort((left, right) => left.startOffset - right.startOffset);
+
+    for (
+      let anonymousIndex = 0;
+      anonymousIndex < anonymousEntries.length;
+      anonymousIndex++
+    ) {
+      anonymousEntries[anonymousIndex].name =
+        `(anonymous_${anonymousIndex + 1})`;
     }
 
     applyModuleCountFallback(aggregation, diskSource);

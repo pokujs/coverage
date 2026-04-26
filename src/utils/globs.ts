@@ -1,8 +1,3 @@
-/*
- * Minimal glob → regex compiler. Supports `*`, `**`, `?`, brace expansion
- * (including `{,s}`). No character classes, extglob, or negation.
- */
-
 const REGEX_META = /[.+^$()|[\]\\]/g;
 
 const expandBraces = (pattern: string): string[] => {
@@ -91,7 +86,7 @@ const globToRegex = (glob: string): RegExp => {
   return new RegExp(source);
 };
 
-export const compileGlobs = (patterns: readonly string[]): RegExp[] => {
+const compile = (patterns: readonly string[]): RegExp[] => {
   const compiled: RegExp[] = [];
 
   for (const pattern of patterns)
@@ -105,10 +100,12 @@ export const compileGlobs = (patterns: readonly string[]): RegExp[] => {
   return compiled;
 };
 
-export const matchesAnyGlob = (
+const matchesAny = (
   compiledGlobs: readonly RegExp[],
   relativePath: string
 ): boolean => {
   for (const regex of compiledGlobs) if (regex.test(relativePath)) return true;
   return false;
 };
+
+export const globs = { compile, matchesAny } as const;

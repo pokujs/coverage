@@ -1,4 +1,4 @@
-export const formatDatetime = (): string => {
+const format = (): string => {
   const currentDate = new Date();
   const pad = (datePart: number): string =>
     datePart.toString().padStart(2, '0');
@@ -8,3 +8,5 @@ export const formatDatetime = (): string => {
     ` ${pad(currentDate.getHours())}:${pad(currentDate.getMinutes())}:${pad(currentDate.getSeconds())}`
   );
 };
+
+export const datetime = { format } as const;
