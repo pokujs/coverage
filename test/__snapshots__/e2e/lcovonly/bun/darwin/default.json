@@ -2,10 +2,10 @@
   "reporter": "lcovonly",
   "totals": {
     "lines": {
-      "total": 142,
-      "covered": 138,
+      "total": 137,
+      "covered": 133,
       "missed": 4,
-      "pct": "97.18 %"
+      "pct": "97.08 %"
     },
     "branches": {
       "total": 0,
@@ -14,19 +14,19 @@
       "pct": "100.00 %"
     },
     "functions": {
-      "total": 27,
-      "covered": 26,
+      "total": 28,
+      "covered": 27,
       "missed": 1,
-      "pct": "96.30 %"
+      "pct": "96.43 %"
     }
   },
   "files": {
     "src/collections.js": {
       "lines": {
-        "total": 19,
-        "covered": 18,
+        "total": 18,
+        "covered": 17,
         "missed": 1,
-        "pct": "94.74 %"
+        "pct": "94.44 %"
       },
       "branches": {
         "total": 0,
@@ -35,13 +35,13 @@
         "pct": "100.00 %"
       },
       "functions": {
-        "total": 3,
-        "covered": 3,
+        "total": 4,
+        "covered": 4,
         "missed": 0,
         "pct": "100.00 %"
       },
       "uncoveredLines": "7",
-      "coveredLines": "1-6,8-19",
+      "coveredLines": "1-6,8-18",
       "lineHits": {
         "1": 13,
         "2": 32,
@@ -60,8 +60,7 @@
         "15": 1,
         "16": 13,
         "17": 22,
-        "18": 1,
-        "19": 1
+        "18": 1
       },
       "branchHits": [],
       "functionHits": [
@@ -79,13 +78,18 @@
           "name": "sum",
           "line": 16,
           "hit": 1
+        },
+        {
+          "name": "(anonymous_1)",
+          "line": 17,
+          "hit": 4
         }
       ]
     },
     "src/logic.js": {
       "lines": {
-        "total": 67,
-        "covered": 67,
+        "total": 66,
+        "covered": 66,
         "missed": 0,
         "pct": "100.00 %"
       },
@@ -102,7 +106,7 @@
         "pct": "100.00 %"
       },
       "uncoveredLines": "",
-      "coveredLines": "1-67",
+      "coveredLines": "1-66",
       "lineHits": {
         "1": 61,
         "2": 1,
@@ -169,8 +173,7 @@
         "63": 1,
         "64": 1,
         "65": 44,
-        "66": 1,
-        "67": 1
+        "66": 1
       },
       "branchHits": [],
       "functionHits": [
@@ -238,8 +241,8 @@
     },
     "src/math.js": {
       "lines": {
-        "total": 19,
-        "covered": 19,
+        "total": 18,
+        "covered": 18,
         "missed": 0,
         "pct": "100.00 %"
       },
@@ -256,7 +259,7 @@
         "pct": "100.00 %"
       },
       "uncoveredLines": "",
-      "coveredLines": "1-19",
+      "coveredLines": "1-18",
       "lineHits": {
         "1": 14,
         "2": 13,
@@ -275,8 +278,7 @@
         "15": 43,
         "16": 1,
         "17": 13,
-        "18": 1,
-        "19": 1
+        "18": 1
       },
       "branchHits": [],
       "functionHits": [
@@ -304,8 +306,8 @@
     },
     "src/partial.js": {
       "lines": {
-        "total": 20,
-        "covered": 20,
+        "total": 19,
+        "covered": 19,
         "missed": 0,
         "pct": "100.00 %"
       },
@@ -322,7 +324,7 @@
         "pct": "100.00 %"
       },
       "uncoveredLines": "",
-      "coveredLines": "1-20",
+      "coveredLines": "1-19",
       "lineHits": {
         "1": 15,
         "2": 27,
@@ -342,8 +344,7 @@
         "16": 1,
         "17": 14,
         "18": 27,
-        "19": 1,
-        "20": 1
+        "19": 1
       },
       "branchHits": [],
       "functionHits": [
@@ -376,10 +377,10 @@
     },
     "src/strings.js": {
       "lines": {
-        "total": 17,
-        "covered": 14,
+        "total": 16,
+        "covered": 13,
         "missed": 3,
-        "pct": "82.35 %"
+        "pct": "81.25 %"
       },
       "branches": {
         "total": 0,
@@ -394,7 +395,7 @@
         "pct": "66.67 %"
       },
       "uncoveredLines": "13-15",
-      "coveredLines": "1-12,16-17",
+      "coveredLines": "1-12,16",
       "lineHits": {
         "1": 13,
         "2": 1,
@@ -411,8 +412,7 @@
         "13": 0,
         "14": 0,
         "15": 0,
-        "16": 1,
-        "17": 1
+        "16": 1
       },
       "branchHits": [],
       "functionHits": [

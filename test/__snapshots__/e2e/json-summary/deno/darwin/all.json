@@ -2,62 +2,62 @@
   "reporter": "json-summary",
   "totals": {
     "statements": {
-      "total": 161,
-      "covered": 137,
-      "missed": 24,
-      "pct": "85.09 %"
+      "total": 93,
+      "covered": 75,
+      "missed": 18,
+      "pct": "80.65 %"
     },
     "branches": {
-      "total": 76,
-      "covered": 70,
+      "total": 67,
+      "covered": 61,
       "missed": 6,
-      "pct": "92.11 %"
+      "pct": "91.04 %"
     },
     "functions": {
-      "total": 27,
-      "covered": 26,
+      "total": 28,
+      "covered": 27,
       "missed": 1,
-      "pct": "96.30 %"
+      "pct": "96.43 %"
     },
     "lines": {
-      "total": 161,
-      "covered": 137,
-      "missed": 24,
-      "pct": "85.09 %"
+      "total": 93,
+      "covered": 75,
+      "missed": 18,
+      "pct": "80.65 %"
     }
   },
   "files": {
     "src/collections.js": {
       "statements": {
-        "total": 19,
-        "covered": 17,
-        "missed": 2,
-        "pct": "89.47 %"
+        "total": 11,
+        "covered": 10,
+        "missed": 1,
+        "pct": "90.91 %"
       },
       "branches": {
-        "total": 6,
-        "covered": 5,
+        "total": 3,
+        "covered": 2,
         "missed": 1,
-        "pct": "83.33 %"
+        "pct": "66.67 %"
       },
       "functions": {
-        "total": 3,
-        "covered": 3,
+        "total": 4,
+        "covered": 4,
         "missed": 0,
         "pct": "100.00 %"
       },
       "lines": {
-        "total": 19,
-        "covered": 17,
-        "missed": 2,
-        "pct": "89.47 %"
+        "total": 11,
+        "covered": 10,
+        "missed": 1,
+        "pct": "90.91 %"
       }
     },
     "src/helpers/format.js": {
       "statements": {
-        "total": 16,
+        "total": 12,
         "covered": 0,
-        "missed": 16,
+        "missed": 12,
         "pct": "0.00 %"
       },
       "branches": {
@@ -73,9 +73,9 @@
         "pct": "100.00 %"
       },
       "lines": {
-        "total": 16,
+        "total": 12,
         "covered": 0,
-        "missed": 16,
+        "missed": 12,
         "pct": "0.00 %"
       }
     },
@@ -107,14 +107,14 @@
     },
     "src/logic.js": {
       "statements": {
-        "total": 67,
-        "covered": 67,
+        "total": 36,
+        "covered": 36,
         "missed": 0,
         "pct": "100.00 %"
       },
       "branches": {
-        "total": 49,
-        "covered": 49,
+        "total": 48,
+        "covered": 48,
         "missed": 0,
         "pct": "100.00 %"
       },
@@ -125,22 +125,22 @@
         "pct": "100.00 %"
       },
       "lines": {
-        "total": 67,
-        "covered": 67,
+        "total": 36,
+        "covered": 36,
         "missed": 0,
         "pct": "100.00 %"
       }
     },
     "src/math.js": {
       "statements": {
-        "total": 19,
-        "covered": 19,
+        "total": 10,
+        "covered": 10,
         "missed": 0,
         "pct": "100.00 %"
       },
       "branches": {
-        "total": 5,
-        "covered": 5,
+        "total": 2,
+        "covered": 2,
         "missed": 0,
         "pct": "100.00 %"
       },
@@ -151,16 +151,16 @@
         "pct": "100.00 %"
       },
       "lines": {
-        "total": 19,
-        "covered": 19,
+        "total": 10,
+        "covered": 10,
         "missed": 0,
         "pct": "100.00 %"
       }
     },
     "src/partial.js": {
       "statements": {
-        "total": 20,
-        "covered": 20,
+        "total": 10,
+        "covered": 10,
         "missed": 0,
         "pct": "100.00 %"
       },
@@ -177,22 +177,22 @@
         "pct": "100.00 %"
       },
       "lines": {
-        "total": 20,
-        "covered": 20,
+        "total": 10,
+        "covered": 10,
         "missed": 0,
         "pct": "100.00 %"
       }
     },
     "src/strings.js": {
       "statements": {
-        "total": 17,
-        "covered": 14,
-        "missed": 3,
-        "pct": "82.35 %"
+        "total": 11,
+        "covered": 9,
+        "missed": 2,
+        "pct": "81.82 %"
       },
       "branches": {
-        "total": 2,
-        "covered": 2,
+        "total": 0,
+        "covered": 0,
         "missed": 0,
         "pct": "100.00 %"
       },
@@ -203,10 +203,10 @@
         "pct": "66.67 %"
       },
       "lines": {
-        "total": 17,
-        "covered": 14,
-        "missed": 3,
-        "pct": "82.35 %"
+        "total": 11,
+        "covered": 9,
+        "missed": 2,
+        "pct": "81.82 %"
       }
     }
   }
