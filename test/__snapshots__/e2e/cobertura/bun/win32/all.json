@@ -2,10 +2,10 @@
   "reporter": "cobertura",
   "totals": {
     "lines": {
-      "total": 152,
-      "covered": 133,
-      "missed": 19,
-      "pct": "87.50 %"
+      "total": 93,
+      "covered": 75,
+      "missed": 18,
+      "pct": "80.65 %"
     },
     "branches": {
       "total": 0,

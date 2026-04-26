@@ -33,6 +33,31 @@ const remapLine = (
   return undefined;
 };
 
+const remapPosition = (
+  traceMapInstance: TraceMap,
+  wrappedLine: number,
+  wrappedColumn: number
+): { line: number; column: number } | undefined => {
+  if (wrappedLine < 1) return undefined;
+
+  const exact = traceMapInstance.originalPositionFor({
+    line: wrappedLine,
+    column: wrappedColumn,
+  });
+  if (exact.line !== null && exact.column !== null)
+    return { line: exact.line, column: exact.column };
+
+  const before = traceMapInstance.originalPositionFor({
+    line: wrappedLine,
+    column: wrappedColumn,
+    bias: -1,
+  });
+  if (before.line !== null && before.column !== null)
+    return { line: before.line, column: before.column };
+
+  return undefined;
+};
+
 const rebaseLineHits = (
   wrappedHits: ReadonlyMap<number, number>,
   traceMapInstance: TraceMap
@@ -113,12 +138,17 @@ const rebaseFunction = (
     };
   }
 
-  const diskLine = remapLine(traceMapInstance, functionEntry.line);
-  if (diskLine === undefined) return undefined;
+  const diskPosition = remapPosition(
+    traceMapInstance,
+    functionEntry.line,
+    functionEntry.column
+  );
+  if (diskPosition === undefined) return undefined;
 
   return {
     ...functionEntry,
-    line: diskLine,
+    line: diskPosition.line,
+    column: diskPosition.column,
     subRanges: rebaseSubRanges(functionEntry.subRanges, traceMapInstance),
   };
 };

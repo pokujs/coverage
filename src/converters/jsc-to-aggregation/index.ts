@@ -1,6 +1,7 @@
 import type { ResolvedFileFilter } from '../../@types/file-filter.js';
 import type {
   JscAggregationResult,
+  JscBasicBlock,
   JscScriptBlocks,
 } from '../../@types/jsc.js';
 import type { SourceMapDocument } from '../../@types/source-map.js';
@@ -9,11 +10,13 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { fileFilter } from '../../file-filter.js';
 import { offsets } from '../../utils/offsets.js';
 import { paths } from '../../utils/paths.js';
+import { sourceLines } from '../../utils/source-lines.js';
 import { sourceMapComment } from '../../utils/source-map-comment.js';
 import { traceMap } from '../../utils/source-map/index.js';
 import { astCache } from '../shared/ast-cache.js';
 import { ignoreDirectives } from '../shared/ignore-directives.js';
 import { lineHits } from '../shared/line-hits.js';
+import { nonExecutableLines } from '../shared/non-executable-lines.js';
 import { jscDiscovery } from './discovery.js';
 import { jscExtraction } from './extraction.js';
 import { aggregationRebase } from './rebase.js';
@@ -69,11 +72,29 @@ const resolveModuleCountFromAggregation = (
   return moduleCount;
 };
 
+const resolveModuleCountFromRawBlocks = (
+  rawBlocks: readonly JscBasicBlock[],
+  wrappedLength: number
+): number => {
+  let moduleCount = 0;
+
+  for (const basicBlock of rawBlocks) {
+    if (basicBlock.startOffset !== 0) continue;
+    if (basicBlock.endOffset < wrappedLength - 1) continue;
+    if (basicBlock.executionCount > moduleCount)
+      moduleCount = basicBlock.executionCount;
+  }
+
+  return moduleCount;
+};
+
 const applyModuleCountFallback = (
   aggregation: FileAggregation,
-  diskSource: string
+  diskSource: string,
+  rawModuleCount: number
 ): void => {
-  const moduleCount = resolveModuleCountFromAggregation(aggregation);
+  const aggregationModuleCount = resolveModuleCountFromAggregation(aggregation);
+  const moduleCount = Math.max(aggregationModuleCount, rawModuleCount);
   if (moduleCount === 0) return;
 
   const totalLines = diskSource.split('\n').length;
@@ -101,6 +122,7 @@ const run = (
   const blocksFiles = jscDiscovery.findBlocksFiles(tempDir);
   const fileAggregations = new Map<string, FileAggregation>();
   const diskSourceByPath = new Map<string, string>();
+  const rawModuleCountByPath = new Map<string, number>();
 
   for (const blocksPath of blocksFiles) {
     const scriptBlocks = jscDiscovery.parseBlocksFile(blocksPath);
@@ -189,13 +211,40 @@ const run = (
       if (functionEntry.isModuleFunction) continue;
       if (functionEntry.outerCount > 0) continue;
 
+      const functionStart = functionEntry.startOffset;
+      const functionEnd = functionEntry.endOffset;
       const [firstLine, lastLine] = offsets.rangeLines(
-        functionEntry.startOffset,
-        functionEntry.endOffset,
+        functionStart,
+        functionEnd,
         wrappedLineStartTable
       );
 
       for (let lineNumber = firstLine; lineNumber <= lastLine; lineNumber++) {
+        const lineStart = wrappedLineStartTable[lineNumber - 1];
+        const lineEnd =
+          wrappedLineStartTable[lineNumber] ?? trimmedSource.length;
+
+        const hasOutsideExecutedCoverage = trimmedScriptBlocks.blocks.some(
+          (basicBlock) => {
+            if (basicBlock.executionCount <= 0 && !basicBlock.hasExecuted)
+              return false;
+            if (basicBlock.endOffset <= lineStart) return false;
+            if (basicBlock.startOffset >= lineEnd) return false;
+
+            const enclosesFunction =
+              basicBlock.startOffset <= functionStart &&
+              basicBlock.endOffset >= functionEnd;
+
+            if (enclosesFunction) return false;
+            return (
+              basicBlock.startOffset < functionStart ||
+              basicBlock.endOffset > functionEnd
+            );
+          }
+        );
+
+        if (hasOutsideExecutedCoverage) continue;
+
         wrappedAggregation.lineHits.set(lineNumber, 0);
       }
     }
@@ -212,6 +261,14 @@ const run = (
     } else {
       mergeAggregation(existingAggregation, diskAggregation);
     }
+
+    const rawModuleCount = resolveModuleCountFromRawBlocks(
+      scriptBlocks.blocks,
+      wrappedLength
+    );
+    const previousRawModuleCount = rawModuleCountByPath.get(diskPath) ?? 0;
+    if (rawModuleCount > previousRawModuleCount)
+      rawModuleCountByPath.set(diskPath, rawModuleCount);
   }
 
   for (const [diskPath, aggregation] of fileAggregations) {
@@ -234,7 +291,30 @@ const run = (
         `(anonymous_${anonymousIndex + 1})`;
     }
 
-    applyModuleCountFallback(aggregation, diskSource);
+    const rawModuleCount = rawModuleCountByPath.get(diskPath) ?? 0;
+    applyModuleCountFallback(aggregation, diskSource, rawModuleCount);
+
+    const diskLineStartTable = offsets.lineStarts(diskSource);
+    const diskContentExtents = offsets.lineContentExtents(
+      diskSource,
+      diskLineStartTable
+    );
+    const commentOnlyLines = sourceLines.findCommentOnlyLines(diskSource);
+    const delimiterOnlyLines = sourceLines.findDelimiterOnlyLines(diskSource);
+    const syntacticallyNonExecutableLines = nonExecutableLines.find(diskSource);
+
+    for (let lineIndex = 0; lineIndex < diskContentExtents.length; lineIndex++)
+      if (diskContentExtents[lineIndex] === null)
+        aggregation.lineHits.delete(lineIndex + 1);
+
+    for (const lineNumber of commentOnlyLines)
+      aggregation.lineHits.delete(lineNumber);
+
+    for (const lineNumber of delimiterOnlyLines)
+      aggregation.lineHits.delete(lineNumber);
+
+    for (const lineNumber of syntacticallyNonExecutableLines)
+      aggregation.lineHits.delete(lineNumber);
 
     const ignoredLines = ignoreDirectives.parseSource(diskSource);
 

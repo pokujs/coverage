@@ -1,1 +1,1 @@
-exclude-after-remap.txt
+../../bun/win32/exclude-after-remap.txt

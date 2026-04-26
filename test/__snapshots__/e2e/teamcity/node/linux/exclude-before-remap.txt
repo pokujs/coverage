@@ -1,1 +1,1 @@
-../../deno/linux/exclude-after-remap.txt
+../../bun/linux/exclude-after-remap.txt
