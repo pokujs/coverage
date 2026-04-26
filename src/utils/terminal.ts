@@ -1,8 +1,35 @@
-import type { UrlBuilder } from '../@types/ide.js';
+import type { ColorName, UrlBuilder } from '../@types/terminal.js';
 import process from 'node:process';
 
 const OSC_PREFIX = '\x1b]';
 const STRING_TERMINATOR = '\x1b\\';
+const ANSI_RESET = '\x1b[0m';
+
+const ANSI: Record<ColorName, string> = {
+  red: '\x1b[1;91m',
+  yellow: '\x1b[1;93m',
+  green: '\x1b[0;32m',
+  gray: '\x1b[0;90m',
+  blue: '\x1b[1;94m',
+  dim: '\x1b[2m',
+  dimGray: '\x1b[2;90m',
+  pink: '\x1b[1;38;5;212m',
+  purple: '\x1b[1;38;5;105m',
+  white: ANSI_RESET,
+};
+
+const isColorEnabled = (): boolean => {
+  if (process.env.NO_COLOR !== undefined && process.env.NO_COLOR !== '')
+    return false;
+  if (process.env.FORCE_COLOR !== undefined && process.env.FORCE_COLOR !== '0')
+    return true;
+  return process.stdout.isTTY === true;
+};
+
+const colorize = (text: string, color: ColorName): string => {
+  if (!isColorEnabled()) return text;
+  return `${ANSI[color]}${text}${ANSI_RESET}`;
+};
 
 const hyperlink = (
   text: string,
@@ -64,4 +91,10 @@ const supportsHyperlinks = (): boolean => {
   return false;
 };
 
-export const terminal = { hyperlink, supportsHyperlinks } as const;
+export const terminal = {
+  ANSI,
+  isColorEnabled,
+  colorize,
+  hyperlink,
+  supportsHyperlinks,
+} as const;

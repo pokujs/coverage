@@ -1,12 +1,12 @@
-import type { ANSI } from '../reporters/shared/color.js';
 import type { BranchArmPosition } from './branch-discovery.js';
+import type { ColorName } from './terminal.js';
 
 export type Metric = {
   total: number | null;
   hit: number | null;
 };
 
-export type ColorName = keyof typeof ANSI;
+export type { ColorName };
 
 export type UncoveredRange = {
   start: number;

@@ -18,12 +18,12 @@ import { lcov } from '../shared/lcov/index.js';
 import {
   aggregateLines,
   aggregateMetric,
+  computePercentage,
   linesMetric,
-  pctValue,
 } from '../shared/metrics.js';
 
 const metricSummary = (metric: Metric): MetricSummary => {
-  const percentage = pctValue(metric);
+  const percentage = computePercentage(metric);
 
   return {
     total: metric.total ?? 0,

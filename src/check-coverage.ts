@@ -7,14 +7,15 @@ import type { Metric } from './@types/text.js';
 import type { CoverageModel } from './@types/tree.js';
 import { relative } from 'node:path';
 import process from 'node:process';
-import { colorForPct, colorize } from './reporters/shared/color.js';
 import { applyIstanbulBranches } from './reporters/shared/file-coverage.js';
 import { lcov } from './reporters/shared/lcov/index.js';
 import {
   aggregateLines,
   aggregateMetric,
-  pctValue,
+  computePercentage,
 } from './reporters/shared/metrics.js';
+import { terminal } from './utils/terminal.js';
+import { watermarks } from './watermarks.js';
 
 const METRIC_ORDER: readonly CheckCoverageMetric[] = [
   'statements',
@@ -59,7 +60,7 @@ const collectFailures = (
 
     for (const entry of scopes) {
       const computed = metricForName(metric, entry.files);
-      const actual = pctValue(computed);
+      const actual = computePercentage(computed);
 
       if (actual === null) continue;
 
@@ -83,13 +84,13 @@ const formatFailureLine = (
   const label = padMetricLabel(failure.metric);
   const actualText = `${failure.actual!.toFixed(2)}%`;
   const thresholdText = `(threshold: ${failure.threshold}%)`;
-  const colorName = colorForPct(
+  const colorName = watermarks.colorForPercent(
     context.watermarks,
     failure.metric,
     failure.actual
   );
 
-  return `  ${label} ${colorize(actualText, colorName)} ${thresholdText}`;
+  return `  ${label} ${terminal.colorize(actualText, colorName)} ${thresholdText}`;
 };
 
 const printFailures = (
@@ -98,7 +99,7 @@ const printFailures = (
 ): void => {
   console.error('');
   console.error(
-    colorize('[@pokujs/coverage] coverage threshold not met:', 'red')
+    terminal.colorize('[@pokujs/coverage] coverage threshold not met:', 'red')
   );
 
   const grouped = new Map<string, CheckCoverageFailure[]>();

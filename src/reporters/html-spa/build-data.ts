@@ -15,7 +15,7 @@ import {
   metricsForFile,
   metricsForSubtree,
 } from '../shared/html/row-metrics.js';
-import { pctValue } from '../shared/metrics.js';
+import { computePercentage } from '../shared/metrics.js';
 import { shouldHideFileRow } from '../shared/skip.js';
 
 const round2 = (value: number): number => Math.round(value * 100) / 100;
@@ -28,8 +28,9 @@ const metricData = (
   const total = metric.total ?? 0;
   const covered = metric.hit ?? 0;
   const isEmpty = total === 0;
-  const percentage = pctValue(metric);
-  const pct = isEmpty || percentage === null ? 100 : round2(percentage);
+  const percentage = computePercentage(metric);
+  const roundedPercentage =
+    isEmpty || percentage === null ? 100 : round2(percentage);
 
   const classForPercent: WatermarkLevel | 'empty' = isEmpty
     ? 'empty'
@@ -41,7 +42,7 @@ const metricData = (
     covered,
     missed: total - covered,
     skipped: 0,
-    pct,
+    pct: roundedPercentage,
     classForPercent,
   };
 };

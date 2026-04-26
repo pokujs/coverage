@@ -6,13 +6,14 @@
 import type { Report, Runtime } from '../../@types/reporters.js';
 import type { Metric } from '../../@types/text.js';
 import type { WatermarkMetric } from '../../@types/watermarks.js';
-import { colorForPct, colorize } from '../shared/color.js';
+import { terminal } from '../../utils/terminal.js';
+import { watermarks } from '../../watermarks.js';
 import { applyIstanbulBranches } from '../shared/file-coverage.js';
 import { lcov } from '../shared/lcov/index.js';
 import {
   aggregateLines,
   aggregateMetric,
-  resolveDisplayPct,
+  resolveDisplayPercentage,
 } from '../shared/metrics.js';
 
 const KEY_WIDTH = 12;
@@ -33,12 +34,13 @@ const formatLine = (
   metric: Metric,
   runtime: Runtime
 ): string => {
-  const percentage = resolveDisplayPct(metric, runtime, key);
-  const pctDisplay = percentage === null ? '-' : `${percentage.toFixed(2)}%`;
+  const percentage = resolveDisplayPercentage(metric, runtime, key);
+  const percentageDisplay =
+    percentage === null ? '-' : `${percentage.toFixed(2)}%`;
   const covered = metric.hit ?? 0;
   const total = metric.total ?? 0;
 
-  return `${padKey(key)} : ${pctDisplay} ( ${covered}/${total} )`;
+  return `${padKey(key)} : ${percentageDisplay} ( ${covered}/${total} )`;
 };
 
 const report: Report = (context) => {
@@ -65,13 +67,13 @@ const report: Report = (context) => {
 
   for (const row of rows) {
     const line = formatLine(row.key, row.metric, context.runtime);
-    const color = colorForPct(
+    const color = watermarks.colorForPercent(
       context.watermarks,
       row.key,
-      resolveDisplayPct(row.metric, context.runtime, row.key)
+      resolveDisplayPercentage(row.metric, context.runtime, row.key)
     );
 
-    console.log(colorize(line, color));
+    console.log(terminal.colorize(line, color));
   }
 
   console.log(FOOTER);

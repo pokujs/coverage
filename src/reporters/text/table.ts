@@ -1,5 +1,5 @@
-import type { UrlBuilder } from '../../@types/ide.js';
 import type { Runtime } from '../../@types/reporters.js';
+import type { UrlBuilder } from '../../@types/terminal.js';
 import type {
   ColorName,
   Column,
@@ -11,12 +11,12 @@ import type {
 import type { CoverageModel } from '../../@types/tree.js';
 import type { Watermarks } from '../../@types/watermarks.js';
 import { terminal } from '../../utils/terminal.js';
-import { colorEnabled, colorForPct, colorize } from '../shared/color.js';
+import { watermarks } from '../../watermarks.js';
 import {
   aggregateLines,
   aggregateMetric,
-  pctValue,
-  resolveDisplayPct,
+  computePercentage,
+  resolveDisplayPercentage,
 } from '../shared/metrics.js';
 import { shouldHideFileRow } from '../shared/skip.js';
 import {
@@ -28,7 +28,7 @@ import {
 } from './ranges.js';
 import { buildTree, walkTree } from './tree.js';
 
-const formatPctValue = (value: number | null): string =>
+const formatPercentageValue = (value: number | null): string =>
   value === null ? '-' : value.toFixed(2);
 
 const isFileRowHidden = (
@@ -56,7 +56,10 @@ const BOX = {
 
 const horizontalLine = (widths: number[], middle: string): string => {
   const parts = widths.map((columnWidth) => BOX.horiz.repeat(columnWidth));
-  return colorize(parts.join(BOX.horiz + middle + BOX.horiz), 'dimGray');
+  return terminal.colorize(
+    parts.join(BOX.horiz + middle + BOX.horiz),
+    'dimGray'
+  );
 };
 
 const dataRow = (
@@ -80,10 +83,12 @@ const dataRow = (
       padded = align === 'left' ? visible + padding : padding + visible;
     }
 
-    parts.push(renderCell.color ? colorize(padded, renderCell.color) : padded);
+    parts.push(
+      renderCell.color ? terminal.colorize(padded, renderCell.color) : padded
+    );
   }
 
-  const separator = colorize(BOX.vert, 'dimGray');
+  const separator = terminal.colorize(BOX.vert, 'dimGray');
   return parts.join(' ' + separator + ' ');
 };
 
@@ -114,12 +119,12 @@ const buildUncoveredDisplay = (
             )
           : text;
 
-      return colorize(linked, colorForUncoveredEntry(entry));
+      return terminal.colorize(linked, colorForUncoveredEntry(entry));
     })
     .join(', ');
 
   if (!truncated) return rendered;
-  const truncationMark = colorize(TRUNCATION_SUFFIX, 'gray');
+  const truncationMark = terminal.colorize(TRUNCATION_SUFFIX, 'gray');
   return rendered + truncationMark;
 };
 
@@ -137,18 +142,18 @@ const averageColor = (
     metrics.functions,
     metrics.lines,
   ]) {
-    const percentage = pctValue(metric);
+    const percentage = computePercentage(metric);
     if (percentage !== null) percentages.push(percentage);
   }
 
   if (percentages.length === 0)
-    return colorForPct(resolvedWatermarks, 'lines', null);
+    return watermarks.colorForPercent(resolvedWatermarks, 'lines', null);
 
   const average =
     percentages.reduce((sum, percentage) => sum + percentage, 0) /
     percentages.length;
 
-  return colorForPct(resolvedWatermarks, 'lines', average);
+  return watermarks.colorForPercent(resolvedWatermarks, 'lines', average);
 };
 
 const DIRECTORY_MARKER = '◼ ';
@@ -168,11 +173,15 @@ const nameCell = (
   );
 
   const marker = isDirectory ? DIRECTORY_MARKER : '';
-  const markerDisplay = isDirectory ? colorize(DIRECTORY_MARKER, 'blue') : '';
+  const markerDisplay = isDirectory
+    ? terminal.colorize(DIRECTORY_MARKER, 'blue')
+    : '';
 
   if (connectorIndex < 0) {
     const text = marker + name;
-    const styledSegment = segmentColor ? colorize(name, segmentColor) : name;
+    const styledSegment = segmentColor
+      ? terminal.colorize(name, segmentColor)
+      : name;
     if (!isDirectory && !segmentColor) return { text, color: null };
     return { text, color: null, display: markerDisplay + styledSegment };
   }
@@ -181,9 +190,9 @@ const nameCell = (
   const segment = name.slice(connectorIndex + 2);
   const text = prefix + marker + segment;
   const display =
-    colorize(prefix, 'dim') +
+    terminal.colorize(prefix, 'dim') +
     markerDisplay +
-    (segmentColor ? colorize(segment, segmentColor) : segment);
+    (segmentColor ? terminal.colorize(segment, segmentColor) : segment);
 
   return { text, color: null, display };
 };
@@ -248,43 +257,63 @@ const buildRowCells = (
     display: uncoveredDisplay,
   };
 
-  const statementsPct = resolveDisplayPct(
+  const statementsPercentage = resolveDisplayPercentage(
     row.metrics.statements,
     runtime,
     'statements'
   );
 
-  const branchesPct = resolveDisplayPct(
+  const branchesPercentage = resolveDisplayPercentage(
     row.metrics.branches,
     runtime,
     'branches'
   );
 
-  const functionsPct = resolveDisplayPct(
+  const functionsPercentage = resolveDisplayPercentage(
     row.metrics.functions,
     runtime,
     'functions'
   );
 
-  const linesPct = resolveDisplayPct(row.metrics.lines, runtime, 'lines');
+  const linesPercentage = resolveDisplayPercentage(
+    row.metrics.lines,
+    runtime,
+    'lines'
+  );
 
   return [
     nameCell(resolvedWatermarks, row.name, row.metrics, false),
     {
-      text: formatPctValue(statementsPct),
-      color: colorForPct(resolvedWatermarks, 'statements', statementsPct),
+      text: formatPercentageValue(statementsPercentage),
+      color: watermarks.colorForPercent(
+        resolvedWatermarks,
+        'statements',
+        statementsPercentage
+      ),
     },
     {
-      text: formatPctValue(branchesPct),
-      color: colorForPct(resolvedWatermarks, 'branches', branchesPct),
+      text: formatPercentageValue(branchesPercentage),
+      color: watermarks.colorForPercent(
+        resolvedWatermarks,
+        'branches',
+        branchesPercentage
+      ),
     },
     {
-      text: formatPctValue(functionsPct),
-      color: colorForPct(resolvedWatermarks, 'functions', functionsPct),
+      text: formatPercentageValue(functionsPercentage),
+      color: watermarks.colorForPercent(
+        resolvedWatermarks,
+        'functions',
+        functionsPercentage
+      ),
     },
     {
-      text: formatPctValue(linesPct),
-      color: colorForPct(resolvedWatermarks, 'lines', linesPct),
+      text: formatPercentageValue(linesPercentage),
+      color: watermarks.colorForPercent(
+        resolvedWatermarks,
+        'lines',
+        linesPercentage
+      ),
     },
     uncoveredCell,
   ];
@@ -384,10 +413,12 @@ export const renderTable = (
   lines.push(dataRow(summaryCells, widths, columns));
   lines.push(horizontalLine(widths, BOX.botMid));
 
-  if (colorEnabled()) {
+  if (terminal.isColorEnabled()) {
     lines.push('');
-    lines.push(`${colorize('◼', 'pink')} Uncovered lines`);
-    lines.push(`${colorize('◼', 'purple')} Uncovered branches and functions`);
+    lines.push(`${terminal.colorize('◼', 'pink')} Uncovered lines`);
+    lines.push(
+      `${terminal.colorize('◼', 'purple')} Uncovered branches and functions`
+    );
   }
 
   return lines.join('\n');

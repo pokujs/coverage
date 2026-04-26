@@ -28,25 +28,25 @@ export const linesMetric = (lineHits: Map<number, number>): Metric => {
   };
 };
 
-export const pctValue = (metric: Metric): number | null => {
+export const computePercentage = (metric: Metric): number | null => {
   if (metric.total === null || metric.hit === null) return null;
   if (metric.total === 0) return null;
   return (metric.hit / metric.total) * 100;
 };
 
-export const resolveDisplayPct = (
+export const resolveDisplayPercentage = (
   metric: Metric,
   runtime: Runtime,
   metricName: WatermarkMetric
 ): number | null => {
-  const percentage = pctValue(metric);
+  const percentage = computePercentage(metric);
 
   if (percentage !== null) return percentage;
   if (runtime === 'bun' && metricName === 'branches') return null;
   return 100;
 };
 
-export const formatPct = (value: number | null): string =>
+export const formatPercentage = (value: number | null): string =>
   value === null ? '-' : `${value.toFixed(2)} %`;
 
 export const aggregateMetric = <SourceFile>(

@@ -1,5 +1,5 @@
-import type { IDE } from './ide.js';
 import type { Reporter } from './reporters.js';
+import type { IDE } from './terminal.js';
 import type { Watermarks } from './watermarks.js';
 
 export type CoverageState = {

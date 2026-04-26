@@ -1,7 +1,7 @@
 import type { RowMetrics } from '../../@types/text.js';
-import { pctValue } from './metrics.js';
+import { computePercentage } from './metrics.js';
 
-const FULL_COVERAGE_PCT = 100;
+const FULL_COVERAGE_PERCENTAGE = 100;
 
 export const shouldHideFileRow = (
   metrics: RowMetrics,
@@ -9,10 +9,10 @@ export const shouldHideFileRow = (
   skipEmpty: boolean
 ): boolean => {
   const percentages = [
-    pctValue(metrics.statements),
-    pctValue(metrics.branches),
-    pctValue(metrics.functions),
-    pctValue(metrics.lines),
+    computePercentage(metrics.statements),
+    computePercentage(metrics.branches),
+    computePercentage(metrics.functions),
+    computePercentage(metrics.lines),
   ];
 
   if (skipEmpty && percentages.every((percentage) => percentage === null))
@@ -25,7 +25,9 @@ export const shouldHideFileRow = (
 
     if (
       concretePercentages.length > 0 &&
-      concretePercentages.every((percentage) => percentage >= FULL_COVERAGE_PCT)
+      concretePercentages.every(
+        (percentage) => percentage >= FULL_COVERAGE_PERCENTAGE
+      )
     )
       return true;
   }

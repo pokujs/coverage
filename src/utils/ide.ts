@@ -1,5 +1,5 @@
 import type { CoverageOptions } from '../@types/coverage.js';
-import type { IDE, IDEUrlBuilders, UrlBuilder } from '../@types/ide.js';
+import type { IDE, IDEUrlBuilders, UrlBuilder } from '../@types/terminal.js';
 import { pathToFileURL } from 'node:url';
 import { terminal } from './terminal.js';
 

@@ -11,7 +11,11 @@ import type {
 } from '../../../@types/watermarks.js';
 import { html } from '../../../utils/html.js';
 import { watermarks } from '../../../watermarks.js';
-import { formatPct, pctValue, resolveDisplayPct } from '../metrics.js';
+import {
+  computePercentage,
+  formatPercentage,
+  resolveDisplayPercentage,
+} from '../metrics.js';
 import { relativeHref } from './link-mapper.js';
 
 export const metricReportClass = (
@@ -19,7 +23,7 @@ export const metricReportClass = (
   metric: Metric,
   metricName: WatermarkMetric
 ): WatermarkLevel | 'empty' => {
-  const percentage = pctValue(metric);
+  const percentage = computePercentage(metric);
   if (percentage === null) return 'empty';
 
   return (
@@ -40,19 +44,19 @@ const metricBlock = (
   runtime: Runtime,
   metricName: WatermarkMetric
 ): string => {
-  const percentage = pctValue(metric);
+  const percentage = computePercentage(metric);
   const total = metric.total ?? 0;
   const covered = metric.hit ?? 0;
 
   if (percentage !== null)
     return `
         <div class='fl pad1y space-right2'>
-            <span class="strong">${formatPct(percentage)}</span>
+            <span class="strong">${formatPercentage(percentage)}</span>
             <span class="quiet">${label}</span>
             <span class='fraction'>${covered}/${total}</span>
         </div>`;
 
-  if (resolveDisplayPct(metric, runtime, metricName) === null)
+  if (resolveDisplayPercentage(metric, runtime, metricName) === null)
     return `
         <div class='fl pad1y space-right2'>
             <span class="strong">-</span>
