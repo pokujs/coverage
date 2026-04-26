@@ -48,10 +48,7 @@
     "test:node": "poku -t=\"node:\"",
     "test:bun": "bun --bun poku -t=\"bun:\"",
     "update": "pu && npm i && npm update && (npm audit fix || true)",
-    "postupdate": "npm run lint:fix",
-    "prepg": "rm -rf playground/coverage playground-ts/coverage; npm run build",
-    "pg": "npm --prefix playground run test:node; npm --prefix playground-ts run test:node;",
-    "pg:deno": "npm run prepg; npm --prefix playground run test:deno; npm --prefix playground-ts run test:deno;"
+    "postupdate": "npm run lint:fix"
   },
   "dependencies": {
     "acorn": "^8.16.0",
@@ -72,7 +69,7 @@
     "domhandler": "^6.0.1",
     "dts-bundle-generator": "^9.5.1",
     "esbuild": "^0.28.0",
-    "fast-xml-parser": "^5.7.1",
+    "fast-xml-parser": "^5.7.2",
     "htmlparser2": "^12.0.0",
     "lcov-parse": "^1.0.0",
     "packages-update": "^2.0.0",
