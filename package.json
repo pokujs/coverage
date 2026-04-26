@@ -48,10 +48,7 @@
     "test:node": "poku -t=\"node:\"",
     "test:bun": "bun --bun poku -t=\"bun:\"",
     "update": "pu && npm i && npm update && (npm audit fix || true)",
-    "postupdate": "npm run lint:fix",
-    "prepg": "rm -rf playground/coverage playground-ts/coverage; npm run build",
-    "pg": "npm --prefix playground run test:node; npm --prefix playground-ts run test:node;",
-    "pg:deno": "npm run prepg; npm --prefix playground run test:deno; npm --prefix playground-ts run test:deno;"
+    "postupdate": "npm run lint:fix"
   },
   "dependencies": {
     "acorn": "^8.16.0",
