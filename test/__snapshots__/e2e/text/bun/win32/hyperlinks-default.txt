@@ -2,11 +2,11 @@
 File             │ % Stmts │ % Branch │ % Funcs │ % Lines │ Uncovered Lines
 ─────────────────┼─────────┼──────────┼─────────┼─────────┼────────────────
 ◼ src            │         │          │         │         │                
-├ collections.js │   94.44 │        - │  100.00 │   94.44 │ ]8;;file:///<fixtureRoot>/src/collections.js#L7\7]8;;\              
+├ collections.js │   90.91 │        - │  100.00 │   90.91 │ ]8;;file:///<fixtureRoot>/src/collections.js#L7\7]8;;\              
 ├ logic.js       │  100.00 │        - │  100.00 │  100.00 │                
 ├ math.js        │  100.00 │        - │  100.00 │  100.00 │                
 ├ partial.js     │  100.00 │        - │  100.00 │  100.00 │                
-└ strings.js     │   81.25 │        - │   66.67 │   81.25 │ ]8;;file:///<fixtureRoot>/src/strings.js#L14\14-15]8;;\, ]8;;file:///<fixtureRoot>/src/strings.js#L13\13:8-36]8;;\ 
+└ strings.js     │   81.82 │        - │   66.67 │   81.82 │ ]8;;file:///<fixtureRoot>/src/strings.js#L14\14-15]8;;\, ]8;;file:///<fixtureRoot>/src/strings.js#L13\13:8-36]8;;\ 
 ─────────────────┼─────────┼──────────┼─────────┼─────────┼────────────────
-All Files        │   97.08 │        - │   96.43 │   97.08 │                
+All Files        │   96.15 │        - │   96.43 │   96.15 │                
 ─────────────────┴─────────┴──────────┴─────────┴─────────┴────────────────

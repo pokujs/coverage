@@ -2,10 +2,10 @@
   "reporter": "html",
   "totals": {
     "statements": {
-      "total": 137,
-      "covered": 133,
-      "missed": 4,
-      "pct": "97.08 %"
+      "total": 78,
+      "covered": 75,
+      "missed": 3,
+      "pct": "96.15 %"
     },
     "branches": {
       "total": null,
@@ -20,19 +20,19 @@
       "pct": "96.43 %"
     },
     "lines": {
-      "total": 137,
-      "covered": 133,
-      "missed": 4,
-      "pct": "97.08 %"
+      "total": 78,
+      "covered": 75,
+      "missed": 3,
+      "pct": "96.15 %"
     }
   },
   "files": {
     "src/collections.js": {
       "statements": {
-        "total": 18,
-        "covered": 17,
+        "total": 11,
+        "covered": 10,
         "missed": 1,
-        "pct": "94.44 %"
+        "pct": "90.91 %"
       },
       "branches": {
         "total": null,
@@ -47,18 +47,18 @@
         "pct": "100.00 %"
       },
       "lines": {
-        "total": 18,
-        "covered": 17,
+        "total": 11,
+        "covered": 10,
         "missed": 1,
-        "pct": "94.44 %"
+        "pct": "90.91 %"
       },
       "uncoveredLines": "7",
-      "coveredLines": "1-6,8-18"
+      "coveredLines": "1-2,5-6,9-11,13,16-17"
     },
     "src/logic.js": {
       "statements": {
-        "total": 66,
-        "covered": 66,
+        "total": 36,
+        "covered": 36,
         "missed": 0,
         "pct": "100.00 %"
       },
@@ -75,18 +75,18 @@
         "pct": "100.00 %"
       },
       "lines": {
-        "total": 66,
-        "covered": 66,
+        "total": 36,
+        "covered": 36,
         "missed": 0,
         "pct": "100.00 %"
       },
       "uncoveredLines": "",
-      "coveredLines": "1-66"
+      "coveredLines": "1,3-4,7-8,11-12,15-16,19-26,29-33,37-38,41-42,45-47,50-52,55,57,60,65"
     },
     "src/math.js": {
       "statements": {
-        "total": 18,
-        "covered": 18,
+        "total": 10,
+        "covered": 10,
         "missed": 0,
         "pct": "100.00 %"
       },
@@ -103,18 +103,18 @@
         "pct": "100.00 %"
       },
       "lines": {
-        "total": 18,
-        "covered": 18,
+        "total": 10,
+        "covered": 10,
         "missed": 0,
         "pct": "100.00 %"
       },
       "uncoveredLines": "",
-      "coveredLines": "1-18"
+      "coveredLines": "1-2,5-6,9-10,13-15,17"
     },
     "src/partial.js": {
       "statements": {
-        "total": 19,
-        "covered": 19,
+        "total": 10,
+        "covered": 10,
         "missed": 0,
         "pct": "100.00 %"
       },
@@ -131,20 +131,20 @@
         "pct": "100.00 %"
       },
       "lines": {
-        "total": 19,
-        "covered": 19,
+        "total": 10,
+        "covered": 10,
         "missed": 0,
         "pct": "100.00 %"
       },
       "uncoveredLines": "",
-      "coveredLines": "1-19"
+      "coveredLines": "1-2,5-6,9-10,13-14,17-18"
     },
     "src/strings.js": {
       "statements": {
-        "total": 16,
-        "covered": 13,
-        "missed": 3,
-        "pct": "81.25 %"
+        "total": 11,
+        "covered": 9,
+        "missed": 2,
+        "pct": "81.82 %"
       },
       "branches": {
         "total": null,
@@ -159,13 +159,13 @@
         "pct": "66.67 %"
       },
       "lines": {
-        "total": 16,
-        "covered": 13,
-        "missed": 3,
-        "pct": "81.25 %"
+        "total": 11,
+        "covered": 9,
+        "missed": 2,
+        "pct": "81.82 %"
       },
-      "uncoveredLines": "13-15",
-      "coveredLines": "1-12,16"
+      "uncoveredLines": "14-15",
+      "coveredLines": "1-6,9-10,13"
     }
   }
 }
