@@ -1,4 +1,5 @@
 import type {
+  JscBreakableLocation,
   JscInspectorAttachInputs,
   JscInspectorHandle,
   JscInspectorPendingResolver,
@@ -13,6 +14,7 @@ import { strings } from '../../utils/strings.js';
 const BLOCKS_FILE_SUFFIX = '.jsc.json';
 const POLL_INTERVAL_MS = 50;
 const STABLE_TICKS_TO_CLOSE = 6;
+const BREAKABLE_END_LINE = 1 << 30;
 
 const isUserScript = (url: string, cwd: string): boolean => {
   if (!url) return false;
@@ -39,6 +41,7 @@ const attach = ({
   const scripts: JscInspectorScriptInfo[] = [];
   const latestBlocks = new Map<string, JscScriptBlocks>();
   const sourceByScriptId = new Map<string, string>();
+  const breakableByScriptId = new Map<string, JscBreakableLocation[]>();
 
   let messageId = 0;
   let pollTimer: NodeJS.Timeout | null = null;
@@ -79,6 +82,24 @@ const attach = ({
     return scriptSource;
   };
 
+  const fetchBreakablePositions = async (
+    scriptId: string
+  ): Promise<JscBreakableLocation[] | undefined> => {
+    const cached = breakableByScriptId.get(scriptId);
+    if (cached !== undefined) return cached;
+
+    const response = await send('Debugger.getBreakpointLocations', {
+      start: { scriptId, lineNumber: 0, columnNumber: 0 },
+      end: { scriptId, lineNumber: BREAKABLE_END_LINE, columnNumber: 0 },
+    });
+
+    if (response.error) return undefined;
+    if (!response.result?.locations) return undefined;
+
+    breakableByScriptId.set(scriptId, response.result.locations);
+    return response.result.locations;
+  };
+
   const captureNow = async (): Promise<void> => {
     if (!handshakeDone) return;
 
@@ -93,13 +114,19 @@ const attach = ({
       if (!blocksResponse.result?.basicBlocks) continue;
 
       const scriptSource = await fetchSource(script.scriptId);
+      const breakablePositions = await fetchBreakablePositions(script.scriptId);
 
-      latestBlocks.set(script.url, {
+      const scriptBlocks: JscScriptBlocks = {
         url: script.url,
         scriptId: script.scriptId,
         source: scriptSource,
         blocks: blocksResponse.result.basicBlocks,
-      });
+      };
+
+      if (breakablePositions !== undefined)
+        scriptBlocks.breakablePositions = breakablePositions;
+
+      latestBlocks.set(script.url, scriptBlocks);
     }
   };
 

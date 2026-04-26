@@ -25,6 +25,11 @@ const parseBlocksFile = (filePath: string): JscScriptBlocks | undefined => {
   if (typeof candidate.scriptId !== 'string') return undefined;
   if (typeof candidate.source !== 'string') return undefined;
   if (!Array.isArray(candidate.blocks)) return undefined;
+  if (
+    candidate.breakablePositions !== undefined &&
+    !Array.isArray(candidate.breakablePositions)
+  )
+    return undefined;
 
   return parsed as JscScriptBlocks;
 };
