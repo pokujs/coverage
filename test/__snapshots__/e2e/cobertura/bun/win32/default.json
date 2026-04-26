@@ -2,10 +2,10 @@
   "reporter": "cobertura",
   "totals": {
     "lines": {
-      "total": 142,
-      "covered": 138,
+      "total": 137,
+      "covered": 133,
       "missed": 4,
-      "pct": "97.18 %"
+      "pct": "97.08 %"
     },
     "branches": {
       "total": 0,
@@ -17,10 +17,10 @@
   "files": {
     "src/collections.js": {
       "lines": {
-        "total": 19,
-        "covered": 18,
+        "total": 18,
+        "covered": 17,
         "missed": 1,
-        "pct": "94.74 %"
+        "pct": "94.44 %"
       },
       "branches": {
         "total": 0,
@@ -35,7 +35,7 @@
         "pct": "100.00 %"
       },
       "uncoveredLines": "7",
-      "coveredLines": "1-6,8-19",
+      "coveredLines": "1-6,8-18",
       "lineHits": {
         "1": 13,
         "2": 32,
@@ -54,16 +54,15 @@
         "15": 1,
         "16": 13,
         "17": 22,
-        "18": 1,
-        "19": 1
+        "18": 1
       },
       "branchHits": [],
       "functionHits": []
     },
     "src/logic.js": {
       "lines": {
-        "total": 67,
-        "covered": 67,
+        "total": 66,
+        "covered": 66,
         "missed": 0,
         "pct": "100.00 %"
       },
@@ -80,7 +79,7 @@
         "pct": "100.00 %"
       },
       "uncoveredLines": "",
-      "coveredLines": "1-67",
+      "coveredLines": "1-66",
       "lineHits": {
         "1": 61,
         "2": 1,
@@ -147,13 +146,56 @@
         "63": 1,
         "64": 1,
         "65": 44,
-        "66": 1,
-        "67": 1
+        "66": 1
       },
       "branchHits": [],
       "functionHits": []
     },
     "src/math.js": {
+      "lines": {
+        "total": 18,
+        "covered": 18,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "branches": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "functions": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "uncoveredLines": "",
+      "coveredLines": "1-18",
+      "lineHits": {
+        "1": 14,
+        "2": 13,
+        "3": 1,
+        "4": 1,
+        "5": 14,
+        "6": 13,
+        "7": 1,
+        "8": 1,
+        "9": 14,
+        "10": 13,
+        "11": 1,
+        "12": 1,
+        "13": 14,
+        "14": 15,
+        "15": 43,
+        "16": 1,
+        "17": 13,
+        "18": 1
+      },
+      "branchHits": [],
+      "functionHits": []
+    },
+    "src/partial.js": {
       "lines": {
         "total": 19,
         "covered": 19,
@@ -175,51 +217,6 @@
       "uncoveredLines": "",
       "coveredLines": "1-19",
       "lineHits": {
-        "1": 14,
-        "2": 13,
-        "3": 1,
-        "4": 1,
-        "5": 14,
-        "6": 13,
-        "7": 1,
-        "8": 1,
-        "9": 14,
-        "10": 13,
-        "11": 1,
-        "12": 1,
-        "13": 14,
-        "14": 15,
-        "15": 43,
-        "16": 1,
-        "17": 13,
-        "18": 1,
-        "19": 1
-      },
-      "branchHits": [],
-      "functionHits": []
-    },
-    "src/partial.js": {
-      "lines": {
-        "total": 20,
-        "covered": 20,
-        "missed": 0,
-        "pct": "100.00 %"
-      },
-      "branches": {
-        "total": 0,
-        "covered": 0,
-        "missed": 0,
-        "pct": "100.00 %"
-      },
-      "functions": {
-        "total": 0,
-        "covered": 0,
-        "missed": 0,
-        "pct": "100.00 %"
-      },
-      "uncoveredLines": "",
-      "coveredLines": "1-20",
-      "lineHits": {
         "1": 15,
         "2": 27,
         "3": 1,
@@ -238,18 +235,17 @@
         "16": 1,
         "17": 14,
         "18": 27,
-        "19": 1,
-        "20": 1
+        "19": 1
       },
       "branchHits": [],
       "functionHits": []
     },
     "src/strings.js": {
       "lines": {
-        "total": 17,
-        "covered": 14,
+        "total": 16,
+        "covered": 13,
         "missed": 3,
-        "pct": "82.35 %"
+        "pct": "81.25 %"
       },
       "branches": {
         "total": 0,
@@ -264,7 +260,7 @@
         "pct": "100.00 %"
       },
       "uncoveredLines": "13-15",
-      "coveredLines": "1-12,16-17",
+      "coveredLines": "1-12,16",
       "lineHits": {
         "1": 13,
         "2": 1,
@@ -281,8 +277,7 @@
         "13": 0,
         "14": 0,
         "15": 0,
-        "16": 1,
-        "17": 1
+        "16": 1
       },
       "branchHits": [],
       "functionHits": []
