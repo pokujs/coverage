@@ -8,7 +8,9 @@ import { v8Discovery } from '../shared/v8-discovery.js';
 import { nodefyDeno } from './deno.js';
 import { nodefyNode } from './node.js';
 
-const parserFor = (runtime: Runtime): ((content: string) => V8NodefiedScript[]) => {
+const parserFor = (
+  runtime: Runtime
+): ((content: string) => V8NodefiedScript[]) => {
   if (runtime === 'deno') return nodefyDeno.parse;
   return nodefyNode.parse;
 };

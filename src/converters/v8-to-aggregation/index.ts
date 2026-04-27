@@ -158,8 +158,7 @@ const run = (
 
     const { script } = nodefied;
 
-    if (!preRemapFilter.passes(script, resolved, resolvedFilter, cwd))
-      continue;
+    if (!preRemapFilter.passes(script, resolved, resolvedFilter, cwd)) continue;
 
     if (nodefied.mode === 'remap') {
       collectRemappedScript(perFile, resolved, script, cwd);
