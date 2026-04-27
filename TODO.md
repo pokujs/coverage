@@ -50,6 +50,8 @@ Configuration example:
 }
 ```
 
+---
+
 **2)** Allow isolating behaviors between different runtimes, for example:
 
 > - Blocked until finishing the Deno TODO.
@@ -70,3 +72,7 @@ Configuration example:
   },
 }
 ```
+
+---
+
+**3)** Distinguishing Statements from Lines
