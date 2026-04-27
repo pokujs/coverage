@@ -2,6 +2,8 @@
 
 Reference notes on how Bun exposes JSC's coverage data, what its dump shape includes, and what the JavaScript and TypeScript variants actually produce. Drawn from direct observation of the dumps Bun emits for the same Poku test suite that the Node notes were drawn from, against mirrored JavaScript and TypeScript playgrounds.
 
+- https://bun.com/reference/bun/jsc
+
 ---
 
 ## 1. Capture model

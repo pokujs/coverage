@@ -223,13 +223,27 @@ const attach = ({
     if (closed) return;
 
     closed = true;
+    stopPolling();
+    flushLatest();
 
     try {
       socket.close();
     } catch {}
   };
 
-  return { close };
+  const flushAndClose = async (): Promise<void> => {
+    if (closed) return;
+
+    stopPolling();
+
+    try {
+      await captureNow();
+    } catch {}
+
+    close();
+  };
+
+  return { close, flushAndClose };
 };
 
 export const jscInspector = { attach } as const;
