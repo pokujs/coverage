@@ -39,6 +39,10 @@ const fixturesRoot = fileURLToPath(
   new URL('./test/__fixtures__/e2e/', import.meta.url)
 );
 
+const snapshotsRoot = fileURLToPath(
+  new URL('./test/__snapshots__/e2e/', import.meta.url)
+);
+
 const reportersResourcesRoot = fileURLToPath(
   new URL('./test/__resources__/e2e/reporters/', import.meta.url)
 );
@@ -116,6 +120,31 @@ const clearRuntimeCaches = async () => {
   } catch {}
 };
 
+const clearPlatformSnapshots = async (directory = snapshotsRoot) => {
+  const currentPlatform = platform();
+  let entries;
+
+  try {
+    entries = await readdir(directory, { withFileTypes: true });
+  } catch {
+    return;
+  }
+
+  await Promise.all(
+    entries.map((entry) => {
+      if (!entry.isDirectory()) return;
+
+      const entryPath = join(directory, entry.name);
+
+      if (entry.name === currentPlatform) {
+        return rm(entryPath, { recursive: true, force: true });
+      }
+
+      return clearPlatformSnapshots(entryPath);
+    })
+  );
+};
+
 export default defineConfig({
   include: ['test/e2e'],
   // reporter: reporter,
@@ -128,6 +157,13 @@ export default defineConfig({
     {
       setup: async () => {
         await clearRuntimeCaches();
+
+        if (env.UPDATE_SNAPSHOTS === '1') {
+          console.log(
+            `› Clearing existing snapshots for platform "${platform()}"...`
+          );
+          await clearPlatformSnapshots();
+        }
 
         console.log('› Deleting previous coverage reports and fixtures...');
         await clean();

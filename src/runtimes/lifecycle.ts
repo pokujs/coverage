@@ -133,6 +133,7 @@ const teardown = (
           : converters.v8ToIstanbul.convert(
               state.tempDir,
               context.cwd,
+              runtime,
               reporterContext.preRemapFilter
             );
 
@@ -144,6 +145,7 @@ const teardown = (
           : converters.discoverBranches.run(
               state.tempDir,
               context.cwd,
+              runtime,
               reporterContext.preRemapFilter
             );
       discoveryMerge.apply(coverageMap, discoveries);

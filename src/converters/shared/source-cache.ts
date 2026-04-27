@@ -1,17 +1,17 @@
 import type {
+  V8NodefiedScript,
+  V8NodefiedSourceMap,
+  V8NodefyResolveInputs,
+} from '../../@types/v8-nodefy.js';
+import type {
   ResolvedScriptSource,
-  SourceCacheResolveInputs,
-  SourceMapCacheEntry,
   SourceMapPayload,
 } from '../../@types/v8.js';
-import { existsSync, readFileSync } from 'node:fs';
-import { homedir } from 'node:os';
-import { join } from 'node:path';
-import process from 'node:process';
+import { readFileSync } from 'node:fs';
+import { sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { offsets } from '../../utils/offsets.js';
 import { paths } from '../../utils/paths.js';
-import { sourceMapComment } from '../../utils/source-map-comment.js';
 import { v8Discovery } from './v8-discovery.js';
 
 const lineLengthsToLineStarts = (lineLengths: number[]): number[] => {
@@ -25,13 +25,6 @@ const lineLengthsToLineStarts = (lineLengths: number[]): number[] => {
 
   starts.push(cumulative);
   return starts;
-};
-
-const hasSourceMapPayload = (
-  entry: SourceMapCacheEntry | undefined
-): entry is SourceMapCacheEntry & { data: object } => {
-  if (entry === undefined) return false;
-  return typeof entry.data === 'object' && entry.data !== null;
 };
 
 const extractOriginalContents = (
@@ -64,7 +57,7 @@ const extractOriginalContents = (
     return undefined;
   }
 
-  const cwdPrefix = cwd.endsWith('/') ? cwd : `${cwd}/`;
+  const cwdPrefix = cwd.endsWith(sep) ? cwd : `${cwd}${sep}`;
 
   if (!absoluteSourcePath.startsWith(cwdPrefix)) return undefined;
   if (paths.isBanned(absoluteSourcePath)) return undefined;
@@ -72,111 +65,28 @@ const extractOriginalContents = (
   return { filePath: absoluteSourcePath, source: rawContent };
 };
 
-const resolveFromSourceMapCache = (
-  inputs: SourceCacheResolveInputs
+const resolveFromRemap = (
+  nodefied: V8NodefiedScript,
+  sourceMap: V8NodefiedSourceMap,
+  cwd: string
 ): ResolvedScriptSource | undefined => {
-  const cacheEntry = inputs.sourceMapCache[inputs.script.url];
-
-  if (!hasSourceMapPayload(cacheEntry)) return undefined;
-  if (!Array.isArray(cacheEntry.lineLengths)) return undefined;
-
-  const original = extractOriginalContents(cacheEntry.data, inputs.cwd);
+  const original = extractOriginalContents(sourceMap.data, cwd);
   if (original === undefined) return undefined;
 
   return {
     filePath: original.filePath,
     source: original.source,
-    sourceMapData: cacheEntry.data,
-    sourceMapUrl: inputs.script.url,
-    transpiledLineStarts: lineLengthsToLineStarts(cacheEntry.lineLengths),
-  };
-};
-
-const defaultDenoDir = (): string => {
-  const override = process.env.DENO_DIR;
-  if (override !== undefined && override.length > 0) return override;
-
-  const home = homedir();
-
-  if (process.platform === 'darwin') {
-    return join(home, 'Library', 'Caches', 'deno');
-  }
-
-  if (process.platform === 'win32') {
-    const localAppData = process.env.LOCALAPPDATA;
-
-    if (localAppData !== undefined && localAppData.length > 0) {
-      return join(localAppData, 'deno');
-    }
-
-    return join(home, 'AppData', 'Local', 'deno');
-  }
-
-  const xdgCacheHome = process.env.XDG_CACHE_HOME;
-
-  if (xdgCacheHome !== undefined && xdgCacheHome.length > 0) {
-    return join(xdgCacheHome, 'deno');
-  }
-
-  return join(home, '.cache', 'deno');
-};
-
-const TS_EXTENSION_PATTERN = /\.(?:c|m)?tsx?$/;
-
-const resolveFromDenoCache = (
-  inputs: SourceCacheResolveInputs
-): ResolvedScriptSource | undefined => {
-  const scriptUrl = inputs.script.url;
-
-  if (!scriptUrl.startsWith('file://')) return undefined;
-  if (!TS_EXTENSION_PATTERN.test(scriptUrl)) return undefined;
-
-  let absoluteSourcePath: string;
-  try {
-    absoluteSourcePath = fileURLToPath(scriptUrl);
-  } catch {
-    return undefined;
-  }
-
-  const relativeBelowRoot = absoluteSourcePath.startsWith('/')
-    ? absoluteSourcePath.slice(1)
-    : absoluteSourcePath;
-
-  const cachedEmitPath = join(
-    defaultDenoDir(),
-    'gen',
-    'file',
-    `${relativeBelowRoot}.js`
-  );
-
-  if (!existsSync(cachedEmitPath)) return undefined;
-
-  let cachedEmitSource: string;
-  try {
-    cachedEmitSource = readFileSync(cachedEmitPath, 'utf8');
-  } catch {
-    return undefined;
-  }
-
-  const parsedSourceMap = sourceMapComment.fromSource(cachedEmitSource);
-  if (parsedSourceMap === null) return undefined;
-
-  const original = extractOriginalContents(parsedSourceMap, inputs.cwd);
-  if (original === undefined) return undefined;
-
-  return {
-    filePath: original.filePath,
-    source: original.source,
-    sourceMapData: parsedSourceMap,
-    sourceMapUrl: scriptUrl,
-    transpiledLineStarts: offsets.lineStarts(cachedEmitSource),
+    sourceMapData: sourceMap.data,
+    sourceMapUrl: nodefied.script.url,
+    transpiledLineStarts: lineLengthsToLineStarts(sourceMap.lineLengths),
   };
 };
 
 const resolveFromDisk = (
-  inputs: SourceCacheResolveInputs
+  nodefied: V8NodefiedScript,
+  cwd: string
 ): ResolvedScriptSource | undefined => {
-  const filePath = v8Discovery.resolveFilePath(inputs.script.url, inputs.cwd);
+  const filePath = v8Discovery.resolveFilePath(nodefied.script.url, cwd);
   if (filePath === undefined) return undefined;
 
   let source: string;
@@ -191,21 +101,21 @@ const resolveFromDisk = (
     filePath,
     source,
     sourceMapData: undefined,
-    sourceMapUrl: inputs.script.url,
+    sourceMapUrl: nodefied.script.url,
     transpiledLineStarts: offsets.lineStarts(source),
   };
 };
 
 const resolve = (
-  inputs: SourceCacheResolveInputs
+  inputs: V8NodefyResolveInputs
 ): ResolvedScriptSource | undefined => {
-  const fromNodeCache = resolveFromSourceMapCache(inputs);
-  if (fromNodeCache !== undefined) return fromNodeCache;
+  const { nodefied, cwd } = inputs;
 
-  const fromDenoCache = resolveFromDenoCache(inputs);
-  if (fromDenoCache !== undefined) return fromDenoCache;
+  if (nodefied.mode === 'remap' && nodefied.sourceMap !== undefined) {
+    return resolveFromRemap(nodefied, nodefied.sourceMap, cwd);
+  }
 
-  return resolveFromDisk(inputs);
+  return resolveFromDisk(nodefied, cwd);
 };
 
 export const sourceCache = { resolve } as const;
