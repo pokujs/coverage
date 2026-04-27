@@ -497,7 +497,7 @@ Also, a special thanks to [**c8**](https://github.com/bcoe/c8), that served as a
 
 🤖 This project is not "vibe-coded". The use of **LLM**s makes it really easier to perform complex queries, mapping, and filtering data, especially when dealing with massive amounts of raw data from **V8** and **JSC** engines.
 
-In development, this is primarily used as a productivity tool, not as an autopilot. If you'd like to contribute to the project, please keep this in mind.
+In development, this is primarily used as a productivity tool, not as an autopilot. [**If you'd like to contribute to the project**](./CONTRIBUTING.md), please keep this in mind: I'll love reading what you, a human, have written 🤝
 
 - You can view detailed queries by runtime and engine in the [**./docs**](./docs/).
 
