@@ -215,8 +215,15 @@ const attach = ({
   socket.addEventListener('error', () => {});
 
   socket.addEventListener('close', () => {
+    closed = true;
+
     stopPolling();
     flushLatest();
+
+    for (const [, resolver] of pending)
+      resolver({ error: { code: -1, message: 'socket closed' } });
+
+    pending.clear();
   });
 
   const close = (): void => {
