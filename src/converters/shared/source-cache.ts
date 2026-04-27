@@ -8,6 +8,7 @@ import type {
   SourceMapPayload,
 } from '../../@types/v8.js';
 import { readFileSync } from 'node:fs';
+import { sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { offsets } from '../../utils/offsets.js';
 import { paths } from '../../utils/paths.js';
@@ -56,7 +57,7 @@ const extractOriginalContents = (
     return undefined;
   }
 
-  const cwdPrefix = cwd.endsWith('/') ? cwd : `${cwd}/`;
+  const cwdPrefix = cwd.endsWith(sep) ? cwd : `${cwd}${sep}`;
 
   if (!absoluteSourcePath.startsWith(cwdPrefix)) return undefined;
   if (paths.isBanned(absoluteSourcePath)) return undefined;
@@ -111,8 +112,7 @@ const resolve = (
   const { nodefied, cwd } = inputs;
 
   if (nodefied.mode === 'remap' && nodefied.sourceMap !== undefined) {
-    const remapped = resolveFromRemap(nodefied, nodefied.sourceMap, cwd);
-    if (remapped !== undefined) return remapped;
+    return resolveFromRemap(nodefied, nodefied.sourceMap, cwd);
   }
 
   return resolveFromDisk(nodefied, cwd);
