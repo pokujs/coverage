@@ -113,7 +113,6 @@ const attach = ({
 
       const scriptSource = await fetchSource(script.scriptId);
       const breakablePositions = await fetchBreakablePositions(script.scriptId);
-
       const scriptBlocks: JscScriptBlocks = {
         url: script.url,
         scriptId: script.scriptId,
@@ -230,6 +229,7 @@ const attach = ({
     if (closed) return;
 
     closed = true;
+
     stopPolling();
     flushLatest();
 
