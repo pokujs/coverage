@@ -2,8 +2,6 @@
 
 Reference notes on how Deno's raw V8 coverage data is shaped and how it differs from Node.js's. Drawn from a side-by-side comparison of the dumps each runtime produced for the same Poku test suite running against mirrored JavaScript and TypeScript playgrounds.
 
-The intent is human-readable reference material for anyone who needs to understand, audit, or extend coverage logic without re-running the comparison from scratch.
-
 ---
 
 ## 1. Envelope shape

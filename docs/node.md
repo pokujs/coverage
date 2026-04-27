@@ -2,8 +2,6 @@
 
 Reference notes on how Node.js's raw V8 coverage data is shaped, what it includes, and what its TypeScript variants actually produce. Drawn from direct observation of the dumps Node emits for the same Poku test suite that the Deno notes were drawn from, against mirrored JavaScript and TypeScript playgrounds.
 
-The intent is human-readable reference material. It complements [docs/deno.md](deno.md): together they describe the two ends of the V8 coverage surface that any coverage tool targeting both runtimes has to reason about.
-
 ---
 
 ## 1. Envelope shape
