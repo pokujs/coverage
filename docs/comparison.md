@@ -1,10 +1,8 @@
-# Three-Way LCOV Audit Against Raw V8 (Node.js)
+# [Poku](https://github.com/wellwelwel/poku) codebase vs. [@pokujs/coverage](https://github.com/pokujs/coverage), [@pokujs/c8](https://github.com/pokujs/c8), and [@pokujs/monocart](https://github.com/pokujs/monocart)
 
-[**Poku**](https://github.com/wellwelwel/poku) codebase vs. [**@pokujs/coverage**](https://github.com/pokujs/coverage), [**@pokujs/c8**](https://github.com/pokujs/c8), and [**@pokujs/monocart**](https://github.com/pokujs/monocart).
-
-> **Generated:** 2026-04-26 against the captured run at `coverage/v8/` (1070 V8 dumps).
-> **Scope:** Node.js coverage fidelity only. Bun (JSC) and Deno are out of scope here.
-> **Method:** every uncovered entry in each reporter's `lcov.info` is cross-checked against the raw V8 dumps using the `v8-audit` skill from `pokujs/coverage`. Verdicts are **faithful** (V8 confirms `count = 0`) or **suspect** (V8 says `count > 0` somewhere covering the position, indicating a pipeline bug).
+> - **Generated:** 2026-04-26 against the captured run at `coverage/v8/` (1070 V8 dumps). Static snapshot. The numbers should be re-audited as reporters evolve.
+> - **Scope:** Node.js coverage fidelity only. Bun (JSC) and Deno are out of scope because the competing reporters do not target those runtimes. The multi-runtime support of `@pokujs/coverage` is therefore unaudited here by necessity, not by omission.
+> - **Method:** every uncovered entry in each reporter's `lcov.info` is cross-checked against the raw V8 dumps using the `v8-audit` skill from `pokujs/coverage`. Verdicts are **faithful** (V8 confirms `count = 0`) or **suspect** (V8 says `count > 0` somewhere covering the position, indicating a pipeline bug). The faithful / suspect axis applies V8's own range and count semantics directly. See [docs/v8.md](v8.md) for the protocol invariants the audit relies on.
 
 ---
 
@@ -16,7 +14,7 @@
 | **@pokujs/monocart** |                40 |       15 |  **25** |         62.5% |
 | **@pokujs/c8**       |              1149 |      478 | **671** |         58.4% |
 
-Each reporter consumed the **same** Poku run via plugin teardown. Differences in entry counts and verdicts are entirely about how each reporter post-processes V8 dumps.
+Each reporter consumed the **same** Poku run via plugin teardown. Differences in entry counts and verdicts are entirely about how each reporter post-processes V8 dumps. The per-tool entry totals (315 / 40 / 1149) reflect what each reporter chose to report as uncovered in its `lcov.info`, not different audit budgets. Every uncovered entry produced by each reporter was audited.
 
 The headline numbers above conflate two distinct entry kinds. The breakdown below tells the actual story:
 
