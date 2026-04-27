@@ -1,1 +1,118 @@
-../../deno/win32/exclude-after-remap.json
+{
+  "reporter": "json",
+  "totals": {
+    "statements": {
+      "total": 6,
+      "covered": 6,
+      "missed": 0,
+      "pct": "100.00 %"
+    },
+    "branches": {
+      "total": 0,
+      "covered": 0,
+      "missed": 0,
+      "pct": "100.00 %"
+    },
+    "functions": {
+      "total": 3,
+      "covered": 3,
+      "missed": 0,
+      "pct": "100.00 %"
+    },
+    "lines": {
+      "total": 6,
+      "covered": 6,
+      "missed": 0,
+      "pct": "100.00 %"
+    }
+  },
+  "files": {
+    "src/original.ts": {
+      "statements": {
+        "total": 4,
+        "covered": 4,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "branches": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "functions": {
+        "total": 2,
+        "covered": 2,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "lines": {
+        "total": 4,
+        "covered": 4,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "uncoveredLines": "",
+      "coveredLines": "1-2,5-6",
+      "lineHits": {
+        "1": 1,
+        "2": 1,
+        "5": 1,
+        "6": 1
+      },
+      "branchHits": [],
+      "functionHits": [
+        {
+          "name": "identity",
+          "line": 1,
+          "hit": 1
+        },
+        {
+          "name": "twice",
+          "line": 5,
+          "hit": 1
+        }
+      ]
+    },
+    "src/survivor.js": {
+      "statements": {
+        "total": 2,
+        "covered": 2,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "branches": {
+        "total": 0,
+        "covered": 0,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "functions": {
+        "total": 1,
+        "covered": 1,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "lines": {
+        "total": 2,
+        "covered": 2,
+        "missed": 0,
+        "pct": "100.00 %"
+      },
+      "uncoveredLines": "",
+      "coveredLines": "1-2",
+      "lineHits": {
+        "1": 1,
+        "2": 1
+      },
+      "branchHits": [],
+      "functionHits": [
+        {
+          "name": "greet",
+          "line": 1,
+          "hit": 1
+        }
+      ]
+    }
+  }
+}

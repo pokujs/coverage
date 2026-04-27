@@ -1,1 +1,10 @@
-../../bun/win32/exclude-after-remap.txt
+##teamcity[blockOpened name='Code Coverage Summary']
+##teamcity[buildStatisticValue key='CodeCoverageAbsBCovered' value='6']
+##teamcity[buildStatisticValue key='CodeCoverageAbsBTotal' value='6']
+##teamcity[buildStatisticValue key='CodeCoverageAbsRCovered' value='0']
+##teamcity[buildStatisticValue key='CodeCoverageAbsRTotal' value='0']
+##teamcity[buildStatisticValue key='CodeCoverageAbsMCovered' value='3']
+##teamcity[buildStatisticValue key='CodeCoverageAbsMTotal' value='3']
+##teamcity[buildStatisticValue key='CodeCoverageAbsLCovered' value='6']
+##teamcity[buildStatisticValue key='CodeCoverageAbsLTotal' value='6']
+##teamcity[blockClosed name='Code Coverage Summary']
