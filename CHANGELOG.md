@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.7.1](https://github.com/pokujs/coverage/compare/v0.7.0...v0.7.1) (2026-04-27)
+
+
+### Bug Fixes
+
+* improve distinction between executable and non-executable lines ([f6528f5](https://github.com/pokujs/coverage/commit/f6528f5cf7b51f179b22a77a67c6b1290e1cf547))
+* **ts:** improve distinction between executable and non-executable lines ([#30](https://github.com/pokujs/coverage/issues/30)) ([f6528f5](https://github.com/pokujs/coverage/commit/f6528f5cf7b51f179b22a77a67c6b1290e1cf547))
+* **v8:** use a "Nodefy" approach ([#27](https://github.com/pokujs/coverage/issues/27)) ([3aab671](https://github.com/pokujs/coverage/commit/3aab67134eb8e5f928b8be66f01119c041ed3524))
+
 ## [0.7.0](https://github.com/pokujs/coverage/compare/v0.6.1...v0.7.0) (2026-04-26)
 
 
