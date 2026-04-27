@@ -7,7 +7,8 @@ import { strings } from '../utils/strings.js';
 import { jscInspector } from './bun/inspector.js';
 import { lifecycle } from './lifecycle.js';
 
-const INSPECTOR_URL_PATTERN = /ws:\/\/[A-Za-z0-9.:_/-]+/;
+const INSPECTOR_URL_PATTERN =
+  /ws:\/\/(?:\d{1,3}(?:\.\d{1,3}){3}|\[[0-9a-fA-F:]+\]|[A-Za-z0-9.-]+):\d{1,5}\/[A-Za-z0-9._-]+/;
 
 const makeLineFilter = (
   file: string,

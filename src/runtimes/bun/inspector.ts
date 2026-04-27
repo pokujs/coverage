@@ -104,8 +104,6 @@ const attach = ({
     if (!handshakeDone) return;
 
     for (const script of scripts) {
-      if (!isUserScript(script.url, cwd)) continue;
-
       const blocksResponse = await send('Runtime.getBasicBlocks', {
         sourceID: script.scriptId,
       });
@@ -166,11 +164,14 @@ const attach = ({
         | { scriptId?: string; url?: string }
         | undefined;
 
-      if (parsedParams?.scriptId && typeof parsedParams.url === 'string')
-        scripts.push({
-          scriptId: parsedParams.scriptId,
-          url: parsedParams.url,
-        });
+      if (!parsedParams?.scriptId) return;
+      if (typeof parsedParams.url !== 'string') return;
+      if (!isUserScript(parsedParams.url, cwd)) return;
+
+      scripts.push({
+        scriptId: parsedParams.scriptId,
+        url: parsedParams.url,
+      });
     }
   });
 
