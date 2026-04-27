@@ -113,7 +113,7 @@ const denoCacheDir = () => {
 };
 
 const clearRuntimeCaches = async () => {
-  console.log('› Clearing Deno cache for snapshot regeneration...');
+  console.log('› Clearing Deno cache...');
 
   try {
     await rm(denoCacheDir(), { recursive: true, force: true });
