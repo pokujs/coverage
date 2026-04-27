@@ -28,7 +28,7 @@ The first code coverage package that targets Node.js (V8), Bun (JSC), and Deno (
 - **Forbidden: declaring `type X = ...` (or `interface X`) anywhere outside [src/@types/](src/@types/).** This includes non-exported, file-local, and "helper" types. There is no "local enough to skip" exception. The only directories where inline types are allowed: `.claude/skills/` and `./tools/`.
   - One file per domain. Open the directory to see the current inventory before adding a new file. If a new type does not fit any existing domain, create a new domain file.
   - Never a `misc.ts`. Never an `index.ts` barrel.
-  - **Self-check before finishing any edit:** `grep -rE '^(export )?type [A-Z]' src/ --include='*.ts' | grep -v 'src/@types/'` must return zero hits. Any hit is a bug to fix in the same edit, not a follow-up.
+  - **Self-check before finishing any edit:** `npm run lint:types` must exit zero. Any hit is a bug to fix in the same edit, not a follow-up.
 - **Always `import type { ... }` from `@types/`.** Every consumer imports directly from the domain file, never from an aggregator.
 - **Prefer `type` over `interface`.**
 - **No `any`. No `as unknown as T` (or variants).** Direct `as T` only at real boundaries (`JSON.parse(content) as MyShape`), never to force compatibility between types you own.
@@ -108,6 +108,7 @@ End-to-end tests live under [test/](test/). Open the directory to see the curren
 
 ```sh
 npm run typecheck
+npm run lint:types
 npm test               # runs all tests for each runtime
 ```
 

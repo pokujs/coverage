@@ -42,6 +42,7 @@
     "build:snapshots": "cross-env UPDATE_SNAPSHOTS=1 npm test",
     "postbuild:snapshots": "tsx tools/postbuild-snapshots.ts",
     "lint": "prettier --check .",
+    "lint:types": "bash scripts/lint-types.sh",
     "lint:fix": "prettier --write .github/workflows/*.yml .",
     "pretest": "npm run build",
     "test": "poku",

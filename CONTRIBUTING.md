@@ -21,7 +21,7 @@ By opening an **Issue**, please describe the problem and share a basic repro.
 
 ## Pull Requests
 
-By opening a **Pull Request**, please describe the proposed solution and what it solves.  
+By opening a **Pull Request**, please describe the proposed solution and what it solves.
 The final commit message will be generated from the _PR_ title by using "**Squash and Merge**".
 
 ---
@@ -38,7 +38,7 @@ You will need these tools installed on your system:
 
 ---
 
-Fork this project, download your forked repository locally and create a new branch from `main`.  
+Fork this project, download your forked repository locally and create a new branch from `main`.
 Then run `npm ci` to clean install the _node_modules_:
 
 ```sh
@@ -116,6 +116,7 @@ This will extract and overwrite all changed snapshots, then delete the related `
 
 ```sh
 npm run typecheck
+npm run lint:types
 npm run lint
 ```
 

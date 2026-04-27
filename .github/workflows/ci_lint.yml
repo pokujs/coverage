@@ -35,8 +35,13 @@ jobs:
         run: npm ci
 
       - name: 🤹🏻‍♀️ Prettier Check
+        if: always()
         run: npm run lint
 
       - name: 🗂️ Typecheck
         if: always()
         run: npm run typecheck
+
+      - name: 🚫 Type Declarations Check
+        if: always()
+        run: npm run lint:types
