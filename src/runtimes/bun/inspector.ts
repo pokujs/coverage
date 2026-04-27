@@ -104,8 +104,6 @@ const attach = ({
     if (!handshakeDone) return;
 
     for (const script of scripts) {
-      if (!isUserScript(script.url, cwd)) continue;
-
       const blocksResponse = await send('Runtime.getBasicBlocks', {
         sourceID: script.scriptId,
       });
@@ -115,7 +113,6 @@ const attach = ({
 
       const scriptSource = await fetchSource(script.scriptId);
       const breakablePositions = await fetchBreakablePositions(script.scriptId);
-
       const scriptBlocks: JscScriptBlocks = {
         url: script.url,
         scriptId: script.scriptId,
@@ -166,11 +163,14 @@ const attach = ({
         | { scriptId?: string; url?: string }
         | undefined;
 
-      if (parsedParams?.scriptId && typeof parsedParams.url === 'string')
-        scripts.push({
-          scriptId: parsedParams.scriptId,
-          url: parsedParams.url,
-        });
+      if (!parsedParams?.scriptId) return;
+      if (typeof parsedParams.url !== 'string') return;
+      if (!isUserScript(parsedParams.url, cwd)) return;
+
+      scripts.push({
+        scriptId: parsedParams.scriptId,
+        url: parsedParams.url,
+      });
     }
   });
 
@@ -214,8 +214,15 @@ const attach = ({
   socket.addEventListener('error', () => {});
 
   socket.addEventListener('close', () => {
+    closed = true;
+
     stopPolling();
     flushLatest();
+
+    for (const [, resolver] of pending)
+      resolver({ error: { code: -1, message: 'socket closed' } });
+
+    pending.clear();
   });
 
   const close = (): void => {
@@ -223,12 +230,27 @@ const attach = ({
 
     closed = true;
 
+    stopPolling();
+    flushLatest();
+
     try {
       socket.close();
     } catch {}
   };
 
-  return { close };
+  const flushAndClose = async (): Promise<void> => {
+    if (closed) return;
+
+    stopPolling();
+
+    try {
+      await captureNow();
+    } catch {}
+
+    close();
+  };
+
+  return { close, flushAndClose };
 };
 
 export const jscInspector = { attach } as const;

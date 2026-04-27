@@ -1,0 +1,1 @@
+export const FLUSH_MARKER = '__POKU_COVERAGE_FLUSH__';

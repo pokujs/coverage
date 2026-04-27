@@ -44,6 +44,7 @@ export type JscInspectorAttachInputs = {
 
 export type JscInspectorHandle = {
   close: () => void;
+  flushAndClose: () => Promise<void>;
 };
 
 export type JscInspectorScriptInfo = {

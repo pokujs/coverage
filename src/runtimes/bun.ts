@@ -3,11 +3,18 @@ import type { PluginContext } from 'poku/plugins';
 import type { CoverageOptions, CoverageState } from '../@types/coverage.js';
 import type { JscInspectorHandle } from '../@types/jsc.js';
 import type { DataListener } from '../@types/runtimes.js';
+import { fileURLToPath } from 'node:url';
 import { strings } from '../utils/strings.js';
 import { jscInspector } from './bun/inspector.js';
+import { FLUSH_MARKER } from './bun/marker.js';
 import { lifecycle } from './lifecycle.js';
 
-const INSPECTOR_URL_PATTERN = /ws:\/\/[A-Za-z0-9.:_/-]+/;
+const INSPECTOR_URL_PATTERN =
+  /ws:\/\/(?:\d{1,3}(?:\.\d{1,3}){3}|\[[0-9a-fA-F:]+\]|[A-Za-z0-9.-]+):\d{1,5}\/[A-Za-z0-9._-]+/;
+
+const PRELOAD_SCRIPT_PATH = fileURLToPath(
+  new URL('./preload-bun.js', import.meta.url)
+);
 
 const makeLineFilter = (
   file: string,
@@ -31,7 +38,7 @@ const makeLineFilter = (
       buffer = buffer.slice(newlineIndex + 1);
 
       const trimmed = line.trim();
-      const isNoise = fileHeader.test(trimmed);
+      const isNoise = fileHeader.test(trimmed) || trimmed === FLUSH_MARKER;
 
       if (!isNoise) flushed += `${line}\n`;
     }
@@ -47,25 +54,31 @@ const makeInspectorAttacher = (
 ): DataListener => {
   let buffer = '';
   let attached = false;
+  let flushed = false;
+  let handle: JscInspectorHandle | null = null;
 
   return (chunk: Buffer | string): void => {
-    if (attached) return;
-
     buffer += typeof chunk === 'string' ? chunk : chunk.toString('utf8');
 
-    const match = buffer.match(INSPECTOR_URL_PATTERN);
-    if (!match) return;
+    if (!attached) {
+      const match = buffer.match(INSPECTOR_URL_PATTERN);
+      if (!match) return;
 
-    attached = true;
+      attached = true;
+      handle = jscInspector.attach({
+        inspectorUrl: match[0],
+        tempDir: state.tempDir,
+        testFile: file,
+        cwd: state.cwd,
+      });
 
-    const handle = jscInspector.attach({
-      inspectorUrl: match[0],
-      tempDir: state.tempDir,
-      testFile: file,
-      cwd: state.cwd,
-    });
+      onAttached(handle);
+    }
 
-    onAttached(handle);
+    if (!flushed && handle && buffer.includes(FLUSH_MARKER)) {
+      flushed = true;
+      void handle.flushAndClose();
+    }
   };
 };
 
@@ -113,7 +126,13 @@ const runner = (
   const passthrough = rest.filter((arg) => arg !== file);
   const resolvedBinary = binary ?? 'bun';
 
-  return [resolvedBinary, '--inspect-wait=127.0.0.1:0', ...passthrough, file];
+  return [
+    resolvedBinary,
+    '--inspect-wait=127.0.0.1:0',
+    `--preload=${PRELOAD_SCRIPT_PATH}`,
+    ...passthrough,
+    file,
+  ];
 };
 
 export const bun = {

@@ -2,6 +2,8 @@
 
 Reference notes on how Bun exposes JSC's coverage data, what its dump shape includes, and what the JavaScript and TypeScript variants actually produce. Drawn from direct observation of the dumps Bun emits for the same Poku test suite that the Node notes were drawn from, against mirrored JavaScript and TypeScript playgrounds.
 
+- https://bun.com/reference/bun/jsc
+
 ---
 
 ## 1. Capture model
@@ -271,7 +273,19 @@ When a coverage tool processes the dumps after the run, the per-script shape col
 
 ---
 
-## 12. Summary
+## 12. Out of scope: the `bun:jsc` module
+
+Bun also ships a `bun:jsc` module (`profile`, `startSamplingProfiler`, `heapStats`, `memoryUsage`, `serialize`, `getProtectedObjects`, `drainMicrotasks`, etc.) that exposes JavaScriptCore internals from inside the running process. These APIs sit on a different axis from the Inspector protocol described above:
+
+- They are **in-process introspection** of the runtime, not a wire protocol consumed by an external frontend.
+- They cover **CPU sampling profiling, heap snapshots, structured-clone serialization, and GC controls**. None of these produce coverage data.
+- They cannot replace the Inspector path, since none of them surface basic-block execution counts or per-script source.
+
+The coverage plugin is intentionally restricted to the three Inspector commands documented in §2 (`Runtime.getBasicBlocks`, `Debugger.getScriptSource`, `Debugger.getBreakpointLocations`). `bun:jsc` is mentioned here only to mark it as deliberately out of scope. A contribution that bundles profiling or heap inspection into the coverage layer would conflate two unrelated concerns and is not the direction this plugin takes.
+
+---
+
+## 13. Summary
 
 | Axis                                | Bun                                                                                                         |
 | ----------------------------------- | ----------------------------------------------------------------------------------------------------------- |

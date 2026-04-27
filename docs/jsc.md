@@ -4,6 +4,9 @@ Reference notes on the JavaScriptCore coverage data model itself: what JSC's con
 
 It complements [docs/bun.md](bun.md), which describes Bun's specific framing on top of this foundation. Where that document focuses on capture mechanism, file emission, and runtime policy, this one focuses on the per-script data model that is intrinsic to JSC.
 
+- https://developer.apple.com/documentation/javascriptcore
+- https://github.com/WebKit/WebKit/tree/main/Source/JavaScriptCore
+
 ---
 
 ## 1. One interface, an active session

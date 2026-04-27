@@ -48,5 +48,14 @@ await Promise.all([
     },
     define: { 'import.meta.url': '__importMetaUrl' },
   }),
+  esbuild.build({
+    entryPoints: ['src/runtimes/bun/preload.ts'],
+    bundle: true,
+    platform: 'node',
+    target: 'node18',
+    format: 'esm',
+    outfile: 'lib/preload-bun.js',
+    logLevel: 'info',
+  }),
   writeFile('lib/index.d.ts', dtsBundle, 'utf-8'),
 ]);
