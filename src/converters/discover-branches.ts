@@ -10,13 +10,13 @@ import type {
   ScriptCoverageData,
 } from '../@types/branch-discovery.js';
 import type { ResolvedFileFilter } from '../@types/file-filter.js';
+import type { Runtime } from '../@types/reporters.js';
 import type { SourceMapInput, TraceMap } from '../@types/source-map.js';
 import type {
   ResolvedScriptSource,
   V8Range,
   V8ScriptCoverage,
 } from '../@types/v8.js';
-import { readFileSync } from 'node:fs';
 import { offsets } from '../utils/offsets.js';
 import { traceMap } from '../utils/source-map/index.js';
 import { armCoverage } from './shared/arm-coverage.js';
@@ -24,7 +24,7 @@ import { astCache } from './shared/ast-cache.js';
 import { astWalk } from './shared/ast-walk.js';
 import { preRemapFilter } from './shared/pre-remap-filter.js';
 import { sourceCache } from './shared/source-cache.js';
-import { v8Discovery } from './shared/v8-discovery.js';
+import { nodefy } from './v8-nodefy/index.js';
 
 const TS_TYPE_WRAPPER_TYPES: ReadonlySet<string> = new Set([
   'TSAsExpression',
@@ -169,6 +169,7 @@ const collectScriptRanges = (script: V8ScriptCoverage): readonly V8Range[] =>
 const run = (
   tempDir: string,
   cwd: string,
+  runtime: Runtime,
   resolvedFilter: ResolvedFileFilter
 ): Map<string, readonly DiscoveredBranch[]> => {
   astCache.reset();
@@ -176,39 +177,24 @@ const run = (
   const discoveredByPath = new Map<string, DiscoveredBranch[]>();
   const byUrl = new Map<string, ScriptCoverageData>();
 
-  const jsonFiles = v8Discovery.findJsonFiles(tempDir);
-  if (jsonFiles.length === 0) return discoveredByPath;
+  const document = nodefy.load(tempDir, runtime);
+  if (document.scripts.length === 0) return discoveredByPath;
 
-  for (const jsonPath of jsonFiles) {
-    let jsonContent: string;
+  for (const nodefied of document.scripts) {
+    const resolved = sourceCache.resolve({ nodefied, cwd });
+    if (resolved === undefined) continue;
+    if (resolved.filePath === '') continue;
 
-    try {
-      jsonContent = readFileSync(jsonPath, 'utf8');
-    } catch {
-      continue;
+    const { script } = nodefied;
+
+    if (!preRemapFilter.passes(script, resolved, resolvedFilter, cwd)) continue;
+
+    let entry = byUrl.get(script.url);
+    if (entry === undefined) {
+      entry = { resolved, perProcessRanges: [] };
+      byUrl.set(script.url, entry);
     }
-
-    const document = v8Discovery.parseJson(jsonContent);
-
-    for (const script of document.scripts) {
-      const resolved = sourceCache.resolve({
-        script,
-        sourceMapCache: document.sourceMapCache,
-        cwd,
-      });
-      if (resolved === undefined) continue;
-      if (resolved.filePath === '') continue;
-
-      if (!preRemapFilter.passes(script, resolved, resolvedFilter, cwd))
-        continue;
-
-      let entry = byUrl.get(script.url);
-      if (entry === undefined) {
-        entry = { resolved, perProcessRanges: [] };
-        byUrl.set(script.url, entry);
-      }
-      entry.perProcessRanges.push(collectScriptRanges(script).slice());
-    }
+    entry.perProcessRanges.push(collectScriptRanges(script).slice());
   }
 
   for (const data of byUrl.values()) {

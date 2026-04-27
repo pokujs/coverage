@@ -19,31 +19,6 @@ export type V8ScriptCoverage = {
   functions: V8Function[];
 };
 
-export type V8Payload = {
-  result: V8ScriptCoverage[];
-};
-
-export type V8NormalizedRange = {
-  startOffset: number;
-  endOffset: number;
-  count: string;
-};
-
-export type V8NormalizedFunction = {
-  functionName: string;
-  ranges: V8NormalizedRange[];
-  isBlockCoverage?: boolean;
-};
-
-export type V8NormalizedScriptCoverage = {
-  url: string;
-  functions: V8NormalizedFunction[];
-};
-
-export type V8NormalizedPayload = {
-  result: V8NormalizedScriptCoverage[];
-};
-
 export type SubRangeEntry = {
   line: number;
   startOffset: number;
@@ -70,22 +45,9 @@ export type FileAggregation = {
   blocks: BranchBlockEntry[];
 };
 
-export type SourceMapCacheEntry = {
-  lineLengths?: number[];
-  data?: unknown;
-  url?: string;
-};
-
 export type SourceMapPayload = {
   sources?: unknown;
   sourcesContent?: unknown;
-};
-
-export type SourceMapCache = Record<string, SourceMapCacheEntry>;
-
-export type V8CoverageDocument = {
-  scripts: V8ScriptCoverage[];
-  sourceMapCache: SourceMapCache;
 };
 
 export type ResolvedScriptSource = {
@@ -94,12 +56,6 @@ export type ResolvedScriptSource = {
   sourceMapData: unknown;
   sourceMapUrl: string;
   transpiledLineStarts: number[];
-};
-
-export type SourceCacheResolveInputs = {
-  script: V8ScriptCoverage;
-  sourceMapCache: SourceMapCache;
-  cwd: string;
 };
 
 export type PerFileCollection = {

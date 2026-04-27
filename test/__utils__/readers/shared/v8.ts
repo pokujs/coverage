@@ -3,11 +3,9 @@ import type {
   FileSnapshot,
   FunctionHit,
   FunctionRange,
-} from '../../../../src/@types/tests.ts';
-import type {
   V8NormalizedPayload,
   V8NormalizedScriptCoverage,
-} from '../../../../src/@types/v8.js';
+} from '../../../../src/@types/tests.ts';
 import { coverageSnapshot } from './snapshot.ts';
 
 const FIXTURE_ROOT_TOKEN = '<fixtureRoot>';

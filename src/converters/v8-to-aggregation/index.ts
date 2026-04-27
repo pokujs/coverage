@@ -1,5 +1,6 @@
 import type { V8AggregationResult } from '../../@types/aggregation.js';
 import type { ResolvedFileFilter } from '../../@types/file-filter.js';
+import type { Runtime } from '../../@types/reporters.js';
 import type { SourceMapInput } from '../../@types/source-map.js';
 import type {
   FileAggregation,
@@ -8,7 +9,6 @@ import type {
   V8Function,
   V8ScriptCoverage,
 } from '../../@types/v8.js';
-import { readFileSync } from 'node:fs';
 import { offsets } from '../../utils/offsets.js';
 import { traceMap } from '../../utils/source-map/index.js';
 import { v8Merge } from '../../utils/v8-merge/merge.js';
@@ -21,7 +21,7 @@ import { lineHits } from '../shared/line-hits.js';
 import { preRemapFilter } from '../shared/pre-remap-filter.js';
 import { sourceMapRemap } from '../shared/remap.js';
 import { sourceCache } from '../shared/source-cache.js';
-import { v8Discovery } from '../shared/v8-discovery.js';
+import { nodefy } from '../v8-nodefy/index.js';
 import { v8Extraction } from './extraction.js';
 
 const recordScriptFunctions = (
@@ -138,6 +138,7 @@ const finalizeAggregations = (
 const run = (
   tempDir: string,
   cwd: string,
+  runtime: Runtime,
   resolvedFilter: ResolvedFileFilter
 ): V8AggregationResult => {
   astCache.reset();
@@ -145,40 +146,25 @@ const run = (
   const fileAggregations = new Map<string, FileAggregation>();
   const sourceByPath = new Map<string, string>();
 
-  const jsonFiles = v8Discovery.findJsonFiles(tempDir);
-  if (jsonFiles.length === 0)
+  const document = nodefy.load(tempDir, runtime);
+  if (document.scripts.length === 0)
     return { aggregations: fileAggregations, sources: sourceByPath };
 
   const perFile = new Map<string, PerFileCollection>();
 
-  for (const jsonPath of jsonFiles) {
-    let content: string;
+  for (const nodefied of document.scripts) {
+    const resolved = sourceCache.resolve({ nodefied, cwd });
+    if (resolved === undefined) continue;
 
-    try {
-      content = readFileSync(jsonPath, 'utf8');
-    } catch {
+    const { script } = nodefied;
+
+    if (!preRemapFilter.passes(script, resolved, resolvedFilter, cwd))
       continue;
-    }
 
-    const document = v8Discovery.parseJson(content);
-
-    for (const script of document.scripts) {
-      const resolved = sourceCache.resolve({
-        script,
-        sourceMapCache: document.sourceMapCache,
-        cwd,
-      });
-
-      if (resolved === undefined) continue;
-
-      if (!preRemapFilter.passes(script, resolved, resolvedFilter, cwd))
-        continue;
-
-      if (resolved.sourceMapData !== undefined) {
-        collectRemappedScript(perFile, resolved, script, cwd);
-      } else {
-        collectDirectScript(perFile, resolved, script);
-      }
+    if (nodefied.mode === 'remap') {
+      collectRemappedScript(perFile, resolved, script, cwd);
+    } else {
+      collectDirectScript(perFile, resolved, script);
     }
   }
 

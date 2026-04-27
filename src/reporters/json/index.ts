@@ -13,6 +13,7 @@ const report: Report = (context) => {
   const coverageMap = converters.v8ToIstanbul.convert(
     context.tempDir,
     context.cwd,
+    context.runtime,
     context.preRemapFilter
   );
 

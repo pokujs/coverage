@@ -30,6 +30,7 @@ export const buildFromCoverageMap = (
   const coverageMap = converters.v8ToIstanbul.convert(
     context.tempDir,
     context.cwd,
+    context.runtime,
     context.preRemapFilter
   );
 
