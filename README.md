@@ -37,13 +37,13 @@ Enjoying **Poku**? [Give him a star to show your support](https://github.com/wel
 
 ## Quickstart
 
-### Install
+### 📦 Install
 
 ```sh
 npm i -D @pokujs/coverage
 ```
 
-### Usage
+### 🤹 Usage
 
 ```json
 {
@@ -398,7 +398,7 @@ poku --coverage --coverageConfig=.coveragerc test/
 
 ### Require `--coverage` flag
 
-When using via plugin, by default, coverage runs whenever the plugin is active. Use `requireFlag` to only collect coverage when `--coverage` is passed to the **CLI**:
+🚩 When using via plugin, by default, coverage runs whenever the plugin is active. Use `requireFlag` to only collect coverage when `--coverage` is passed to the **CLI**:
 
 ```js
 // poku.config.js
@@ -429,9 +429,11 @@ poku --coverage test/
 > - For config file discovery: `--coverageConfig` (**CLI**) > `config` (plugin option) > auto-discovery
 > - For coverage options: plugin options > config file options
 
-### Using with `@pokujs/multi-suite`
+---
 
-Place the `coverage` plugin at the **root level**, before `multiSuite`:
+### Using with [@pokujs/multi-suite](https://github.com/pokujs/multi-suite)
+
+🧬 Place the `coverage` plugin at the **root level**, before `multiSuite`:
 
 ```js
 import { coverage } from '@pokujs/coverage';
@@ -483,11 +485,21 @@ export default defineConfig({
 
 ## Acknowledgements and Credits
 
-**@pokujs/coverage** internally adapts parts of the projects [**v8-to-istanbul**](https://github.com/istanbuljs/v8-to-istanbul), [**@jridgewell/trace-mapping**](https://github.com/jridgewell/sourcemaps), and [**istanbul-reports**](https://github.com/istanbuljs/istanbuljs) for multi-runtime support, enabling **Istanbul** reports for both **Node.js**, **Deno**, and **Bun**.
+☔️ **@pokujs/coverage** internally adapts parts of the projects [**v8-to-istanbul**](https://github.com/istanbuljs/v8-to-istanbul), [**@jridgewell/trace-mapping**](https://github.com/jridgewell/sourcemaps), [**istanbul-reports**](https://github.com/istanbuljs/istanbuljs), and [**Monocart Coverage Reports**](https://github.com/cenfun/monocart-coverage-reports) for multi-runtime support, enabling **Istanbul** reports for both **Node.js**, **Deno**, and **Bun**.
 
 - `.js`, `.css`, `.png`, and `.ico` assets from `html` and `html-spa` reporters are copied verbatim from [**istanbul-reports**](https://github.com/istanbuljs/istanbuljs).
 
-Also, a special thanks to [**c8**](https://github.com/bcoe/c8) and [**Monocart Coverage Reports**](https://github.com/cenfun/monocart-coverage-reports), repositories that served as a study base and as a reference for comparing results.
+Also, a special thanks to [**c8**](https://github.com/bcoe/c8), that served as a study base and as a reference for comparing results.
+
+---
+
+## AI & Open Source
+
+🤖 This project is not "vibe-coded". The use of **LLM**s makes it really easier to perform complex queries, mapping, and filtering data, especially when dealing with massive amounts of raw data from **V8** and **JSC** engines.
+
+In development, this is primarily used as a productivity tool, not as an autopilot. If you'd like to contribute to the project, please keep this in mind.
+
+- You can view detailed queries by runtime and engine in the [**./docs**](./docs/).
 
 ---
 
