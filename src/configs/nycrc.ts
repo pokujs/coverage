@@ -1,4 +1,4 @@
-import type { CheckCoverageThresholds } from '../@types/check-coverage.js';
+import type { CoverageThresholds } from '../@types/check-coverage.js';
 import type { CoverageOptions } from '../@types/coverage.js';
 import type { NycrcMap, NycrcRaw } from '../@types/nycrc.js';
 
@@ -21,8 +21,8 @@ const thresholdKeys = ['statements', 'branches', 'functions', 'lines'] as const;
 
 const collectThresholds = (
   source: NycrcRaw
-): CheckCoverageThresholds | undefined => {
-  const thresholds: CheckCoverageThresholds = {};
+): CoverageThresholds | undefined => {
+  const thresholds: CoverageThresholds = Object.create(null);
   let hasAny = false;
 
   for (const key of thresholdKeys) {

@@ -1,4 +1,4 @@
-export type CheckCoverageMetric =
+export type CoverageMetric =
   | 'statements'
   | 'branches'
   | 'functions'
@@ -6,7 +6,7 @@ export type CheckCoverageMetric =
   | 'typesReferenced'
   | 'typesTested';
 
-export type CheckCoverageThresholds = {
+export type CoverageThresholds = {
   statements?: number;
   branches?: number;
   functions?: number;
@@ -16,9 +16,9 @@ export type CheckCoverageThresholds = {
   typesTested?: number;
 };
 
-export type CheckCoverageFailure = {
+export type CoverageFailure = {
   scope: 'total' | string;
-  metric: CheckCoverageMetric;
+  metric: CoverageMetric;
   threshold: number;
   actual: number | null;
 };

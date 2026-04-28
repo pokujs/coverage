@@ -61,25 +61,25 @@ npm i -D @pokujs/coverage
 
 ## Options
 
-| Option                                       | Type                                | Default                                                                                                             | Node.js | Deno | Bun |
-| -------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------- | ---- | --- |
-| [**reporter**](#-reporter)                   | `Reporter \| Reporter[]`            | `'text'`                                                                                                            | ●       | ●    | ●   |
-| [**include**](#-include)                     | `string[]`                          | `[]`                                                                                                                | ●       | ●    | ●   |
-| [**exclude**](#-exclude)                     | `string[]`                          | [list](https://github.com/pokujs/coverage/blob/8e13d606503308f019f455b3feca4998326e3ef5/src/file-filter.ts#L13-L27) | ●       | ●    | ●   |
-| [**all**](#-all)                             | `boolean`                           | `false`                                                                                                             | ●       | ●    | ●   |
-| [**src**](#-src)                             | `string \| string[]`                | `[cwd]`                                                                                                             | ●       | ●    | ●   |
-| [**extension**](#-extension)                 | `string \| string[]`                | [list](https://github.com/pokujs/coverage/blob/8e13d606503308f019f455b3feca4998326e3ef5/src/all-files.ts#L8-L17)    | ●       | ●    | ●   |
-| [**checkCoverage**](#-checkcoverage)         | `number \| CheckCoverageThresholds` | `undefined`                                                                                                         | ●       | ●    | ●   |
-| [**skipFull**](#-skipfull)                   | `boolean`                           | `false`                                                                                                             | ●       | ●    | ●   |
-| [**skipEmpty**](#-skipempty)                 | `boolean`                           | `false`                                                                                                             | ●       | ●    | ●   |
-| [**watermarks**](#-watermarks)               | `Partial<Watermarks>`               | `[50, 80]` per metric                                                                                               | ●       | ●    | ●   |
-| [**hyperlinks**](#-hyperlinks)               | `boolean \| IDE`                    | `true`                                                                                                              | ●       | ●    | ●   |
-| [**reportsDirectory**](#-reportsdirectory)   | `string`                            | `'./coverage'`                                                                                                      | ●       | ●    | ●   |
-| [**excludeAfterRemap**](#-excludeafterremap) | `boolean`                           | `true`                                                                                                              | ●       | ●    | –   |
-| [**tempDirectory**](#-tempdirectory)         | `string`                            | _auto_                                                                                                              | ●       | ●    | ●   |
-| [**clean**](#-clean)                         | `boolean`                           | _auto_                                                                                                              | ●       | ●    | ●   |
-| [**config**](#-config)                       | `string \| false`                   | `undefined`                                                                                                         | ●       | ●    | ●   |
-| [**requireFlag**](#require---coverage-flag)  | `boolean`                           | `false`                                                                                                             | ●       | ●    | ●   |
+| Option                                       | Type                           | Default                                                                                                             | Node.js | Deno | Bun |
+| -------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------- | ------- | ---- | --- |
+| [**reporter**](#-reporter)                   | `Reporter \| Reporter[]`       | `'text'`                                                                                                            | ●       | ●    | ●   |
+| [**include**](#-include)                     | `string[]`                     | `[]`                                                                                                                | ●       | ●    | ●   |
+| [**exclude**](#-exclude)                     | `string[]`                     | [list](https://github.com/pokujs/coverage/blob/8e13d606503308f019f455b3feca4998326e3ef5/src/file-filter.ts#L13-L27) | ●       | ●    | ●   |
+| [**all**](#-all)                             | `boolean`                      | `false`                                                                                                             | ●       | ●    | ●   |
+| [**src**](#-src)                             | `string \| string[]`           | `[cwd]`                                                                                                             | ●       | ●    | ●   |
+| [**extension**](#-extension)                 | `string \| string[]`           | [list](https://github.com/pokujs/coverage/blob/8e13d606503308f019f455b3feca4998326e3ef5/src/all-files.ts#L8-L17)    | ●       | ●    | ●   |
+| [**checkCoverage**](#-checkcoverage)         | `number \| CoverageThresholds` | `undefined`                                                                                                         | ●       | ●    | ●   |
+| [**skipFull**](#-skipfull)                   | `boolean`                      | `false`                                                                                                             | ●       | ●    | ●   |
+| [**skipEmpty**](#-skipempty)                 | `boolean`                      | `false`                                                                                                             | ●       | ●    | ●   |
+| [**watermarks**](#-watermarks)               | `Partial<Watermarks>`          | `[50, 80]` per metric                                                                                               | ●       | ●    | ●   |
+| [**hyperlinks**](#-hyperlinks)               | `boolean \| IDE`               | `true`                                                                                                              | ●       | ●    | ●   |
+| [**reportsDirectory**](#-reportsdirectory)   | `string`                       | `'./coverage'`                                                                                                      | ●       | ●    | ●   |
+| [**excludeAfterRemap**](#-excludeafterremap) | `boolean`                      | `true`                                                                                                              | ●       | ●    | –   |
+| [**tempDirectory**](#-tempdirectory)         | `string`                       | _auto_                                                                                                              | ●       | ●    | ●   |
+| [**clean**](#-clean)                         | `boolean`                      | _auto_                                                                                                              | ●       | ●    | ●   |
+| [**config**](#-config)                       | `string \| false`              | `undefined`                                                                                                         | ●       | ●    | ●   |
+| [**requireFlag**](#require---coverage-flag)  | `boolean`                      | `false`                                                                                                             | ●       | ●    | ●   |
 
 `.nycrc`, `.c8rc`, and `bunfig.toml` config files are supported and options are automatically remapped.
 
@@ -182,7 +182,7 @@ File extensions considered by `all: true` discovery. Overrides the default list 
 Fail the run when coverage falls below the configured thresholds.
 
 - `number`: default threshold applied to every metric.
-- `CheckCoverageThresholds`: per-metric thresholds, plus the optional `perFile` toggle.
+- `CoverageThresholds`: per-metric thresholds, plus the optional `perFile` toggle.
 - `undefined`: disabled.
 
 ```json
@@ -209,7 +209,7 @@ Above: per-metric granularity. `perFile` enforces thresholds per file instead of
 
 > [!NOTE]
 >
-> `.nycrc` and `.c8rc` files keep their native top-level `lines`, `statements`, `branches`, `functions`, and `per-file` keys. They are silently remapped into the `CheckCoverageThresholds` form.
+> `.nycrc` and `.c8rc` files keep their native top-level `lines`, `statements`, `branches`, `functions`, and `per-file` keys. They are silently remapped into the `CoverageThresholds` form.
 
 ---
 

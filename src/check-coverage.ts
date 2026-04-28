@@ -1,7 +1,7 @@
 import type {
-  CheckCoverageFailure,
-  CheckCoverageMetric,
-  CheckCoverageThresholds,
+  CoverageFailure,
+  CoverageMetric,
+  CoverageThresholds,
 } from './@types/check-coverage.js';
 import type { ReporterContext } from './@types/reporters.js';
 import type { Metric } from './@types/text.js';
@@ -19,7 +19,7 @@ import { metrics } from './reporters/shared/metrics.js';
 import { terminal } from './utils/terminal.js';
 import { watermarks } from './watermarks.js';
 
-const METRIC_ORDER: readonly CheckCoverageMetric[] = [
+const METRIC_ORDER: readonly CoverageMetric[] = [
   'statements',
   'branches',
   'functions',
@@ -28,12 +28,12 @@ const METRIC_ORDER: readonly CheckCoverageMetric[] = [
   'typesTested',
 ];
 
-const TYPE_METRICS: ReadonlySet<CheckCoverageMetric> = new Set([
+const TYPE_METRICS: ReadonlySet<CoverageMetric> = new Set([
   'typesReferenced',
   'typesTested',
 ]);
 
-const WATERMARK_METRIC: Record<CheckCoverageMetric, WatermarkMetric> = {
+const WATERMARK_METRIC: Record<CoverageMetric, WatermarkMetric> = {
   statements: 'statements',
   branches: 'branches',
   functions: 'functions',
@@ -50,7 +50,7 @@ const clampPercentage = (value: number): number => {
 };
 
 const executionMetric = (
-  metric: CheckCoverageMetric,
+  metric: CoverageMetric,
   files: CoverageModel
 ): Metric => {
   if (metric === 'statements' || metric === 'lines')
@@ -78,7 +78,7 @@ const aggregateTypeFiles = (
 };
 
 const typesMetric = (
-  metric: CheckCoverageMetric,
+  metric: CoverageMetric,
   files: readonly FileTypeCoverage[]
 ): Metric => {
   if (metric === 'typesReferenced')
@@ -89,10 +89,10 @@ const typesMetric = (
 const collectFailures = (
   executionFiles: CoverageModel,
   typeReport: TypeCoverageReport | undefined,
-  thresholds: Record<CheckCoverageMetric, number>,
+  thresholds: Record<CoverageMetric, number>,
   perFile: boolean
-): CheckCoverageFailure[] => {
-  const failures: CheckCoverageFailure[] = [];
+): CoverageFailure[] => {
+  const failures: CoverageFailure[] = [];
   const executionScopes: Array<{ scope: string; files: CoverageModel }> =
     perFile
       ? executionFiles.map((file) => ({ scope: file.file, files: [file] }))
@@ -137,13 +137,13 @@ const collectFailures = (
   return failures;
 };
 
-const padMetricLabel = (metric: CheckCoverageMetric): string =>
+const padMetricLabel = (metric: CoverageMetric): string =>
   metric.length < METRIC_LABEL_WIDTH
     ? metric + ' '.repeat(METRIC_LABEL_WIDTH - metric.length)
     : metric;
 
 const formatFailureLine = (
-  failure: CheckCoverageFailure,
+  failure: CoverageFailure,
   context: ReporterContext
 ): string => {
   const label = padMetricLabel(failure.metric);
@@ -159,7 +159,7 @@ const formatFailureLine = (
 };
 
 const printFailures = (
-  failures: CheckCoverageFailure[],
+  failures: CoverageFailure[],
   context: ReporterContext
 ): void => {
   console.error('');
@@ -167,7 +167,7 @@ const printFailures = (
     terminal.colorize('[@pokujs/coverage] coverage threshold not met:', 'red')
   );
 
-  const grouped = new Map<string, CheckCoverageFailure[]>();
+  const grouped = new Map<string, CoverageFailure[]>();
 
   for (const failure of failures) {
     const existing = grouped.get(failure.scope);
@@ -197,9 +197,7 @@ const run = (context: ReporterContext): void => {
   const isObject = typeof flag === 'object' && flag !== null;
   const defaultValue = typeof flag === 'number' ? clampPercentage(flag) : 0;
 
-  const fromObject = (
-    key: keyof CheckCoverageThresholds
-  ): number | undefined => {
+  const fromObject = (key: keyof CoverageThresholds): number | undefined => {
     if (!isObject) return undefined;
 
     const value = flag[key];
@@ -207,7 +205,7 @@ const run = (context: ReporterContext): void => {
     return typeof value === 'number' ? value : undefined;
   };
 
-  const thresholds: Record<CheckCoverageMetric, number> = {
+  const thresholds: Record<CoverageMetric, number> = {
     statements: clampPercentage(fromObject('statements') ?? defaultValue),
     branches: clampPercentage(fromObject('branches') ?? defaultValue),
     functions: clampPercentage(fromObject('functions') ?? defaultValue),

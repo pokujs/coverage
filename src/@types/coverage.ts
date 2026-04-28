@@ -1,4 +1,4 @@
-import type { CheckCoverageThresholds } from './check-coverage.js';
+import type { CoverageThresholds } from './check-coverage.js';
 import type { Reporter } from './reporters.js';
 import type { IDE } from './terminal.js';
 import type { TypesOptions } from './type-coverage.js';
@@ -84,12 +84,12 @@ export type CoverageOptions = {
    * - `number`: default threshold applied to every applicable metric.
    *   `typesReferenced` only applies if the `types` reporter is active;
    *   `typesTested` additionally requires `types.tests` to be configured.
-   * - `CheckCoverageThresholds`: per-metric thresholds and `perFile` toggle.
+   * - `CoverageThresholds`: per-metric thresholds and `perFile` toggle.
    * - `undefined`: disabled.
    *
    * @default undefined
    */
-  checkCoverage?: number | CheckCoverageThresholds;
+  checkCoverage?: number | CoverageThresholds;
 
   /**
    * Hide fully-covered files from the `text`, `html` and `html-spa`
