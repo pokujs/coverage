@@ -192,7 +192,7 @@ const printFailures = (
 
 const run = (context: ReporterContext): void => {
   const flag = context.options.checkCoverage;
-  if (flag === undefined || flag === false) return;
+  if (flag === undefined) return;
 
   const isObject = typeof flag === 'object' && flag !== null;
   const defaultValue = typeof flag === 'number' ? clampPercentage(flag) : 0;
@@ -202,7 +202,7 @@ const run = (context: ReporterContext): void => {
   ): number | undefined => {
     if (!isObject) return undefined;
 
-    const value = (flag as CheckCoverageThresholds)[key];
+    const value = flag[key];
 
     return typeof value === 'number' ? value : undefined;
   };
@@ -218,9 +218,7 @@ const run = (context: ReporterContext): void => {
     typesTested: clampPercentage(fromObject('typesTested') ?? defaultValue),
   };
 
-  const perFile = isObject
-    ? (flag as CheckCoverageThresholds).perFile === true
-    : false;
+  const perFile = isObject ? flag.perFile === true : false;
 
   const hasExecutionThreshold =
     thresholds.statements > 0 ||

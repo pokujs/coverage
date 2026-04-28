@@ -42,11 +42,19 @@ const collectThresholds = (
   return hasAny ? thresholds : undefined;
 };
 
+const normalizeCheckCoverage = (value: unknown): number | undefined => {
+  if (value === false || value === undefined) return undefined;
+  if (value === true) return 0;
+  if (typeof value === 'number') return value;
+  return undefined;
+};
+
 const extract = (source: NycrcRaw): CoverageOptions => {
   const mapped: CoverageOptions = Object.create(null);
 
   for (const [key, value] of Object.entries(source)) {
     if (key === '100') continue;
+    if (key === 'check-coverage') continue;
     if (thresholdKeys.includes(key as (typeof thresholdKeys)[number])) continue;
     if (key === 'per-file') continue;
 
@@ -64,6 +72,9 @@ const extract = (source: NycrcRaw): CoverageOptions => {
     return mapped;
   }
 
+  const baseCheckCoverage = normalizeCheckCoverage(source['check-coverage']);
+  if (baseCheckCoverage !== undefined) mapped.checkCoverage = baseCheckCoverage;
+
   const thresholds = collectThresholds(source);
 
   if (thresholds === undefined) return mapped;
@@ -75,8 +86,6 @@ const extract = (source: NycrcRaw): CoverageOptions => {
       if (thresholds[key] === undefined) thresholds[key] = numericDefault;
     }
   }
-
-  if (mapped.checkCoverage === false) return mapped;
 
   mapped.checkCoverage = thresholds;
 

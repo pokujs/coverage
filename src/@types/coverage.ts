@@ -81,17 +81,15 @@ export type CoverageOptions = {
   /**
    * Fail the run when coverage drops below the configured thresholds.
    *
-   * - `true`: enable with all thresholds at `0` (silent no-op unless a
-   *   per-metric threshold is set inside the object form).
    * - `number`: default threshold applied to every applicable metric.
    *   `typesReferenced` only applies if the `types` reporter is active;
    *   `typesTested` additionally requires `types.tests` to be configured.
-   * - object: per-metric thresholds and `perFile` toggle.
-   * - `false` / `undefined`: disabled.
+   * - `CheckCoverageThresholds`: per-metric thresholds and `perFile` toggle.
+   * - `undefined`: disabled.
    *
    * @default undefined
    */
-  checkCoverage?: boolean | number | CheckCoverageThresholds;
+  checkCoverage?: number | CheckCoverageThresholds;
 
   /**
    * Hide fully-covered files from the `text`, `html` and `html-spa`
