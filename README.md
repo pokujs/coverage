@@ -207,9 +207,9 @@ Above: every metric requires `95`.
 
 Above: per-metric granularity. `perFile` enforces thresholds per file instead of on aggregated totals.
 
-> [!NOTE]
+> [!TIP]
 >
-> `.nycrc` and `.c8rc` files keep their native top-level `lines`, `statements`, `branches`, `functions`, and `per-file` keys. They are silently remapped into the `CoverageThresholds` form.
+> `.nycrc` and `.c8rc` options are automatically remapped into the `CoverageThresholds` usage.
 
 ---
 
@@ -398,7 +398,7 @@ export default defineConfig({
 });
 ```
 
-> Since `coverage` sets `NODE_V8_COVERAGE` during `setup`, every test process across all sub-suites writes to the same temp directory, then `teardown` merges everything into a single report.
+> On `teardown`, it merges everything into a single report.
 
 ---
 
