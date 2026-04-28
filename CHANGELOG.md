@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.1](https://github.com/pokujs/coverage/compare/v0.8.0...v0.8.1) (2026-04-28)
+
+
+### Bug Fixes
+
+* build external packages ([#34](https://github.com/pokujs/coverage/issues/34)) ([59fe46d](https://github.com/pokujs/coverage/commit/59fe46d33b03d2aa467784738f4db6603c6aa97d))
+
 ## [0.8.0](https://github.com/pokujs/coverage/compare/v0.7.1...v0.8.0) (2026-04-28)
 
 
