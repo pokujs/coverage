@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/pokujs/coverage/compare/v0.7.1...v0.8.0) (2026-04-28)
+
+
+### Features
+
+* support for Typings coverage ([#31](https://github.com/pokujs/coverage/issues/31)) ([4128d62](https://github.com/pokujs/coverage/commit/4128d623880646d04796715df8f46babb9e3ad07))
+
 ## [0.7.1](https://github.com/pokujs/coverage/compare/v0.7.0...v0.7.1) (2026-04-27)
 
 
