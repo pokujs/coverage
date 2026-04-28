@@ -1,9 +1,8 @@
 import type { Runtime } from '../../@types/reporters.js';
+import type { Column, RenderCell, TableRow } from '../../@types/table.js';
 import type { UrlBuilder } from '../../@types/terminal.js';
 import type {
   ColorName,
-  Column,
-  RenderCell,
   Row,
   RowMetrics,
   UncoveredEntry,
@@ -13,14 +12,10 @@ import type { Watermarks } from '../../@types/watermarks.js';
 import { terminal } from '../../utils/terminal.js';
 import { watermarks } from '../../watermarks.js';
 import { metrics } from '../shared/metrics.js';
+import { nameCell } from '../shared/name-cell.js';
+import { ranges } from '../shared/ranges.js';
 import { skip } from '../shared/skip.js';
-import {
-  formatArmPosition,
-  formatRange,
-  formatUncoveredEntry,
-  truncateUncovered,
-  TRUNCATION_SUFFIX,
-} from './ranges.js';
+import { tableRenderer } from '../shared/table.js';
 import { buildTree, walkTree } from './tree.js';
 
 const formatPercentageValue = (value: number | null): string =>
@@ -33,58 +28,6 @@ const isFileRowHidden = (
 ): boolean => {
   if (!row.absolutePath || !row.metrics) return false;
   return skip.shouldHideFileRow(row.metrics, skipFull, skipEmpty);
-};
-
-const BOX = {
-  topLeft: '┌',
-  topMid: '┬',
-  topRight: '┐',
-  midLeft: '├',
-  midCross: '┼',
-  midRight: '┤',
-  botLeft: '└',
-  botMid: '┴',
-  botRight: '┘',
-  vert: '│',
-  horiz: '─',
-};
-
-const horizontalLine = (widths: number[], middle: string): string => {
-  const parts = widths.map((columnWidth) => BOX.horiz.repeat(columnWidth));
-  return terminal.colorize(
-    parts.join(BOX.horiz + middle + BOX.horiz),
-    'dimGray'
-  );
-};
-
-const dataRow = (
-  cells: RenderCell[],
-  widths: number[],
-  columns: Column[]
-): string => {
-  const parts: string[] = [];
-  for (let cellIndex = 0; cellIndex < cells.length; cellIndex++) {
-    const renderCell = cells[cellIndex];
-    const width = widths[cellIndex];
-    const align = columns[cellIndex].align;
-    const visible = renderCell.display ?? renderCell.text;
-
-    let padded: string;
-
-    if (renderCell.text.length >= width) {
-      padded = visible;
-    } else {
-      const padding = ' '.repeat(width - renderCell.text.length);
-      padded = align === 'left' ? visible + padding : padding + visible;
-    }
-
-    parts.push(
-      renderCell.color ? terminal.colorize(padded, renderCell.color) : padded
-    );
-  }
-
-  const separator = terminal.colorize(BOX.vert, 'dimGray');
-  return parts.join(' ' + separator + ' ');
 };
 
 const colorForUncoveredEntry = (entry: UncoveredEntry): ColorName =>
@@ -100,8 +43,8 @@ const buildUncoveredDisplay = (
     .map((entry) => {
       const text =
         entry.kind === 'range'
-          ? formatRange(entry.range)
-          : formatArmPosition(entry.position);
+          ? ranges.formatRange(entry.range)
+          : ranges.formatArmPosition(entry.position);
 
       const linked =
         urlBuilder && absolutePath
@@ -119,7 +62,7 @@ const buildUncoveredDisplay = (
     .join(', ');
 
   if (!truncated) return rendered;
-  const truncationMark = terminal.colorize(TRUNCATION_SUFFIX, 'gray');
+  const truncationMark = terminal.colorize(ranges.TRUNCATION_SUFFIX, 'gray');
   return rendered + truncationMark;
 };
 
@@ -151,9 +94,7 @@ const averageColor = (
   return watermarks.colorForPercent(resolvedWatermarks, 'lines', average);
 };
 
-const DIRECTORY_MARKER = '◼ ';
-
-const nameCell = (
+const buildNameCell = (
   resolvedWatermarks: Watermarks,
   name: string,
   rowMetrics: RowMetrics | null,
@@ -162,34 +103,12 @@ const nameCell = (
   const segmentColor: ColorName | null = isDirectory
     ? 'gray'
     : averageColor(resolvedWatermarks, rowMetrics);
-  const connectorIndex = Math.max(
-    name.lastIndexOf('├ '),
-    name.lastIndexOf('└ ')
-  );
 
-  const marker = isDirectory ? DIRECTORY_MARKER : '';
-  const markerDisplay = isDirectory
-    ? terminal.colorize(DIRECTORY_MARKER, 'blue')
-    : '';
-
-  if (connectorIndex < 0) {
-    const text = marker + name;
-    const styledSegment = segmentColor
-      ? terminal.colorize(name, segmentColor)
-      : name;
-    if (!isDirectory && !segmentColor) return { text, color: null };
-    return { text, color: null, display: markerDisplay + styledSegment };
-  }
-
-  const prefix = name.slice(0, connectorIndex + 2);
-  const segment = name.slice(connectorIndex + 2);
-  const text = prefix + marker + segment;
-  const display =
-    terminal.colorize(prefix, 'dim') +
-    markerDisplay +
-    (segmentColor ? terminal.colorize(segment, segmentColor) : segment);
-
-  return { text, color: null, display };
+  return nameCell.build({
+    decoratedName: name,
+    isDirectory,
+    segmentColor,
+  });
 };
 
 const buildRowCells = (
@@ -203,7 +122,7 @@ const buildRowCells = (
 
   if (!row.metrics) {
     return [
-      nameCell(resolvedWatermarks, row.name, null, isDirectoryRow),
+      buildNameCell(resolvedWatermarks, row.name, null, isDirectoryRow),
       { text: '', color: null },
       { text: '', color: null },
       { text: '', color: null },
@@ -214,7 +133,7 @@ const buildRowCells = (
 
   if (isDirectoryRow) {
     return [
-      nameCell(resolvedWatermarks, row.name, row.metrics, true),
+      buildNameCell(resolvedWatermarks, row.name, row.metrics, true),
       { text: '', color: null },
       { text: '', color: null },
       { text: '', color: null },
@@ -235,11 +154,13 @@ const buildRowCells = (
     ),
   ];
 
-  const { visible, truncated } = truncateUncovered(entries);
+  const { visible, truncated } = ranges.truncateUncovered(entries);
 
-  const baseText = visible.map(formatUncoveredEntry).join(', ');
+  const baseText = visible.map(ranges.formatUncoveredEntry).join(', ');
 
-  const uncoveredText = truncated ? baseText + TRUNCATION_SUFFIX : baseText;
+  const uncoveredText = truncated
+    ? baseText + ranges.TRUNCATION_SUFFIX
+    : baseText;
 
   const uncoveredDisplay =
     uncoveredText.length > 0
@@ -277,7 +198,7 @@ const buildRowCells = (
   );
 
   return [
-    nameCell(resolvedWatermarks, row.name, row.metrics, false),
+    buildNameCell(resolvedWatermarks, row.name, row.metrics, false),
     {
       text: formatPercentageValue(statementsPercentage),
       color: watermarks.colorForPercent(
@@ -337,7 +258,7 @@ export const renderTable = (
   const coverageTree = buildTree(model, cwd);
   const walkedRows: Row[] = [];
 
-  walkTree(coverageTree, '', 0, walkedRows);
+  walkTree(coverageTree, walkedRows);
 
   const tableRows =
     skipFull || skipEmpty
@@ -380,39 +301,16 @@ export const renderTable = (
     runtime,
     true
   );
+
   summaryCells[0] = { text: summaryRow.name, color: 'dim' };
 
-  const widths = columns.map((column, columnIndex) => {
-    let columnWidth = column.header.length;
+  const tableData: TableRow[] = [];
+  for (const cells of rowCells) tableData.push({ kind: 'data', cells });
 
-    for (const cells of rowCells) {
-      const length = cells[columnIndex].text.length;
-      if (length > columnWidth) columnWidth = length;
-    }
+  tableData.push({ kind: 'separator' });
+  tableData.push({ kind: 'data', cells: summaryCells });
 
-    const summaryLength = summaryCells[columnIndex].text.length;
-    if (summaryLength > columnWidth) columnWidth = summaryLength;
-
-    return columnWidth;
-  });
-
-  const lines: string[] = [];
-
-  lines.push(horizontalLine(widths, BOX.topMid));
-
-  const headerCells: RenderCell[] = columns.map((column) => ({
-    text: column.header,
-    color: 'dim',
-  }));
-
-  lines.push(dataRow(headerCells, widths, columns));
-  lines.push(horizontalLine(widths, BOX.midCross));
-
-  for (const cells of rowCells) lines.push(dataRow(cells, widths, columns));
-
-  lines.push(horizontalLine(widths, BOX.midCross));
-  lines.push(dataRow(summaryCells, widths, columns));
-  lines.push(horizontalLine(widths, BOX.botMid));
+  const lines: string[] = [tableRenderer.render(columns, tableData)];
 
   if (terminal.isColorEnabled()) {
     lines.push('');

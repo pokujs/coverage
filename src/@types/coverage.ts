@@ -1,5 +1,7 @@
+import type { CheckCoverageThresholds } from './check-coverage.js';
 import type { Reporter } from './reporters.js';
 import type { IDE } from './terminal.js';
+import type { TypesOptions } from './type-coverage.js';
 import type { Watermarks } from './watermarks.js';
 
 export type CoverageState = {
@@ -79,54 +81,17 @@ export type CoverageOptions = {
   /**
    * Fail the run when coverage drops below the configured thresholds.
    *
-   * - `true`: enable with all thresholds at `0` (silent no-op unless
-   *   a per-metric root threshold is set).
-   * - `number`: default threshold applied to every metric; per-metric
-   *   root thresholds override.
+   * - `true`: enable with all thresholds at `0` (silent no-op unless a
+   *   per-metric threshold is set inside the object form).
+   * - `number`: default threshold applied to every applicable metric.
+   *   `typesReferenced` only applies if the `types` reporter is active;
+   *   `typesTested` additionally requires `types.tests` to be configured.
+   * - object: per-metric thresholds and `perFile` toggle.
    * - `false` / `undefined`: disabled.
    *
    * @default undefined
    */
-  checkCoverage?: boolean | number;
-
-  /**
-   * Minimum statements coverage percentage. Requires `checkCoverage` to
-   * be active.
-   *
-   * @default 0
-   */
-  statements?: number;
-
-  /**
-   * Minimum branches coverage percentage. Requires `checkCoverage` to be
-   * active.
-   *
-   * @default 0
-   */
-  branches?: number;
-
-  /**
-   * Minimum functions coverage percentage. Requires `checkCoverage` to
-   * be active.
-   *
-   * @default 0
-   */
-  functions?: number;
-
-  /**
-   * Minimum lines coverage percentage. Requires `checkCoverage` to be
-   * active.
-   *
-   * @default 0
-   */
-  lines?: number;
-
-  /**
-   * Enforce thresholds per file instead of on aggregated totals.
-   *
-   * @default false
-   */
-  perFile?: boolean;
+  checkCoverage?: boolean | number | CheckCoverageThresholds;
 
   /**
    * Hide fully-covered files from the `text`, `html` and `html-spa`
@@ -195,4 +160,12 @@ export type CoverageOptions = {
    * @default ['.js', '.cjs', '.mjs', '.ts', '.cts', '.mts', '.tsx', '.jsx']
    */
   extension?: string | readonly string[];
+
+  /**
+   * Configuration for the `types` reporter (TypeScript declaration
+   * coverage). See `TypesOptions`.
+   *
+   * @default undefined
+   */
+  types?: TypesOptions;
 };

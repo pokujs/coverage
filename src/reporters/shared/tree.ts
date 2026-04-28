@@ -1,61 +1,71 @@
+import type { PathTreeWalkContext } from '../../@types/path-tree.js';
 import type {
   CoverageModel,
   FileCoverage,
   TreeNode,
 } from '../../@types/tree.js';
-import { paths } from '../../utils/paths.js';
+import { pathTree } from './path-tree.js';
 
 const build = (model: CoverageModel, cwd: string): TreeNode => {
-  const root: TreeNode = { segment: '', isFile: false, children: [] };
+  const root = pathTree.build<FileCoverage>(
+    model,
+    (fileCoverage) => fileCoverage.file,
+    cwd
+  );
 
-  for (const fileCoverage of model) {
-    const relativePath = paths.relativize(fileCoverage.file, cwd);
-    const parts = paths
-      .toPosix(relativePath)
-      .split('/')
-      .filter((part) => part.length > 0);
-
-    if (parts.length === 0) continue;
-
-    let current = root;
-
-    for (let partIndex = 0; partIndex < parts.length; partIndex++) {
-      const part = parts[partIndex];
-      const isLeaf = partIndex === parts.length - 1;
-
-      let child = current.children.find((node) => node.segment === part);
-
-      if (!child) {
-        child = {
-          segment: part,
-          isFile: isLeaf,
-          children: [],
-        };
-
-        if (isLeaf) child.file = fileCoverage;
-        current.children.push(child);
-      }
-
-      current = child;
-    }
-  }
-
-  sortTree(root);
-  return root;
+  return adaptNode(root);
 };
 
-const sortTree = (node: TreeNode): void => {
-  node.children.sort((left, right) => {
-    if (left.isFile !== right.isFile) return left.isFile ? 1 : -1;
-    return left.segment.localeCompare(right.segment);
-  });
-
-  for (const child of node.children) sortTree(child);
-};
+const adaptNode = (
+  node: ReturnType<typeof pathTree.build<FileCoverage>>
+): TreeNode => ({
+  segment: node.segment,
+  isFile: node.isFile,
+  children: node.children.map(adaptNode),
+  file: node.payload,
+});
 
 const collectFiles = (node: TreeNode): FileCoverage[] => {
   if (node.isFile && node.file) return [node.file];
   return node.children.flatMap((child) => collectFiles(child));
 };
 
-export const tree = { build, collectFiles } as const;
+const walk = (
+  root: TreeNode,
+  visitor: (child: TreeNode, context: PathTreeWalkContext) => void
+): void => {
+  walkChildren(root, '', 0, visitor);
+};
+
+const walkChildren = (
+  node: TreeNode,
+  prefix: string,
+  depth: number,
+  visitor: (child: TreeNode, context: PathTreeWalkContext) => void
+): void => {
+  const total = node.children.length;
+
+  for (let childIndex = 0; childIndex < total; childIndex++) {
+    const child = node.children[childIndex];
+    const isLast = childIndex === total - 1;
+    let decoratedName: string;
+
+    if (depth === 0) {
+      decoratedName = child.segment;
+    } else {
+      const connector = isLast ? '└ ' : '├ ';
+
+      decoratedName = prefix + connector + child.segment;
+    }
+
+    visitor(child, { depth, prefix, isLast, decoratedName });
+
+    if (child.children.length > 0) {
+      const nextPrefix = depth === 0 ? '' : prefix + (isLast ? '  ' : '│ ');
+
+      walkChildren(child, nextPrefix, depth + 1, visitor);
+    }
+  }
+};
+
+export const tree = { build, collectFiles, walk } as const;

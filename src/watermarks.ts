@@ -10,6 +10,10 @@ const DEFAULT_WATERMARKS: Watermarks = {
   branches: [50, 80],
   functions: [50, 80],
   lines: [50, 80],
+
+  // Types
+  used: [50, 80],
+  tested: [50, 80],
 };
 
 const METRICS: readonly WatermarkMetric[] = [
@@ -17,6 +21,10 @@ const METRICS: readonly WatermarkMetric[] = [
   'branches',
   'functions',
   'lines',
+
+  // Types
+  'used',
+  'tested',
 ];
 
 const isValidEntry = (entry: unknown): entry is readonly [number, number] => {
@@ -34,6 +42,10 @@ const getDefault = (): Watermarks => ({
   branches: DEFAULT_WATERMARKS.branches,
   functions: DEFAULT_WATERMARKS.functions,
   lines: DEFAULT_WATERMARKS.lines,
+
+  // Types
+  used: DEFAULT_WATERMARKS.used,
+  tested: DEFAULT_WATERMARKS.tested,
 });
 
 const classForPercent = (
@@ -61,6 +73,8 @@ const colorForPercent = (
   metric: WatermarkMetric,
   value: number | null
 ): ColorName => {
+  if (value === null) return 'dimGray';
+
   const level = classForPercent(resolved, metric, value);
 
   if (level === null) return 'white';
