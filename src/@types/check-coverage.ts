@@ -1,12 +1,24 @@
-export type CheckCoverageMetric =
+export type CoverageMetric =
   | 'statements'
   | 'branches'
   | 'functions'
-  | 'lines';
+  | 'lines'
+  | 'typesReferenced'
+  | 'typesTested';
 
-export type CheckCoverageFailure = {
+export type CoverageThresholds = {
+  statements?: number;
+  branches?: number;
+  functions?: number;
+  lines?: number;
+  perFile?: boolean;
+  typesReferenced?: number;
+  typesTested?: number;
+};
+
+export type CoverageFailure = {
   scope: 'total' | string;
-  metric: CheckCoverageMetric;
+  metric: CoverageMetric;
   threshold: number;
   actual: number | null;
 };

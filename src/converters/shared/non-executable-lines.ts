@@ -2,27 +2,7 @@ import type { Node } from 'acorn';
 import type { WithLocation } from '../../@types/acorn-nodes.js';
 import { astCache } from './ast-cache.js';
 import { astWalk } from './ast-walk.js';
-
-const PURE_TYPE_DECLARATION_TYPES: ReadonlySet<string> = new Set([
-  'TSTypeAliasDeclaration',
-  'TSInterfaceDeclaration',
-  'TSDeclareFunction',
-  'TSImportEqualsDeclaration',
-]);
-
-const TYPE_LITERAL_MEMBER_TYPES: ReadonlySet<string> = new Set([
-  'TSPropertySignature',
-  'TSMethodSignature',
-  'TSIndexSignature',
-  'TSCallSignatureDeclaration',
-  'TSConstructSignatureDeclaration',
-]);
-
-const FUNCTION_LIKE_TYPES: ReadonlySet<string> = new Set([
-  'FunctionDeclaration',
-  'FunctionExpression',
-  'ArrowFunctionExpression',
-]);
+import { tsNodeKinds } from './ts-node-kinds.js';
 
 const RUNTIME_STATEMENT_TYPES: ReadonlySet<string> = new Set([
   'VariableDeclaration',
@@ -81,7 +61,7 @@ const isTypeOnlyExportDeclaration = (node: Node): boolean => {
 };
 
 const isPureTypeDeclaration = (node: Node): boolean => {
-  if (PURE_TYPE_DECLARATION_TYPES.has(node.type)) return true;
+  if (tsNodeKinds.pureTypeDeclarations.has(node.type)) return true;
   if (isAmbientModuleDeclaration(node)) return true;
   if (isAmbientVariableDeclaration(node)) return true;
   if (isTypeOnlyImportDeclaration(node)) return true;
@@ -96,6 +76,7 @@ const collectFunctionHeaderLines = (
   if (!hasLocation(functionNode)) return;
 
   const body = Reflect.get(functionNode, 'body');
+
   if (body === null || body === undefined) return;
   if (typeof body !== 'object') return;
   if (!hasLocation(body as Node)) return;
@@ -113,6 +94,7 @@ const find = (source: string): Set<number> => {
   if (program === null) return new Set();
 
   const runtimeBoundaryLines = new Set<number>();
+  const nonExecutable = new Set<number>();
 
   astWalk.forEachNode(program, (node) => {
     if (!hasLocation(node)) return;
@@ -123,8 +105,6 @@ const find = (source: string): Set<number> => {
     runtimeBoundaryLines.add(node.loc.end.line);
   });
 
-  const nonExecutable = new Set<number>();
-
   astWalk.forEachNode(program, (node) => {
     if (!hasLocation(node)) return;
 
@@ -133,19 +113,20 @@ const find = (source: string): Set<number> => {
       return;
     }
 
-    if (TYPE_LITERAL_MEMBER_TYPES.has(node.type)) {
+    if (tsNodeKinds.typeLiteralMembers.has(node.type)) {
       const startLine = node.loc.start.line;
       const endLine = node.loc.end.line;
 
       for (let lineNumber = startLine; lineNumber <= endLine; lineNumber++) {
         if (runtimeBoundaryLines.has(lineNumber)) continue;
+
         nonExecutable.add(lineNumber);
       }
 
       return;
     }
 
-    if (FUNCTION_LIKE_TYPES.has(node.type)) {
+    if (tsNodeKinds.functionLike.has(node.type)) {
       collectFunctionHeaderLines(nonExecutable, node);
     }
   });

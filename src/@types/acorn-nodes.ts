@@ -131,3 +131,59 @@ export type TypedNode =
   | LoopStatementNode
   | CatchClauseNode
   | TryStatementNode;
+
+export type TSDeclarationKind =
+  | 'alias'
+  | 'interface'
+  | 'declareFunction'
+  | 'importEquals';
+
+export type TSDeclarationNode = Node & {
+  type:
+    | 'TSTypeAliasDeclaration'
+    | 'TSInterfaceDeclaration'
+    | 'TSDeclareFunction'
+    | 'TSImportEqualsDeclaration';
+  id: IdentifierNode;
+};
+
+export type ExportNamedDeclarationNode = Node & {
+  type: 'ExportNamedDeclaration';
+  declaration: Node | null;
+  exportKind?: 'type' | 'value';
+};
+
+export type ImportSpecifierNode = Node & {
+  type: 'ImportSpecifier';
+  local: IdentifierNode;
+  imported: IdentifierNode;
+  importKind?: 'type' | 'value';
+};
+
+export type ImportDeclarationNode = Node & {
+  type: 'ImportDeclaration';
+  source: LiteralNode;
+  specifiers: Node[];
+  importKind?: 'type' | 'value';
+};
+
+export type TSTypeReferenceNode = Node & {
+  type: 'TSTypeReference';
+  typeName: Node;
+};
+
+export type TSExpressionWithTypeArgumentsNode = Node & {
+  type: 'TSExpressionWithTypeArguments';
+  expression: Node;
+};
+
+export type TSTypeQueryNode = Node & {
+  type: 'TSTypeQuery';
+  exprName: Node;
+};
+
+export type TSQualifiedNameNode = Node & {
+  type: 'TSQualifiedName';
+  left: Node;
+  right: IdentifierNode;
+};

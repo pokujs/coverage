@@ -31,3 +31,5 @@ find "$sourceRoot" -type d -name darwin -print0 | while IFS= read -r -d '' darwi
 done
 
 rm "$archivePath"
+
+npm run postbuild:snapshots

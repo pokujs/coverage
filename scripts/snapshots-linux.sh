@@ -31,3 +31,5 @@ find "$sourceRoot" -type d -name linux -print0 | while IFS= read -r -d '' linuxD
 done
 
 rm "$archivePath"
+
+npm run postbuild:snapshots

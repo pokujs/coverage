@@ -2,6 +2,7 @@ import type { PluginContext } from 'poku/plugins';
 import type { CoverageOptions } from './coverage.js';
 import type { ResolvedFileFilter } from './file-filter.js';
 import type { CoverageMap } from './istanbul.js';
+import type { TypeCoverageReport } from './type-coverage.js';
 import type { Watermarks } from './watermarks.js';
 
 export type Runtime = PluginContext['runtime'];
@@ -18,6 +19,7 @@ export type ReporterContext = {
   preRemapFilter: ResolvedFileFilter;
   userFilter: ResolvedFileFilter;
   produceCoverageMap: () => CoverageMap | null;
+  typeCoverageReport?: TypeCoverageReport;
 };
 
 export type Report = (context: ReporterContext) => void;
@@ -43,6 +45,7 @@ export type KnownReporter =
   | 'clover'
   | 'html'
   | 'html-spa'
+  | 'types'
   | 'none';
 
 export type Reporter = KnownReporter | (string & NonNullable<unknown>);

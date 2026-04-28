@@ -10,7 +10,7 @@ const SINGLE_LINE_COST = 1;
 const LINE_WITH_COLUMNS_COST = 2;
 const MULTI_LINE_WITH_COLUMNS_COST = 3;
 
-export const TRUNCATION_SUFFIX = '...';
+const TRUNCATION_SUFFIX = '...';
 
 const costForEntry = (entry: UncoveredEntry): number => {
   if (entry.kind === 'range') {
@@ -24,9 +24,7 @@ const costForEntry = (entry: UncoveredEntry): number => {
     : MULTI_LINE_WITH_COLUMNS_COST;
 };
 
-export const truncateUncovered = (
-  entries: UncoveredEntry[]
-): TruncatedUncovered => {
+const truncateUncovered = (entries: UncoveredEntry[]): TruncatedUncovered => {
   const visible: UncoveredEntry[] = [];
 
   let remaining = UNCOVERED_DISPLAY_BUDGET;
@@ -42,9 +40,7 @@ export const truncateUncovered = (
   return { visible, truncated: false };
 };
 
-export const extractUncoveredLines = (
-  lineHits: Map<number, number>
-): number[] => {
+const extractUncoveredLines = (lineHits: Map<number, number>): number[] => {
   const uncovered: number[] = [];
 
   for (const [lineNumber, hits] of lineHits)
@@ -53,37 +49,37 @@ export const extractUncoveredLines = (
   return uncovered.sort((left, right) => left - right);
 };
 
-export const collapseRanges = (lines: number[]): UncoveredRange[] => {
+const collapseRanges = (lines: readonly number[]): UncoveredRange[] => {
   if (lines.length === 0) return [];
 
   const sorted = [...lines].sort((left, right) => left - right);
-  const ranges: UncoveredRange[] = [];
+  const collapsed: UncoveredRange[] = [];
 
   let start = sorted[0];
   let previous = start;
 
-  for (let index = 1; index < sorted.length; index++) {
-    const current = sorted[index];
+  for (let lineIndex = 1; lineIndex < sorted.length; lineIndex++) {
+    const current = sorted[lineIndex];
 
     if (current === previous + 1) {
       previous = current;
       continue;
     }
 
-    ranges.push({ start, end: previous });
+    collapsed.push({ start, end: previous });
 
     start = current;
     previous = current;
   }
 
-  ranges.push({ start, end: previous });
-  return ranges;
+  collapsed.push({ start, end: previous });
+  return collapsed;
 };
 
-export const formatRange = (range: UncoveredRange): string =>
+const formatRange = (range: UncoveredRange): string =>
   range.start === range.end ? `${range.start}` : `${range.start}-${range.end}`;
 
-export const formatArmPosition = (position: BranchArmPosition): string => {
+const formatArmPosition = (position: BranchArmPosition): string => {
   const startColumn = position.column + 1;
   const endColumn = position.endColumn + 1;
 
@@ -92,7 +88,17 @@ export const formatArmPosition = (position: BranchArmPosition): string => {
   return `${position.line}:${startColumn}-${position.endLine}:${endColumn}`;
 };
 
-export const formatUncoveredEntry = (entry: UncoveredEntry): string => {
+const formatUncoveredEntry = (entry: UncoveredEntry): string => {
   if (entry.kind === 'range') return formatRange(entry.range);
   return formatArmPosition(entry.position);
 };
+
+export const ranges = {
+  truncateUncovered,
+  extractUncoveredLines,
+  collapseRanges,
+  formatRange,
+  formatArmPosition,
+  formatUncoveredEntry,
+  TRUNCATION_SUFFIX,
+} as const;

@@ -19,6 +19,7 @@ import { teamcity } from './teamcity/index.js';
 import { textLcov } from './text-lcov/index.js';
 import { textSummary } from './text-summary/index.js';
 import { text } from './text/index.js';
+import { types } from './types/index.js';
 import { v8 } from './v8/index.js';
 
 const registry = new Map<Reporter, Report>([
@@ -36,6 +37,7 @@ const registry = new Map<Reporter, Report>([
   ['clover', clover.report],
   ['html', html.report],
   ['html-spa', htmlSpa.report],
+  ['types', types.report],
   ['none', none.report],
 ]);
 

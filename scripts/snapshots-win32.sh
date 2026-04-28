@@ -31,3 +31,5 @@ find "$sourceRoot" -type d -name win32 -print0 | while IFS= read -r -d '' win32D
 done
 
 rm "$archivePath"
+
+npm run postbuild:snapshots

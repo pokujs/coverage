@@ -1,39 +1,12 @@
 // @ts-check
 
-// import { writeFileSync } from 'node:fs';
 import { cp, readdir, rm } from 'node:fs/promises';
 import { homedir, platform } from 'node:os';
 import { basename, join } from 'node:path';
 import { env } from 'node:process';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'poku';
-// import { createReporter } from 'poku/plugins';
 import { coverage } from './lib/index.js';
-
-// /**
-//  * @type {{ path: string; status: boolean; duration: number; }[]}
-//  */
-// const fileResults = [];
-
-// export const reporter = createReporter({
-//   onFileResult({ status, path, duration }) {
-//     fileResults.push({ path: path.relative, status, duration });
-//   },
-//   onExit({ code, timespan }) {
-//     writeFileSync(
-//       'test-results.json',
-//       JSON.stringify(
-//         {
-//           code,
-//           duration: timespan.duration,
-//           files: fileResults,
-//         },
-//         null,
-//         2
-//       )
-//     );
-//   },
-// });
 
 const fixturesRoot = fileURLToPath(
   new URL('./test/__fixtures__/e2e/', import.meta.url)
@@ -147,7 +120,6 @@ const clearPlatformSnapshots = async (directory = snapshotsRoot) => {
 
 export default defineConfig({
   include: ['test/e2e'],
-  // reporter: reporter,
   reporter: 'compact',
   timeout: 30000,
   deno: {
@@ -181,9 +153,9 @@ export default defineConfig({
     },
     coverage({
       requireFlag: true,
+      reporter: ['text'],
       all: true,
       include: ['lib'],
-      exclude: ['@types', '*.ts'],
     }),
   ],
 });

@@ -38,16 +38,3 @@ export type Row = {
   metrics: RowMetrics | null;
   absolutePath?: string;
 };
-
-export type Alignment = 'left' | 'right';
-
-export type Column = {
-  header: string;
-  align: Alignment;
-};
-
-export type RenderCell = {
-  text: string;
-  color: ColorName | null;
-  display?: string;
-};
