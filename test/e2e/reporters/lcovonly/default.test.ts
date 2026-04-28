@@ -1,25 +1,27 @@
 import type { TestCase } from '../../../../src/@types/tests.ts';
-import { test } from 'poku';
+import { describe, it } from 'poku';
 import { fixture } from '../../../__utils__/fixture.ts';
 import { lcov } from '../../../__utils__/readers/lcov.ts';
 import { runtimes } from '../../../__utils__/runtime.ts';
 import { snapshot } from '../../../__utils__/snapshot.ts';
 
-for (const runtime of runtimes) {
-  const testCase: TestCase = {
-    reporter: 'lcovonly',
-    runtime,
-    name: 'default',
-    extension: 'json',
-  };
+describe(async () => {
+  for (const runtime of runtimes) {
+    const testCase: TestCase = {
+      reporter: 'lcovonly',
+      runtime,
+      name: 'default',
+      extension: 'json',
+    };
 
-  await test(`${runtime}: ${testCase.name}`, async () => {
-    const result = await fixture.run(testCase);
+    await it(`${runtime}: ${testCase.name}`, async () => {
+      const result = await fixture.run(testCase);
 
-    snapshot.matchJson(
-      await lcov.extract(result.fixtureRoot, 'lcovonly'),
-      testCase,
-      'Emits lcovonly output with default configuration'
-    );
-  });
-}
+      snapshot.matchJson(
+        await lcov.extract(result.fixtureRoot, 'lcovonly'),
+        testCase,
+        'Emits lcovonly output with default configuration'
+      );
+    });
+  }
+});

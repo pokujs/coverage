@@ -3,18 +3,9 @@
   "private": false,
   "version": "0.8.0",
   "description": "☔️ The world's first V8 and JSC coverage tool to generate reports for Node.js, Bun, Deno, and TypeScript at the same time.",
-  "type": "module",
-  "main": "./lib/index.cjs",
-  "module": "./lib/index.js",
+  "type": "commonjs",
+  "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./lib/index.d.ts",
-      "import": "./lib/index.js",
-      "require": "./lib/index.cjs",
-      "default": "./lib/index.js"
-    }
-  },
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -37,10 +28,10 @@
     "node": ">=18.x.x"
   },
   "scripts": {
-    "build": "tsx tools/build.ts",
+    "build": "tsx tools/build.mts",
     "typecheck": "tsc && tsc -p test && tsc -p tools && tsc -p .claude/skills",
     "build:snapshots": "cross-env UPDATE_SNAPSHOTS=1 npm test",
-    "postbuild:snapshots": "tsx tools/postbuild-snapshots.ts",
+    "postbuild:snapshots": "tsx tools/postbuild-snapshots.mts",
     "lint": "prettier --check .",
     "lint:types": "bash scripts/lint-types.sh",
     "lint:fix": "prettier --write .github/workflows/*.yml .",
