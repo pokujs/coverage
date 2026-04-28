@@ -8,14 +8,16 @@ import type {
   MetricsBundle,
   SnapshotMetric,
 } from '../../../../src/@types/tests.ts';
-import { DomUtils, parseDocument } from 'htmlparser2';
 import { htmlShared } from './html.ts';
 import { coverageSnapshot } from './snapshot.ts';
 
 const WINDOW_DATA_PATTERN =
   /window\.data\s*=\s*(\{[\s\S]*?\});\s*window\.generatedDatetime/;
 
-const extractWindowData = (indexHtml: string): HtmlSpaRawNode => {
+const extractWindowData = async (
+  indexHtml: string
+): Promise<HtmlSpaRawNode> => {
+  const { DomUtils, parseDocument } = await import('htmlparser2');
   const document = parseDocument(indexHtml);
   const scripts = DomUtils.findAll(
     (node) => node.tagName === 'script',
@@ -57,12 +59,12 @@ const buildMetricsBundle = (
 const isSourceFileName = (fileName: string): boolean =>
   fileName.endsWith('.js') || fileName.endsWith('.ts');
 
-const flattenLeafFiles = (
+const flattenLeafFiles = async (
   node: HtmlSpaRawNode,
   pathSegments: readonly string[],
   fileMarkups: ReadonlyMap<string, string>,
   accumulator: Record<string, FileSnapshot>
-): void => {
+): Promise<void> => {
   const currentPath = [...pathSegments, node.file].filter(Boolean).join('/');
   const hasChildren = node.children && node.children.length > 0;
 
@@ -70,7 +72,7 @@ const flattenLeafFiles = (
     const markupKey = `${currentPath}.html`;
     const markup = fileMarkups.get(markupKey);
     const classification = markup
-      ? htmlShared.extractFileLines(markup)
+      ? await htmlShared.extractFileLines(markup)
       : { covered: [], uncovered: [] };
 
     accumulator[currentPath] = {
@@ -85,7 +87,7 @@ const flattenLeafFiles = (
   if (!hasChildren) return;
 
   for (const child of node.children ?? []) {
-    flattenLeafFiles(
+    await flattenLeafFiles(
       child,
       [...pathSegments, node.file].filter(Boolean),
       fileMarkups,
@@ -94,17 +96,19 @@ const flattenLeafFiles = (
   }
 };
 
-const parse = (files: ReadonlyMap<string, string>): CoverageSnapshot => {
+const parse = async (
+  files: ReadonlyMap<string, string>
+): Promise<CoverageSnapshot> => {
   const indexHtml = files.get('index.html');
   if (!indexHtml) {
     return { reporter: 'html-spa' };
   }
 
-  const windowData = extractWindowData(indexHtml);
+  const windowData = await extractWindowData(indexHtml);
   const totals = buildMetricsBundle(windowData.metrics);
   const fileSnapshots: Record<string, FileSnapshot> = Object.create(null);
 
-  flattenLeafFiles(windowData, [], files, fileSnapshots);
+  await flattenLeafFiles(windowData, [], files, fileSnapshots);
 
   return {
     reporter: 'html-spa',
