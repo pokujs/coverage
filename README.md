@@ -207,9 +207,9 @@ Above: every metric requires `95`.
 
 Above: per-metric granularity. `perFile` enforces thresholds per file instead of on aggregated totals.
 
-> [!NOTE]
+> [!TIP]
 >
-> `.nycrc` and `.c8rc` files keep their native top-level `lines`, `statements`, `branches`, `functions`, and `per-file` keys. They are silently remapped into the `CoverageThresholds` form.
+> `.nycrc` and `.c8rc` options are automatically remapped into the `CoverageThresholds` usage.
 
 ---
 
@@ -398,11 +398,11 @@ export default defineConfig({
 });
 ```
 
-> Since `coverage` sets `NODE_V8_COVERAGE` during `setup`, every test process across all sub-suites writes to the same temp directory, then `teardown` merges everything into a single report.
+> On `teardown`, it merges everything into a single report.
 
 ---
 
-## 🍞 Why Bun Users Should Care
+## 🍞 For Bun Users
 
 **@pokujs/coverage** extends **Bun**'s coverage by tapping into the **JSC** **Inspector** directly, unlocking:
 
@@ -411,7 +411,6 @@ export default defineConfig({
 - Consistent options across runtimes (`all`,`checkCoverage`, `include`, `exclude`, `extension`, `skipFull`, `skipEmpty`, `watermarks`, etc.).
 - Support for `/* jsc ignore */` directives (`next`, `start`/`stop`).
 - Real function names with per-function execution counts.
-- Accurate line hit counts derived from basic blocks, instead of binary covered/uncovered.
 - A richer **LCOV** built from the **JSC** data, with function records and real per-line counts.
 - Compatibility with `.nycrc` / `.c8rc` config files, easing migration from existing coverage setups.
 
@@ -421,7 +420,7 @@ export default defineConfig({
 
 ---
 
-## 🦕 Why Deno Users Should Care
+## 🦕 For Deno Users
 
 - The full set of reporters (`html-spa`, `v8`, `json`, `json-summary`, `cobertura`, `clover`, `teamcity`, `text-summary`, etc.).
   - [**Deno** supports only `text`, `lcov`, and `html`](https://docs.deno.com/runtime/reference/cli/coverage/).
