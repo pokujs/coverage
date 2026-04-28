@@ -7,22 +7,31 @@ import {
   rmSync,
   writeFileSync,
 } from 'node:fs';
-import { dirname, posix, relative, sep } from 'node:path';
-import { platform as currentPlatform, env } from 'node:process';
-import { fileURLToPath } from 'node:url';
+import { dirname, join, posix, relative, sep } from 'node:path';
+import { platform as currentPlatform, cwd, env } from 'node:process';
 import { strict } from 'poku';
 
-const snapshotsRoot = fileURLToPath(
-  new URL('../__snapshots__/e2e/', import.meta.url)
-);
+const snapshotsRoot = join(cwd(), 'test', '__snapshots__', 'e2e');
 
 const runtimePlatform = currentPlatform;
 
 const resolveSnapshotPath = (target: TestCase): string =>
-  `${snapshotsRoot}${target.reporter}/${target.runtime}/${runtimePlatform}/${target.name}.${target.extension}`;
+  join(
+    snapshotsRoot,
+    target.reporter,
+    target.runtime,
+    runtimePlatform,
+    `${target.name}.${target.extension}`
+  );
 
 const resolveSnapshotTreeRoot = (target: TestCase): string =>
-  `${snapshotsRoot}${target.reporter}/${target.runtime}/${runtimePlatform}/${target.name}`;
+  join(
+    snapshotsRoot,
+    target.reporter,
+    target.runtime,
+    runtimePlatform,
+    target.name
+  );
 
 const read = (target: TestCase): string =>
   readFileSync(resolveSnapshotPath(target), 'utf8');
@@ -60,7 +69,7 @@ const collectTreeFiles = (directory: string, accumulator: string[]): void => {
   const entries = readdirSync(directory, { withFileTypes: true });
 
   for (const entry of entries) {
-    const absolutePath = `${directory}/${entry.name}`;
+    const absolutePath = join(directory, entry.name);
 
     if (entry.isDirectory()) {
       collectTreeFiles(absolutePath, accumulator);
@@ -78,7 +87,7 @@ const writeTree = (
   rmSync(treeRoot, { recursive: true, force: true });
 
   for (const [relativePath, content] of entries) {
-    const absolutePath = `${treeRoot}/${relativePath}`;
+    const absolutePath = join(treeRoot, relativePath);
 
     mkdirSync(dirname(absolutePath), { recursive: true });
     writeFileSync(absolutePath, content);

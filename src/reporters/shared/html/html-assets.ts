@@ -1,4 +1,4 @@
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 
 export const HTML_ASSET_FILENAMES: readonly string[] = [
   'base.css',
@@ -11,4 +11,4 @@ export const HTML_ASSET_FILENAMES: readonly string[] = [
 ];
 
 export const htmlAssetsDir = (): string =>
-  fileURLToPath(new URL('../resources/html/', import.meta.url));
+  join(__dirname, '..', 'resources', 'html');

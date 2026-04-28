@@ -93,3 +93,33 @@ export type V8NormalizedScriptCoverage = {
 export type V8NormalizedPayload = {
   result: V8NormalizedScriptCoverage[];
 };
+
+export type V8RawRange = {
+  startOffset: number;
+  endOffset: number;
+  count: number | string;
+  isBlockCoverage: boolean;
+};
+
+export type V8RawFunction = {
+  functionName: string;
+  ranges: V8RawRange[];
+  isBlockCoverage: boolean;
+};
+
+export type V8RawScriptCoverage = {
+  scriptId?: string;
+  url: string;
+  functions: V8RawFunction[];
+};
+
+export type V8RawDump = {
+  result?: V8RawScriptCoverage[];
+  timestamp?: number;
+};
+
+export type Htmlparser2Module = typeof import('htmlparser2', {
+  with: { 'resolution-mode': 'import' },
+});
+
+export type Htmlparser2DomUtils = Htmlparser2Module['DomUtils'];

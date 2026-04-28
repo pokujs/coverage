@@ -1,12 +1,14 @@
-import type { Document, Element } from 'domhandler';
+import type { Document, Element } from 'domhandler' with {
+  'resolution-mode': 'import',
+};
 import type {
   CoverageSnapshot,
   FileSnapshot,
+  Htmlparser2DomUtils,
   LineClassification,
   MetricsBundle,
   SnapshotMetric,
 } from '../../../../src/@types/tests.ts';
-import { DomUtils, parseDocument } from 'htmlparser2';
 import { coverageSnapshot } from './snapshot.ts';
 
 const METRIC_LABELS: Record<string, SnapshotMetric> = {
@@ -16,8 +18,13 @@ const METRIC_LABELS: Record<string, SnapshotMetric> = {
   Lines: 'lines',
 };
 
-const hasClass = (element: Element, className: string): boolean =>
-  DomUtils.getAttributeValue(element, 'class')
+const hasClass = (
+  domUtils: Htmlparser2DomUtils,
+  element: Element,
+  className: string
+): boolean =>
+  domUtils
+    .getAttributeValue(element, 'class')
     ?.split(/\s+/)
     .includes(className) ?? false;
 
@@ -27,27 +34,31 @@ const parseFraction = (text: string): { covered: number; total: number } => {
   return { covered: Number(coveredPart), total: Number(totalPart) };
 };
 
-const extractMetrics = (root: Document | Element): MetricsBundle => {
+const extractMetrics = (
+  domUtils: Htmlparser2DomUtils,
+  root: Document | Element
+): MetricsBundle => {
   const bundle: MetricsBundle = Object.create(null);
 
-  const strongSpans = DomUtils.findAll(
-    (node) => node.tagName === 'span' && hasClass(node, 'strong'),
-    DomUtils.getChildren(root)
+  const strongSpans = domUtils.findAll(
+    (node) => node.tagName === 'span' && hasClass(domUtils, node, 'strong'),
+    domUtils.getChildren(root)
   );
 
   for (const strong of strongSpans) {
-    const labelSpan = DomUtils.nextElementSibling(strong);
-    if (!labelSpan || !hasClass(labelSpan, 'quiet')) continue;
+    const labelSpan = domUtils.nextElementSibling(strong);
+    if (!labelSpan || !hasClass(domUtils, labelSpan, 'quiet')) continue;
 
-    const label = DomUtils.textContent(labelSpan).trim();
+    const label = domUtils.textContent(labelSpan).trim();
     const metric = METRIC_LABELS[label];
     if (!metric) continue;
 
-    const fractionSpan = DomUtils.nextElementSibling(labelSpan);
-    if (!fractionSpan || !hasClass(fractionSpan, 'fraction')) continue;
+    const fractionSpan = domUtils.nextElementSibling(labelSpan);
+    if (!fractionSpan || !hasClass(domUtils, fractionSpan, 'fraction'))
+      continue;
 
     const { covered, total } = parseFraction(
-      DomUtils.textContent(fractionSpan)
+      domUtils.textContent(fractionSpan)
     );
 
     bundle[metric] = coverageSnapshot.buildMetricDetail(total, covered);
@@ -56,35 +67,38 @@ const extractMetrics = (root: Document | Element): MetricsBundle => {
   return bundle;
 };
 
-const extractFilePath = (root: Document): string => {
-  const [header] = DomUtils.findAll(
+const extractFilePath = (
+  domUtils: Htmlparser2DomUtils,
+  root: Document
+): string => {
+  const [header] = domUtils.findAll(
     (node) => node.tagName === 'h1',
-    DomUtils.getChildren(root)
+    domUtils.getChildren(root)
   );
 
   if (!header) return '';
 
-  const anchors = DomUtils.findAll(
+  const anchors = domUtils.findAll(
     (node) => node.tagName === 'a',
-    DomUtils.getChildren(header)
+    domUtils.getChildren(header)
   );
 
   const segments: string[] = [];
 
   for (const anchor of anchors) {
-    const anchorText = DomUtils.textContent(anchor).trim();
+    const anchorText = domUtils.textContent(anchor).trim();
     if (anchorText === 'All files') continue;
 
     segments.push(anchorText);
   }
 
-  const headerText = DomUtils.textContent(header);
+  const headerText = domUtils.textContent(header);
   const lastAnchor = anchors[anchors.length - 1];
   const tail = lastAnchor
     ? headerText
         .slice(
-          headerText.lastIndexOf(DomUtils.textContent(lastAnchor)) +
-            DomUtils.textContent(lastAnchor).length
+          headerText.lastIndexOf(domUtils.textContent(lastAnchor)) +
+            domUtils.textContent(lastAnchor).length
         )
         .trim()
     : headerText.trim();
@@ -94,27 +108,31 @@ const extractFilePath = (root: Document): string => {
   return segments.join('/');
 };
 
-const extractLineClassification = (root: Document): LineClassification => {
-  const [lineCoverage] = DomUtils.findAll(
-    (node) => node.tagName === 'td' && hasClass(node, 'line-coverage'),
-    DomUtils.getChildren(root)
+const extractLineClassification = (
+  domUtils: Htmlparser2DomUtils,
+  root: Document
+): LineClassification => {
+  const [lineCoverage] = domUtils.findAll(
+    (node) =>
+      node.tagName === 'td' && hasClass(domUtils, node, 'line-coverage'),
+    domUtils.getChildren(root)
   );
 
   if (!lineCoverage) return { covered: [], uncovered: [] };
 
-  const coverageSpans = DomUtils.findAll(
-    (node) => node.tagName === 'span' && hasClass(node, 'cline-any'),
-    DomUtils.getChildren(lineCoverage)
+  const coverageSpans = domUtils.findAll(
+    (node) => node.tagName === 'span' && hasClass(domUtils, node, 'cline-any'),
+    domUtils.getChildren(lineCoverage)
   );
 
   const covered: number[] = [];
   const uncovered: number[] = [];
 
-  coverageSpans.forEach((span, spanIndex) => {
+  coverageSpans.forEach((span: Element, spanIndex: number) => {
     const lineNumber = spanIndex + 1;
 
-    if (hasClass(span, 'cline-no')) uncovered.push(lineNumber);
-    else if (hasClass(span, 'cline-yes')) covered.push(lineNumber);
+    if (hasClass(domUtils, span, 'cline-no')) uncovered.push(lineNumber);
+    else if (hasClass(domUtils, span, 'cline-yes')) covered.push(lineNumber);
   });
 
   return { covered, uncovered };
@@ -123,11 +141,14 @@ const extractLineClassification = (root: Document): LineClassification => {
 const isSourceFile = (relativePath: string): boolean =>
   relativePath.endsWith('.js.html') || relativePath.endsWith('.ts.html');
 
-const parse = (files: ReadonlyMap<string, string>): CoverageSnapshot => {
+const parse = async (
+  files: ReadonlyMap<string, string>
+): Promise<CoverageSnapshot> => {
+  const { DomUtils, parseDocument } = await import('htmlparser2');
   const rootMarkup = files.get('index.html');
   const fileSnapshots: Record<string, FileSnapshot> = Object.create(null);
   const totals = rootMarkup
-    ? extractMetrics(parseDocument(rootMarkup))
+    ? extractMetrics(DomUtils, parseDocument(rootMarkup))
     : Object.create(null);
 
   for (const [relativePath, content] of files) {
@@ -135,11 +156,14 @@ const parse = (files: ReadonlyMap<string, string>): CoverageSnapshot => {
 
     const parsedRoot = parseDocument(content);
 
-    const sourcePath = extractFilePath(parsedRoot);
+    const sourcePath = extractFilePath(DomUtils, parsedRoot);
     if (!sourcePath) continue;
 
-    const metrics = extractMetrics(parsedRoot);
-    const { covered, uncovered } = extractLineClassification(parsedRoot);
+    const metrics = extractMetrics(DomUtils, parsedRoot);
+    const { covered, uncovered } = extractLineClassification(
+      DomUtils,
+      parsedRoot
+    );
 
     fileSnapshots[sourcePath] = {
       ...metrics,
@@ -157,8 +181,12 @@ const parse = (files: ReadonlyMap<string, string>): CoverageSnapshot => {
 
 const formatParsed = coverageSnapshot.formatSnapshot;
 
-const extractFileLines = (fileMarkup: string): LineClassification =>
-  extractLineClassification(parseDocument(fileMarkup));
+const extractFileLines = async (
+  fileMarkup: string
+): Promise<LineClassification> => {
+  const { DomUtils, parseDocument } = await import('htmlparser2');
+  return extractLineClassification(DomUtils, parseDocument(fileMarkup));
+};
 
 export const htmlShared = {
   parse,

@@ -1,4 +1,4 @@
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { copyAssetSet } from '../shared/html/copy-assets.js';
 import {
   HTML_ASSET_FILENAMES,
@@ -12,7 +12,7 @@ const SPA_ASSET_FILENAMES: readonly string[] = [
 ];
 
 const spaAssetsDir = (): string =>
-  fileURLToPath(new URL('../resources/html-spa/', import.meta.url));
+  join(__dirname, '..', 'resources', 'html-spa');
 
 export const copyAssets = (reportsDir: string): void => {
   copyAssetSet(reportsDir, htmlAssetsDir(), HTML_ASSET_FILENAMES);

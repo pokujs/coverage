@@ -63,7 +63,7 @@ const read = (fixtureRoot: string, subdir = ''): Map<string, string> => {
   return accumulator;
 };
 
-const extract = (fixtureRoot: string, subdir = ''): CoverageSnapshot =>
+const extract = (fixtureRoot: string, subdir = ''): Promise<CoverageSnapshot> =>
   htmlShared.parse(raw(fixtureRoot, subdir));
 
 export const html = {

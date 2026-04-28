@@ -4,12 +4,11 @@ import type {
   TestCase,
 } from '../../src/@types/tests.ts';
 import { spawn } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
+import { cwd } from 'node:process';
 import { isWindows, runtimeSpecs } from './runtime.ts';
 
-const fixturesRoot = fileURLToPath(
-  new URL('../__fixtures__/e2e/', import.meta.url)
-);
+const fixturesRoot = join(cwd(), 'test', '__fixtures__', 'e2e');
 
 const baselineEnv: Record<string, string | undefined> = {
   NO_COLOR: '1',
@@ -19,7 +18,7 @@ const baselineEnv: Record<string, string | undefined> = {
 };
 
 const resolveFixtureRoot = (testCase: TestCase): string =>
-  `${fixturesRoot}${testCase.reporter}/${testCase.runtime}/${testCase.name}`;
+  join(fixturesRoot, testCase.reporter, testCase.runtime, testCase.name);
 
 const runBinary = (
   spec: RuntimeSpec,

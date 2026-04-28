@@ -1,3 +1,5 @@
+import type { V8RawDump, V8RawScriptCoverage } from '../../src/@types/tests.ts';
+
 const toPosix = (value: string): string => value.replace(/\\/g, '/');
 
 const normalizeLcov = (content: string, fixtureRoot: string): string => {
@@ -159,33 +161,9 @@ const normalizeJson = (content: string, fixtureRoot: string): string => {
   return JSON.stringify(sortedPayload, null, 2);
 };
 
-type V8Range = {
-  startOffset: number;
-  endOffset: number;
-  count: number | string;
-  isBlockCoverage: boolean;
-};
-
-type V8Function = {
-  functionName: string;
-  ranges: V8Range[];
-  isBlockCoverage: boolean;
-};
-
-type V8ScriptCoverage = {
-  scriptId?: string;
-  url: string;
-  functions: V8Function[];
-};
-
-type V8Dump = {
-  result?: V8ScriptCoverage[];
-  timestamp?: number;
-};
-
 const extractScripts = (
-  parsed: V8Dump | V8ScriptCoverage
-): V8ScriptCoverage[] => {
+  parsed: V8RawDump | V8RawScriptCoverage
+): V8RawScriptCoverage[] => {
   if ('result' in parsed && Array.isArray(parsed.result)) return parsed.result;
   if ('url' in parsed && 'functions' in parsed) return [parsed];
   return [];
@@ -193,8 +171,8 @@ const extractScripts = (
 
 const normalizeV8 = (content: string, fixtureRoot: string): string | null => {
   const parsed = JSON.parse(content.replace(/\r\n/g, '\n')) as
-    | V8Dump
-    | V8ScriptCoverage;
+    | V8RawDump
+    | V8RawScriptCoverage;
   const projectPrefix = `file://${fixtureRoot}/`;
 
   const projectScripts = extractScripts(parsed).filter((scriptCoverage) =>
