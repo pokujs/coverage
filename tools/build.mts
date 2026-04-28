@@ -1,48 +1,40 @@
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { generateDtsBundle } from 'dts-bundle-generator';
 import * as esbuild from 'esbuild';
-import packageJson from '../package.json' with { type: 'json' };
-
-const INLINE_DEPENDENCIES = new Set(['@sveltejs/acorn-typescript']);
-
-const external = [
-  ...Object.keys(packageJson.dependencies ?? Object.create(null)),
-  ...Object.keys(packageJson.peerDependencies ?? Object.create(null)),
-].filter((dependencyName) => !INLINE_DEPENDENCIES.has(dependencyName));
 
 const [dtsBundle] = generateDtsBundle(
   [
     {
       filePath: 'src/index.ts',
       output: { noBanner: true },
-      libraries: { importedLibraries: external },
     },
   ],
   { preferredConfigPath: 'tsconfig.json' }
 );
 
+const buildOptions: esbuild.BuildOptions = {
+  bundle: true,
+  platform: 'node',
+  target: 'node16',
+  logLevel: 'info',
+  treeShaking: true,
+  format: 'cjs',
+};
+
 await rm('lib', { recursive: true, force: true });
 await mkdir('lib', { recursive: true });
 await Promise.all([
   esbuild.build({
+    ...buildOptions,
     entryPoints: ['src/index.ts'],
-    bundle: true,
-    platform: 'node',
-    target: 'node18',
-    external,
-    logLevel: 'info',
-    treeShaking: true,
-    format: 'cjs',
     outfile: 'lib/index.js',
+    minifySyntax: true,
   }),
   esbuild.build({
+    ...buildOptions,
     entryPoints: ['src/runtimes/bun/preload.ts'],
-    bundle: true,
-    platform: 'node',
-    target: 'node18',
-    format: 'esm',
     outfile: 'lib/preload-bun.js',
-    logLevel: 'info',
+    minify: true,
   }),
   writeFile('lib/index.d.ts', dtsBundle, 'utf-8'),
 ]);

@@ -42,12 +42,6 @@
     "update": "pu && npm i && npm update && (npm audit fix || true)",
     "postupdate": "npm run lint:fix"
   },
-  "dependencies": {
-    "acorn": "^8.16.0",
-    "jsonc.min": "^1.1.2",
-    "toml.min": "^1.0.0",
-    "yaml.min": "^1.0.0"
-  },
   "peerDependencies": {
     "poku": "^4.3.0",
     "typescript": "^6.0.3"
@@ -63,18 +57,22 @@
     "@sveltejs/acorn-typescript": "^1.0.9",
     "@types/lcov-parse": "^1.0.2",
     "@types/node": "^25.6.0",
+    "acorn": "^8.16.0",
     "cross-env": "^10.1.0",
     "domhandler": "^6.0.1",
     "dts-bundle-generator": "^9.5.1",
     "esbuild": "^0.28.0",
     "fast-xml-parser": "^5.7.2",
     "htmlparser2": "^12.0.0",
+    "jsonc.min": "^1.1.2",
     "lcov-parse": "^1.0.0",
     "packages-update": "^2.0.0",
     "poku": "^4.3.0",
     "prettier": "^3.8.3",
+    "toml.min": "^1.0.0",
     "tsx": "^4.21.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "yaml.min": "^1.0.0"
   },
   "publishConfig": {
     "access": "public"
