@@ -3,9 +3,18 @@
   "private": false,
   "version": "0.8.1",
   "description": "☔️ The world's first V8 and JSC coverage tool to generate reports for Node.js, Bun, Deno, and TypeScript at the same time.",
-  "type": "commonjs",
+  "type": "module",
   "main": "./lib/index.js",
+  "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js",
+      "require": "./lib/index.cjs",
+      "default": "./lib/index.js"
+    }
+  },
   "bin": {
     "coverage": "./lib/bin/cli.js"
   },
@@ -63,22 +72,18 @@
     "@sveltejs/acorn-typescript": "^1.0.9",
     "@types/lcov-parse": "^1.0.2",
     "@types/node": "^25.6.0",
-    "acorn": "^8.16.0",
     "cross-env": "^10.1.0",
     "domhandler": "^6.0.1",
     "dts-bundle-generator": "^9.5.1",
     "esbuild": "^0.28.0",
     "fast-xml-parser": "^5.7.2",
     "htmlparser2": "^12.0.0",
-    "jsonc.min": "^1.1.2",
     "lcov-parse": "^1.0.0",
     "packages-update": "^2.0.0",
     "poku": "^4.3.0",
     "prettier": "^3.8.3",
-    "toml.min": "^1.0.0",
     "tsx": "^4.21.0",
-    "typescript": "^6.0.3",
-    "yaml.min": "^1.0.0"
+    "typescript": "^6.0.3"
   },
   "publishConfig": {
     "access": "public"
@@ -124,5 +129,11 @@
     "monocart-coverage-reports",
     "monocart",
     "one-double-zero"
-  ]
+  ],
+  "dependencies": {
+    "acorn": "^8.16.0",
+    "jsonc.min": "^1.1.2",
+    "toml.min": "^1.0.0",
+    "yaml.min": "^1.0.0"
+  }
 }

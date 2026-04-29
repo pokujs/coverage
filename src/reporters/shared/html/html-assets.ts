@@ -1,4 +1,5 @@
 import { join } from 'node:path';
+import { moduleDir } from '../../../utils/module-dir.js';
 
 export const HTML_ASSET_FILENAMES: readonly string[] = [
   'base.css',
@@ -11,4 +12,4 @@ export const HTML_ASSET_FILENAMES: readonly string[] = [
 ];
 
 export const htmlAssetsDir = (): string =>
-  join(__dirname, '..', 'resources', 'html');
+  join(moduleDir.from(import.meta.url), '..', 'resources', 'html');

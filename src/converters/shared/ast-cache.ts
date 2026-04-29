@@ -1,5 +1,4 @@
 import type { Options, Program } from 'acorn';
-// @ts-expect-error: ESM-only package
 import { tsPlugin } from '@sveltejs/acorn-typescript';
 import { Parser } from 'acorn';
 
