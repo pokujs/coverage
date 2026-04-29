@@ -24,3 +24,19 @@ if [[ -n "$violations" ]]; then
   printf '%s' "$violations" >&2
   exit 1
 fi
+
+doubleCastHits="$(
+  cd "$repositoryRoot" && find . \
+    \( -path './.git' -o -path './node_modules' -o -path './lib' -o -path './tools/debug' \) -prune -o \
+    -type f \( -name '*.ts' -o -name '*.mts' -o -name '*.cts' \) \
+    ! -name "$(basename "${BASH_SOURCE[0]}")" \
+    -print0 \
+    | xargs -0 grep -nF 'as unknown as' \
+    || true
+)"
+
+if [[ -n "$doubleCastHits" ]]; then
+  echo "Forbidden \"as unknown as\" double-cast found:" >&2
+  printf '%s\n' "$doubleCastHits" >&2
+  exit 1
+fi
