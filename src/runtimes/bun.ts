@@ -4,6 +4,7 @@ import type { CoverageOptions, CoverageState } from '../@types/coverage.js';
 import type { JscInspectorHandle } from '../@types/jsc.js';
 import type { DataListener } from '../@types/runtimes.js';
 import { join } from 'node:path';
+import { moduleDir } from '../utils/module-dir.js';
 import { strings } from '../utils/strings.js';
 import { jscInspector } from './bun/inspector.js';
 import { FLUSH_MARKER } from './bun/marker.js';
@@ -12,7 +13,10 @@ import { lifecycle } from './lifecycle.js';
 const INSPECTOR_URL_PATTERN =
   /ws:\/\/(?:\d{1,3}(?:\.\d{1,3}){3}|\[[0-9a-fA-F:]+\]|[A-Za-z0-9.-]+):\d{1,5}\/[A-Za-z0-9._-]+/;
 
-const PRELOAD_SCRIPT_PATH = join(__dirname, 'preload-bun.js');
+const PRELOAD_SCRIPT_PATH = join(
+  moduleDir.from(import.meta.url),
+  'preload-bun.js'
+);
 
 const makeLineFilter = (
   file: string,

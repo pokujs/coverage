@@ -19,8 +19,15 @@ const buildOptions: BuildOptions = {
   target: 'node16',
   logLevel: 'info',
   treeShaking: true,
-  format: 'cjs',
-  external: ['jsonc.min', 'poku', 'poku/plugin', 'toml.min', 'yaml.min'],
+  minifySyntax: true,
+  external: [
+    'acorn',
+    'jsonc.min',
+    'poku',
+    'poku/plugin',
+    'toml.min',
+    'yaml.min',
+  ],
 };
 
 await rm('lib', { recursive: true, force: true });
@@ -28,22 +35,33 @@ await mkdir('lib', { recursive: true });
 await Promise.all([
   build({
     ...buildOptions,
+    format: 'esm',
     entryPoints: ['src/index.ts'],
     outfile: 'lib/index.js',
-    minifySyntax: true,
   }),
   build({
     ...buildOptions,
+    format: 'cjs',
+    entryPoints: ['src/index.ts'],
+    outfile: 'lib/index.cjs',
+    banner: {
+      js: "const __importMetaUrl = require('node:url').pathToFileURL(__filename).href;",
+    },
+    define: { 'import.meta.url': '__importMetaUrl' },
+  }),
+  build({
+    ...buildOptions,
+    format: 'esm',
     entryPoints: ['src/runtimes/bun/preload.ts'],
     outfile: 'lib/preload-bun.js',
     minify: true,
   }),
   build({
     ...buildOptions,
+    format: 'esm',
     entryPoints: ['src/bin/cli.ts'],
     outfile: 'lib/bin/cli.js',
     banner: { js: '#!/usr/bin/env node' },
-    minifySyntax: true,
     external: ['../index.js'],
   }),
   writeFile('lib/index.d.ts', dtsBundle, 'utf-8'),

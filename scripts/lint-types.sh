@@ -27,7 +27,7 @@ fi
 
 doubleCastHits="$(
   cd "$repositoryRoot" && find . \
-    \( -path './.git' -o -path './node_modules' -o -path './lib' -o -path './tools/debug' \) -prune -o \
+    \( -path './.git' -o -name 'node_modules' -o -path './lib' -o -path './tools/debug' \) -prune -o \
     -type f \( -name '*.ts' -o -name '*.mts' -o -name '*.cts' \) \
     ! -name "$(basename "${BASH_SOURCE[0]}")" \
     -print0 \

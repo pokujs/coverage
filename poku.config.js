@@ -1,18 +1,19 @@
 // @ts-check
 
-'use strict';
+import { cp, readdir, rm } from 'node:fs/promises';
+import { homedir, platform } from 'node:os';
+import { basename, dirname, join } from 'node:path';
+import { env } from 'node:process';
+import { fileURLToPath } from 'node:url';
+import { defineConfig } from 'poku';
+import { coverage } from './lib/index.js';
 
-const { cp, readdir, rm } = require('node:fs/promises');
-const { homedir, platform } = require('node:os');
-const { basename, join } = require('node:path');
-const { env } = require('node:process');
-const { defineConfig } = require('poku');
-const { coverage } = require('./lib/index.js');
+const rootDir = dirname(fileURLToPath(import.meta.url));
 
-const fixturesRoot = join(__dirname, 'test', '__fixtures__', 'e2e');
-const snapshotsRoot = join(__dirname, 'test', '__snapshots__', 'e2e');
+const fixturesRoot = join(rootDir, 'test', '__fixtures__', 'e2e');
+const snapshotsRoot = join(rootDir, 'test', '__snapshots__', 'e2e');
 const reportersResourcesRoot = join(
-  __dirname,
+  rootDir,
   'test',
   '__resources__',
   'e2e',
@@ -117,7 +118,7 @@ const clearPlatformSnapshots = async (directory = snapshotsRoot) => {
   );
 };
 
-module.exports = defineConfig({
+export default defineConfig({
   include: ['test/e2e'],
   reporter: 'compact',
   timeout: 30000,
