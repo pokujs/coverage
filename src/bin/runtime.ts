@@ -2,8 +2,11 @@ import type { SpawnExitOutcome, SpawnRuntimeInputs } from '../@types/cli.js';
 import type { Runtime } from '../@types/reporters.js';
 import { spawn } from 'node:child_process';
 import process from 'node:process';
+import { bun, deno, node } from '../core.js';
 
 const FORWARDED_SIGNALS: NodeJS.Signals[] = ['SIGINT', 'SIGTERM', 'SIGHUP'];
+
+const runtimes = { node, deno, bun } as const;
 
 const get = (command: readonly string[]): Runtime => {
   const firstToken = command[0] ?? '';
@@ -22,9 +25,8 @@ const get = (command: readonly string[]): Runtime => {
 const run = (inputs: SpawnRuntimeInputs): Promise<SpawnExitOutcome> =>
   new Promise((resolveOutcome) => {
     const userCommand = inputs.command.slice();
-    const finalCommand = inputs.plugin.runner
-      ? inputs.plugin.runner(userCommand, '')
-      : userCommand;
+    const runtimeAdapter = runtimes[inputs.runtime];
+    const finalCommand = runtimeAdapter.runner(userCommand, '', inputs.state);
 
     if (finalCommand.length === 0) {
       process.stderr.write(
@@ -35,7 +37,7 @@ const run = (inputs: SpawnRuntimeInputs): Promise<SpawnExitOutcome> =>
     }
 
     const [binary, ...args] = finalCommand;
-    const needsPipedStderr = inputs.plugin.onTestProcess !== undefined;
+    const needsPipedStderr = runtimeAdapter.onTestProcess !== undefined;
     const child = spawn(binary, args, {
       stdio: needsPipedStderr ? ['inherit', 'inherit', 'pipe'] : 'inherit',
       shell: false,
@@ -45,7 +47,7 @@ const run = (inputs: SpawnRuntimeInputs): Promise<SpawnExitOutcome> =>
       child.stderr.pipe(process.stderr);
     }
 
-    inputs.plugin.onTestProcess?.(child, '');
+    runtimeAdapter.onTestProcess?.(child, '', inputs.state);
 
     const forwardSignal = (signal: NodeJS.Signals): void => {
       if (!child.killed) child.kill(signal);

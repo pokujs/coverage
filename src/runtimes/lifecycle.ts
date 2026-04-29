@@ -1,6 +1,9 @@
-import type { PluginContext } from 'poku/plugins';
 import type { DiscoveredBranch } from '../@types/branch-discovery.js';
-import type { CoverageOptions, CoverageState } from '../@types/coverage.js';
+import type {
+  CoverageContext,
+  CoverageOptions,
+  CoverageState,
+} from '../@types/coverage.js';
 import type { CoverageMap } from '../@types/istanbul.js';
 import type { ReporterContext, Runtime } from '../@types/reporters.js';
 import { mkdirSync, mkdtempSync, rmSync } from 'node:fs';
@@ -44,7 +47,7 @@ const setup = (
 };
 
 const teardown = (
-  context: PluginContext,
+  context: CoverageContext,
   options: CoverageOptions,
   state: CoverageState,
   runtime: Runtime,

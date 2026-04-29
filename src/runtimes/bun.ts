@@ -1,6 +1,9 @@
 import type { ChildProcess } from 'node:child_process';
-import type { PluginContext } from 'poku/plugins';
-import type { CoverageOptions, CoverageState } from '../@types/coverage.js';
+import type {
+  CoverageContext,
+  CoverageOptions,
+  CoverageState,
+} from '../@types/coverage.js';
 import type { JscInspectorHandle } from '../@types/jsc.js';
 import type { DataListener } from '../@types/runtimes.js';
 import { join } from 'node:path';
@@ -138,17 +141,13 @@ const runner = (
 };
 
 export const bun = {
-  setup: (
-    _context: PluginContext,
-    options: CoverageOptions,
-    state: CoverageState
-  ): void => {
+  setup: (options: CoverageOptions, state: CoverageState): void => {
     lifecycle.setup(options, state, 'bun');
   },
   runner,
   onTestProcess,
   teardown: (
-    context: PluginContext,
+    context: CoverageContext,
     options: CoverageOptions,
     state: CoverageState
   ): void => lifecycle.teardown(context, options, state, 'bun'),
