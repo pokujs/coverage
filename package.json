@@ -6,6 +6,9 @@
   "type": "commonjs",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
+  "bin": {
+    "coverage": "./lib/bin/cli.js"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -47,6 +50,9 @@
     "typescript": "^6.0.3"
   },
   "peerDependenciesMeta": {
+    "poku": {
+      "optional": true
+    },
     "typescript": {
       "optional": true
     }
