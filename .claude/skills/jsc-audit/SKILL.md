@@ -35,7 +35,7 @@ If `<project-root>` is missing, **stop immediately** and reply:
 >
 > Please re-invoke with the project path, e.g.:
 >
-> `/jsc-audit ts-lab` (uses `ts-lab/coverage` by default) or `/jsc-audit poku poku-coverage` (custom dir).
+> `/jsc-audit playground/ts-lab` (uses `playground/ts-lab/coverage` by default) or `/jsc-audit poku poku-coverage` (custom dir).
 
 Do not guess the project, do not fall back to a previous session's project. Wait for the user to re-invoke with the project path.
 
