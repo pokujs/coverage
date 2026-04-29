@@ -1,6 +1,7 @@
-import { mkdir, rm, writeFile } from 'node:fs/promises';
+import type { BuildOptions } from 'esbuild';
+import { chmod, mkdir, rm, writeFile } from 'node:fs/promises';
 import { generateDtsBundle } from 'dts-bundle-generator';
-import * as esbuild from 'esbuild';
+import { build } from 'esbuild';
 
 const [dtsBundle] = generateDtsBundle(
   [
@@ -12,7 +13,7 @@ const [dtsBundle] = generateDtsBundle(
   { preferredConfigPath: 'tsconfig.json' }
 );
 
-const buildOptions: esbuild.BuildOptions = {
+const buildOptions: BuildOptions = {
   bundle: true,
   platform: 'node',
   target: 'node16',
@@ -24,17 +25,27 @@ const buildOptions: esbuild.BuildOptions = {
 await rm('lib', { recursive: true, force: true });
 await mkdir('lib', { recursive: true });
 await Promise.all([
-  esbuild.build({
+  build({
     ...buildOptions,
     entryPoints: ['src/index.ts'],
     outfile: 'lib/index.js',
     minifySyntax: true,
   }),
-  esbuild.build({
+  build({
     ...buildOptions,
     entryPoints: ['src/runtimes/bun/preload.ts'],
     outfile: 'lib/preload-bun.js',
     minify: true,
   }),
+  build({
+    ...buildOptions,
+    entryPoints: ['src/bin/cli.ts'],
+    outfile: 'lib/bin/cli.js',
+    banner: { js: '#!/usr/bin/env node' },
+    minifySyntax: true,
+    external: ['../index.js'],
+  }),
   writeFile('lib/index.d.ts', dtsBundle, 'utf-8'),
 ]);
+
+await chmod('lib/bin/cli.js', 0o755);

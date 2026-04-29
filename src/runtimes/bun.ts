@@ -121,16 +121,16 @@ const runner = (
   if (!state.enabled) return command;
 
   const [binary, ...rest] = command;
-  const passthrough = rest.filter((arg) => arg !== file);
   const resolvedBinary = binary ?? 'bun';
-
-  return [
-    resolvedBinary,
+  const flags = [
     '--inspect-wait=127.0.0.1:0',
     `--preload=${PRELOAD_SCRIPT_PATH}`,
-    ...passthrough,
-    file,
   ];
+
+  const withoutFile = rest.filter((arg) => arg !== file);
+  const tail = file === '' ? withoutFile : [...withoutFile, file];
+
+  return [resolvedBinary, ...flags, ...tail];
 };
 
 export const bun = {

@@ -14,26 +14,7 @@ import { fileFilter } from '../file-filter.js';
 import { reporters } from '../reporters/index.js';
 import { fileCoverage } from '../reporters/shared/file-coverage.js';
 import { watermarks } from '../watermarks.js';
-
-const ensureSourceMaps = (state: CoverageState): void => {
-  const ENABLE_SOURCE_MAPS_FLAG = '--enable-source-maps';
-  const existingNodeOptions = process.env.NODE_OPTIONS;
-
-  state.originalNodeOptions = existingNodeOptions;
-  state.nodeOptionsOverridden = true;
-
-  if (existingNodeOptions === undefined || existingNodeOptions.length === 0) {
-    process.env.NODE_OPTIONS = ENABLE_SOURCE_MAPS_FLAG;
-    return;
-  }
-
-  if (existingNodeOptions.includes(ENABLE_SOURCE_MAPS_FLAG)) {
-    state.nodeOptionsOverridden = false;
-    return;
-  }
-
-  process.env.NODE_OPTIONS = `${existingNodeOptions} ${ENABLE_SOURCE_MAPS_FLAG}`;
-};
+import { sourceMaps } from './source-maps.js';
 
 const setup = (
   options: CoverageOptions,
@@ -57,7 +38,7 @@ const setup = (
     process.env[envVar] = state.tempDir;
   }
 
-  if (runtime === 'node') ensureSourceMaps(state);
+  if (runtime === 'node') sourceMaps.enable(state);
 
   state.enabled = true;
 };
@@ -76,13 +57,7 @@ const teardown = (
     else process.env[envVar] = state.originalEnv;
   }
 
-  if (state.nodeOptionsOverridden) {
-    if (state.originalNodeOptions === undefined) {
-      delete process.env.NODE_OPTIONS;
-    } else {
-      process.env.NODE_OPTIONS = state.originalNodeOptions;
-    }
-  }
+  if (runtime === 'node') sourceMaps.restore(state);
 
   try {
     const reporterList = reporters.normalize(options.reporter, runtime);
