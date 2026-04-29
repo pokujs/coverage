@@ -20,6 +20,7 @@ const buildOptions: BuildOptions = {
   logLevel: 'info',
   treeShaking: true,
   format: 'cjs',
+  external: ['jsonc.min', 'poku', 'poku/plugin', 'toml.min', 'yaml.min'],
 };
 
 await rm('lib', { recursive: true, force: true });
