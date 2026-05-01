@@ -1,0 +1,12 @@
+{
+  "type": "module",
+  "scripts": {
+    "test:bun": "bun --bun poku",
+    "test:deno": "deno run -A npm:poku",
+    "test:node": "poku"
+  },
+  "devDependencies": {
+    "poku": "^4.3.0",
+    "tsx": "^4.21.0"
+  }
+}

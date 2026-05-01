@@ -1,0 +1,6 @@
+{
+  "type": "module",
+  "scripts": {
+    "test": "bun ../../lib/bin/cli.js bun test"
+  }
+}

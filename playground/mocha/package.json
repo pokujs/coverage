@@ -1,0 +1,9 @@
+{
+  "type": "module",
+  "scripts": {
+    "test": "node ../../lib/bin/cli.js mocha"
+  },
+  "devDependencies": {
+    "mocha": "^11.7.5"
+  }
+}

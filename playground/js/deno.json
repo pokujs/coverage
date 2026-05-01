@@ -1,0 +1,4 @@
+{
+  "lock": false,
+  "unstable": ["sloppy-imports", "detect-cjs"]
+}
