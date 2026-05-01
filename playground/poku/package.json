@@ -1,0 +1,10 @@
+{
+  "type": "module",
+  "scripts": {
+    "test": "node ../../lib/bin/cli.js poku"
+  },
+  "devDependencies": {
+    "poku": "^4.3.0",
+    "tsx": "^4.21.0"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "type": "module",
+  "scripts": {
+    "test": "NODE_OPTIONS=--experimental-vm-modules node ../../lib/bin/cli.js jest"
+  },
+  "devDependencies": {
+    "jest": "^30.3.0",
+    "ts-jest": "^29.4.9"
+  }
+}

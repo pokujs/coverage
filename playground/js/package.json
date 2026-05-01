@@ -1,0 +1,8 @@
+{
+  "type": "module",
+  "scripts": {
+    "test:bun": "bun --bun poku",
+    "test:deno": "deno run -A npm:poku",
+    "test:node": "poku"
+  }
+}

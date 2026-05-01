@@ -105,6 +105,12 @@ export default defineConfig({
 
 ---
 
+### Examples
+
+[**Poku**](./playground/ts/) • [**Node.js**](./playground/node/) • [**Deno**](./playground/deno/) • [**Vitest**](./playground/vitest/) • [**Mocha**](./playground/mocha/) • [**AVA**](./playground/ava/)
+
+---
+
 ## Options
 
 | Option                                       | Type                           | Default                                                                                                             | Node.js | Deno | Bun |

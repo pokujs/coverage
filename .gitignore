@@ -2,15 +2,17 @@
 .env
 .nycrc.json
 .npmrc
+/playground/**/package-lock.json
 
 /lib/
 /coverage/
+/playground/**/coverage/
+/playground/**/node_modules/
 /test/__fixtures__/.temp/
 /test/__fixtures__/e2e/**/coverage/
 /test/__fixtures__/e2e/**/src/
 /test/__fixtures__/e2e/**/test/
 
 node_modules/
-playground/
 /temp/
 /tools/debug
