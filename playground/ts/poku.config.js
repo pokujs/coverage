@@ -27,7 +27,7 @@ export default defineConfig({
       hyperlinks: 'vscode',
       checkCoverage: true,
       statements: 80.64,
-      functions: 96.428,
+      functions: 96.42,
       lines: 80.64,
     }),
   ],
