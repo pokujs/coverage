@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.9.0](https://github.com/pokujs/coverage/compare/v0.8.1...v0.9.0) (2026-05-01)
+
+
+### Features
+
+* support CLI usage (without Poku) ([#36](https://github.com/pokujs/coverage/issues/36)) ([f85865c](https://github.com/pokujs/coverage/commit/f85865cfc5a1397fc1bb2b38d602ea7d0c2a1ca6))
+* support Vitest ([#40](https://github.com/pokujs/coverage/issues/40)) ([faa00c5](https://github.com/pokujs/coverage/commit/faa00c5fe9b779812f03266f240cc4e9baaae449))
+
 ## [0.8.1](https://github.com/pokujs/coverage/compare/v0.8.0...v0.8.1) (2026-04-28)
 
 
