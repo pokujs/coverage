@@ -10,8 +10,8 @@ import type {
   Watermarks,
 } from '../../../@types/watermarks.js';
 import { html } from '../../../utils/html.js';
-import { watermarks } from '../../../watermarks.js';
 import { metrics } from '../metrics.js';
+import { watermarks } from '../watermarks.js';
 import { relativeHref } from './link-mapper.js';
 
 export const metricReportClass = (

@@ -7,7 +7,7 @@ import type {
 import type { SourceMapDocument } from '../../@types/source-map.js';
 import type { FileAggregation } from '../../@types/v8.js';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { fileFilter } from '../../file-filter.js';
+import { fileFilter } from '../../utils/file-filter.js';
 import { offsets } from '../../utils/offsets.js';
 import { paths } from '../../utils/paths.js';
 import { sourceLines } from '../../utils/source-lines.js';

@@ -2,22 +2,22 @@ import type {
   CoverageFailure,
   CoverageMetric,
   CoverageThresholds,
-} from './@types/check-coverage.js';
-import type { ReporterContext } from './@types/reporters.js';
-import type { Metric } from './@types/text.js';
-import type { CoverageModel } from './@types/tree.js';
+} from '../../@types/check-coverage.js';
+import type { ReporterContext } from '../../@types/reporters.js';
+import type { Metric } from '../../@types/text.js';
+import type { CoverageModel } from '../../@types/tree.js';
 import type {
   FileTypeCoverage,
   TypeCoverageReport,
-} from './@types/type-coverage.js';
-import type { WatermarkMetric } from './@types/watermarks.js';
+} from '../../@types/type-coverage.js';
+import type { WatermarkMetric } from '../../@types/watermarks.js';
 import { relative } from 'node:path';
 import process from 'node:process';
-import { fileCoverage } from './reporters/shared/file-coverage.js';
-import { lcov } from './reporters/shared/lcov/index.js';
-import { metrics } from './reporters/shared/metrics.js';
-import { terminal } from './utils/terminal.js';
-import { watermarks } from './watermarks.js';
+import { fileCoverage } from '../../reporters/shared/file-coverage.js';
+import { lcov } from '../../reporters/shared/lcov/index.js';
+import { metrics } from '../../reporters/shared/metrics.js';
+import { watermarks } from '../../reporters/shared/watermarks.js';
+import { terminal } from '../../utils/terminal.js';
 
 const METRIC_ORDER: readonly CoverageMetric[] = [
   'statements',

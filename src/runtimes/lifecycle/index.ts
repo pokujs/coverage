@@ -1,23 +1,23 @@
-import type { DiscoveredBranch } from '../@types/branch-discovery.js';
+import type { DiscoveredBranch } from '../../@types/branch-discovery.js';
 import type {
   CoverageContext,
   CoverageOptions,
   CoverageState,
-} from '../@types/coverage.js';
-import type { CoverageMap } from '../@types/istanbul.js';
-import type { ReporterContext, Runtime } from '../@types/reporters.js';
+} from '../../@types/coverage.js';
+import type { CoverageMap } from '../../@types/istanbul.js';
+import type { ReporterContext, Runtime } from '../../@types/reporters.js';
 import { mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import process from 'node:process';
-import { checkCoverage } from '../check-coverage.js';
-import { converters } from '../converters/index.js';
-import { discoveryMerge } from '../converters/shared/discovery-merge.js';
-import { fileFilter } from '../file-filter.js';
-import { reporters } from '../reporters/index.js';
-import { fileCoverage } from '../reporters/shared/file-coverage.js';
-import { watermarks } from '../watermarks.js';
-import { sourceMaps } from './source-maps.js';
+import { converters } from '../../converters/index.js';
+import { discoveryMerge } from '../../converters/shared/discovery-merge.js';
+import { reporters } from '../../reporters/index.js';
+import { fileCoverage } from '../../reporters/shared/file-coverage.js';
+import { watermarks } from '../../reporters/shared/watermarks.js';
+import { fileFilter } from '../../utils/file-filter.js';
+import { sourceMaps } from '../source-maps.js';
+import { checkCoverage } from './check-coverage.js';
 
 const setup = (
   options: CoverageOptions,

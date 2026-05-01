@@ -7,10 +7,10 @@ import type { Report, Runtime } from '../../@types/reporters.js';
 import type { Metric } from '../../@types/text.js';
 import type { WatermarkMetric } from '../../@types/watermarks.js';
 import { terminal } from '../../utils/terminal.js';
-import { watermarks } from '../../watermarks.js';
 import { fileCoverage } from '../shared/file-coverage.js';
 import { lcov } from '../shared/lcov/index.js';
 import { metrics } from '../shared/metrics.js';
+import { watermarks } from '../shared/watermarks.js';
 
 const KEY_WIDTH = 12;
 const HEADER =

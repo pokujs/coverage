@@ -3,7 +3,7 @@ import type {
   CoverageOptions,
   CoverageState,
 } from '../@types/coverage.js';
-import { lifecycle } from './lifecycle.js';
+import { lifecycle } from './lifecycle/index.js';
 
 const ENV_VAR = 'DENO_COVERAGE_DIR';
 

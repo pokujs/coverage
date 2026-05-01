@@ -1,9 +1,9 @@
 import type {
   FileFilterOptions,
   ResolvedFileFilter,
-} from './@types/file-filter.js';
-import { globs } from './utils/globs.js';
-import { paths } from './utils/paths.js';
+} from '../@types/file-filter.js';
+import { globs } from './globs.js';
+import { paths } from './paths.js';
 
 /*
  * Extends exclude list adapted from @istanbuljs/schema.

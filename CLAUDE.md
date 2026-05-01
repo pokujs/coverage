@@ -6,9 +6,7 @@ The first code coverage package that targets Node.js (V8), Bun (JSC), and Deno (
 >
 > - When an implementation goes wrong, avoid fixing progressively on top of errors, eliminate the error and implement the right approach in a clean and concise way.
 > - This document is living. If you complete a plan that changes the project structure (e.g., extract a shared module, introduce a new group/pattern), update the rules and examples below in the same commit. Do not let this document drift from repository reality.
->   - **CLAUDE.md edits require explicit per-edit authorization via the AskUserQuestion tool.** "Plan approval" or "Edit automatically" does not count. Prose questions like "confirm?" or "ok?" do not count.
->   - Before writing, the agent MUST render the exact final text as plain prose (no code fence, no styled markdown, no links) so it shows verbatim inside the AskUserQuestion options. The user must be able to read every character of the proposed text before approving.
->   - Only proceed after the user clicks "yes" on that specific AskUserQuestion. The text shown must match byte-for-byte what gets written to the file. Every time, including small edits.
+>   - **CLAUDE.md edits require explicit per-edit authorization.** "Plan approval", "Edit automatically" does not count.
 > - Do not write to "/tmp", instead use the "tools/debug" directory which is not tracked by Git.
 
 ---
@@ -64,7 +62,7 @@ The first code coverage package that targets Node.js (V8), Bun (JSC), and Deno (
 - **Put generic utilities under [src/utils/](src/utils/), never in domain files.** If a function does not depend on the scope it was written in, it does not belong there. Categorize by nature (`strings.ts`, `paths.ts`), never by consumer, never a `misc.ts`.
 - **Vendored code carries an attribution header.** Deliberate cuts from upstream are documented at the top of the vendored file, not here.
 - **Extract duplicated logic between sibling modules to a shared module in the same layer.** If N files in the same folder share the same skeleton with small parameterizable differences, extract the skeleton. The `shared/` pattern applies equally to `src/` and to test helpers.
-  - [src/runtimes/lifecycle.ts](src/runtimes/lifecycle.ts) for runtime setup and teardown.
+  - `src/runtimes/lifecycle/` for runtime setup and teardown.
   - `shared/` subfolders under [src/reporters/](src/reporters/), [src/converters/](src/converters/), and [test/**utils**/readers/](test/__utils__/readers/) for cross-consumer helpers.
   - AST primitives live in [src/converters/shared/](src/converters/shared/).
 - **Promote on second consumer. Never duplicate. Never import from a sibling.** The moment a helper in `reporters/text/` is needed by `reporters/html/`, it moves to `reporters/shared/` in the same commit. A sibling reporter (or converter) reaching into another's internals is a bug to fix, not a shortcut to use.

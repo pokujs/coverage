@@ -5,9 +5,9 @@ import type { ReporterContext } from '../../@types/reporters.js';
 import type { Metric } from '../../@types/text.js';
 import type { CoverageModel } from '../../@types/tree.js';
 import { readFileSync } from 'node:fs';
-import { allFiles } from '../../all-files.js';
 import { ignoreDirectives } from '../../converters/shared/ignore-directives.js';
-import { fileFilter } from '../../file-filter.js';
+import { fileFilter } from '../../utils/file-filter.js';
+import { allFiles } from './all-files.js';
 
 const filterCoverageMap = (
   coverageMap: CoverageMap,
