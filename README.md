@@ -18,7 +18,7 @@ Enjoying **Poku**? [Give him a star to show your support](https://github.com/wel
 
 ---
 
-☔️ **@pokujs/coverage** is a **Poku** plugin that unifies coverage collection across **Node.js**, **Deno**, and **Bun**.
+☔️ **@pokujs/coverage** unifies coverage collection across **Node.js**, **Deno**, and **Bun**.
 
 > [!TIP]
 >

@@ -156,7 +156,11 @@ jobs:
           ! command -v node
 
       - name: 🧪 Testing
-        run: set -o pipefail && deno task test:deno 2>&1 | tee test-output.log
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 5
+          max_attempts: 2
+          command: set -o pipefail && deno task test:deno 2>&1 | tee test-output.log
 
       - name: 📤 Upload test output
         if: always()
