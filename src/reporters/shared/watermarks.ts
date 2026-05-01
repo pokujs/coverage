@@ -1,9 +1,9 @@
-import type { ColorName } from './@types/terminal.js';
+import type { ColorName } from '../../@types/terminal.js';
 import type {
   WatermarkLevel,
   WatermarkMetric,
   Watermarks,
-} from './@types/watermarks.js';
+} from '../../@types/watermarks.js';
 
 const DEFAULT_WATERMARKS: Watermarks = {
   statements: [50, 80],

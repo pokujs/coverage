@@ -10,13 +10,13 @@ import type {
   WatermarkMetric,
   Watermarks,
 } from '../../@types/watermarks.js';
-import { watermarks } from '../../watermarks.js';
 import {
   metricsForFile,
   metricsForSubtree,
 } from '../shared/html/row-metrics.js';
 import { metrics } from '../shared/metrics.js';
 import { skip } from '../shared/skip.js';
+import { watermarks } from '../shared/watermarks.js';
 
 const round2 = (value: number): number => Math.round(value * 100) / 100;
 

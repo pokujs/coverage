@@ -1,4 +1,4 @@
-import type { CoverageState } from './@types/coverage.js';
+import type { CoverageState } from '../../@types/coverage.js';
 
 const create = (): CoverageState => ({
   enabled: false,

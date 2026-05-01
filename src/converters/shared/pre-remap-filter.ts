@@ -3,7 +3,7 @@ import type {
   ResolvedScriptSource,
   V8ScriptCoverage,
 } from '../../@types/v8.js';
-import { fileFilter } from '../../file-filter.js';
+import { fileFilter } from '../../utils/file-filter.js';
 import { v8Discovery } from './v8-discovery.js';
 
 const passes = (

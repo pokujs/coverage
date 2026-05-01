@@ -1,12 +1,12 @@
-import type { CoverageMap, FileCoverage } from './@types/istanbul.js';
-import type { ReporterContext, Runtime } from './@types/reporters.js';
-import type { SourceContents } from './@types/source-discovery.js';
+import type { CoverageMap, FileCoverage } from '../../@types/istanbul.js';
+import type { ReporterContext, Runtime } from '../../@types/reporters.js';
+import type { SourceContents } from '../../@types/source-discovery.js';
 import { readdirSync, readFileSync } from 'node:fs';
 import { isAbsolute, join, resolve } from 'node:path';
-import { nonExecutableLines } from './converters/shared/non-executable-lines.js';
-import { fileFilter } from './file-filter.js';
-import { paths } from './utils/paths.js';
-import { sourceLines as sourceLinesUtil } from './utils/source-lines.js';
+import { nonExecutableLines } from '../../converters/shared/non-executable-lines.js';
+import { fileFilter } from '../../utils/file-filter.js';
+import { paths } from '../../utils/paths.js';
+import { sourceLines as sourceLinesUtil } from '../../utils/source-lines.js';
 
 const DEFAULT_SOURCE_EXTENSIONS: readonly string[] = [
   '.js',

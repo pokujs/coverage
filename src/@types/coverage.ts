@@ -1,8 +1,13 @@
 import type { CoverageThresholds } from './check-coverage.js';
-import type { Reporter } from './reporters.js';
+import type { Reporter, Runtime } from './reporters.js';
 import type { IDE } from './terminal.js';
 import type { TypesOptions } from './type-coverage.js';
 import type { Watermarks } from './watermarks.js';
+
+export type CoverageContext = {
+  cwd: string;
+  runtime: Runtime;
+};
 
 export type CoverageState = {
   enabled: boolean;

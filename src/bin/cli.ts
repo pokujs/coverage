@@ -1,8 +1,9 @@
 import type { SpawnExitOutcome } from '../@types/cli.js';
 import process from 'node:process';
-import { coverage } from '../index.js';
-import { pluginContextMock } from './plugin-context-mock.js';
+import { bun, config, deno, node, state } from '../core.js';
 import { runtime } from './runtime.js';
+
+const runtimes = { node, deno, bun } as const;
 
 const run = async (command: readonly string[]): Promise<void> => {
   if (command.length === 0) {
@@ -11,29 +12,35 @@ const run = async (command: readonly string[]): Promise<void> => {
     return;
   }
 
-  let exitOutcome: SpawnExitOutcome = {
-    code: 0,
-    signal: null,
-  };
-
   const cwd = process.cwd();
   const detectedRuntime = runtime.get(command);
-  const plugin = coverage();
-  const context = pluginContextMock.create({
-    runtime: detectedRuntime,
-    cwd,
-  });
 
-  await plugin.setup?.(context);
+  const cliConfig = process.argv
+    .find((argument) => argument.startsWith('--coverageConfig'))
+    ?.split('=')[1];
+  const options = config.load(cwd, cliConfig);
+
+  const coverageState = state.create();
+  coverageState.cwd = cwd;
+
+  runtimes[detectedRuntime].setup(options, coverageState);
+
+  let exitOutcome: SpawnExitOutcome = { code: 0, signal: null };
 
   try {
     exitOutcome = await runtime.run({
       runtime: detectedRuntime,
       command,
-      plugin,
+      cwd,
+      options,
+      state: coverageState,
     });
   } finally {
-    await plugin.teardown?.(context);
+    runtimes[detectedRuntime].teardown(
+      { cwd, runtime: detectedRuntime },
+      options,
+      coverageState
+    );
   }
 
   if (exitOutcome.signal) {

@@ -1,6 +1,6 @@
 import type { ReporterContext } from '../../../../@types/reporters.js';
-import { allFiles } from '../../../../all-files.js';
 import { lcovSerialize } from '../../../../converters/shared/lcov-serialize.js';
+import { allFiles } from '../../all-files.js';
 import { filter } from '../filter.js';
 
 const produce = (context: ReporterContext): string => {

@@ -1,6 +1,6 @@
 import type { Report } from '../../@types/reporters.js';
-import { allFiles } from '../../all-files.js';
 import { ide } from '../../utils/ide.js';
+import { allFiles } from '../shared/all-files.js';
 import { analyses } from './analyses.js';
 import { typesCoverage } from './coverage.js';
 import { typesDiscovery } from './discovery.js';

@@ -10,12 +10,12 @@ import type {
 import type { CoverageModel } from '../../@types/tree.js';
 import type { Watermarks } from '../../@types/watermarks.js';
 import { terminal } from '../../utils/terminal.js';
-import { watermarks } from '../../watermarks.js';
 import { metrics } from '../shared/metrics.js';
 import { nameCell } from '../shared/name-cell.js';
 import { ranges } from '../shared/ranges.js';
 import { skip } from '../shared/skip.js';
 import { tableRenderer } from '../shared/table.js';
+import { watermarks } from '../shared/watermarks.js';
 import { buildTree, walkTree } from './tree.js';
 
 const formatPercentageValue = (value: number | null): string =>

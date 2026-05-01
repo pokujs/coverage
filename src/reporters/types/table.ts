@@ -7,11 +7,11 @@ import type {
 } from '../../@types/type-coverage.js';
 import type { Watermarks } from '../../@types/watermarks.js';
 import { terminal } from '../../utils/terminal.js';
-import { watermarks } from '../../watermarks.js';
 import { nameCell } from '../shared/name-cell.js';
 import { pathTree } from '../shared/path-tree.js';
 import { ranges } from '../shared/ranges.js';
 import { tableRenderer } from '../shared/table.js';
+import { watermarks } from '../shared/watermarks.js';
 
 const COLUMNS: readonly Column[] = [
   { header: 'Type Files', align: 'left' },

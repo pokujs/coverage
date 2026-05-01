@@ -1,6 +1,6 @@
 import type { ResolvedFileFilter } from '../../../@types/file-filter.js';
 import { isAbsolute, resolve } from 'node:path';
-import { fileFilter } from '../../../file-filter.js';
+import { fileFilter } from '../../../utils/file-filter.js';
 import { paths } from '../../../utils/paths.js';
 
 export const filter = (

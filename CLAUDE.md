@@ -6,7 +6,7 @@ The first code coverage package that targets Node.js (V8), Bun (JSC), and Deno (
 >
 > - When an implementation goes wrong, avoid fixing progressively on top of errors, eliminate the error and implement the right approach in a clean and concise way.
 > - This document is living. If you complete a plan that changes the project structure (e.g., extract a shared module, introduce a new group/pattern), update the rules and examples below in the same commit. Do not let this document drift from repository reality.
->   - Always ask before changing this document.
+>   - **CLAUDE.md edits require explicit per-edit authorization.** "Plan approval", "Edit automatically" does not count.
 > - Do not write to "/tmp", instead use the "tools/debug" directory which is not tracked by Git.
 
 ---
@@ -62,14 +62,15 @@ The first code coverage package that targets Node.js (V8), Bun (JSC), and Deno (
 - **Put generic utilities under [src/utils/](src/utils/), never in domain files.** If a function does not depend on the scope it was written in, it does not belong there. Categorize by nature (`strings.ts`, `paths.ts`), never by consumer, never a `misc.ts`.
 - **Vendored code carries an attribution header.** Deliberate cuts from upstream are documented at the top of the vendored file, not here.
 - **Extract duplicated logic between sibling modules to a shared module in the same layer.** If N files in the same folder share the same skeleton with small parameterizable differences, extract the skeleton. The `shared/` pattern applies equally to `src/` and to test helpers.
-  - [src/runtimes/lifecycle.ts](src/runtimes/lifecycle.ts) for runtime setup and teardown.
+  - `src/runtimes/lifecycle/` for runtime setup and teardown.
   - `shared/` subfolders under [src/reporters/](src/reporters/), [src/converters/](src/converters/), and [test/**utils**/readers/](test/__utils__/readers/) for cross-consumer helpers.
   - AST primitives live in [src/converters/shared/](src/converters/shared/).
 - **Promote on second consumer. Never duplicate. Never import from a sibling.** The moment a helper in `reporters/text/` is needed by `reporters/html/`, it moves to `reporters/shared/` in the same commit. A sibling reporter (or converter) reaching into another's internals is a bug to fix, not a shortcut to use.
 - **Single file vs. directory with `index.ts` barrel.** When a file accumulates distinct responsibilities (discovery, parsing, serialization, orchestration), promote it to a directory. `index.ts` is strictly the orchestrator and public entry. Each responsibility goes into its own file. Established patterns: [src/reporters/text/](src/reporters/text/), [src/converters/v8-to-istanbul/](src/converters/v8-to-istanbul/), [src/converters/v8-nodefy/](src/converters/v8-nodefy/), [src/reporters/shared/lcov/](src/reporters/shared/lcov/), [src/configs/](src/configs/).
 - **Runtime envelope handling stays at the entry boundary.** [src/converters/v8-nodefy/](src/converters/v8-nodefy/) is the only site where Node-vs-Deno V8 envelopes are inspected. Everything downstream operates on the uniform `V8NodefiedDocument`.
 - **Bun's preload script lives at [src/runtimes/bun/preload.ts](src/runtimes/bun/preload.ts) and builds separately in `lib/preload-bun.js`.**
-- **`index.ts` is never a type aggregator.** Types still come from `@types/`.
+- **[src/core.ts](src/core.ts) is the boundary: [src/bin/](src/bin/) and [src/integrations/](src/integrations/) only import from it.**
+- **[src/integrations/](src/integrations/)\<runner\>.ts adapts the core to the shape an external test runner expects (e.g., `poku`, `vitest`, etc.).**
 
 ### Exports
 
