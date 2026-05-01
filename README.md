@@ -29,7 +29,6 @@ Enjoying **Poku**? [Give him a star to show your support](https://github.com/wel
 
 ## Why
 
-- Move and combine entire test suites between **Node.js**, **Deno**, and **Bun** with zero configuration changes.
 - Know exactly what is and isn't tested across each runtime using the same test suite.
 - Whether it's **CommonJS**, **ES Modules**, **TypeScript**, or both, just install and use it.
 
@@ -43,9 +42,9 @@ Enjoying **Poku**? [Give him a star to show your support](https://github.com/wel
 npm i -D @pokujs/coverage
 ```
 
-### 🤹 Usage
+### Usage
 
-#### Poku
+#### 🐷 Poku
 
 ```json
 {
@@ -61,7 +60,7 @@ npm i -D @pokujs/coverage
 
 ---
 
-#### Vitest
+#### ⚡️ Vitest
 
 ```ts
 // vitest.config.ts
@@ -71,7 +70,6 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     coverage: {
-      enabled: true,
       provider: 'custom',
       customProviderModule: '@pokujs/coverage/vitest',
     },
