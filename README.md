@@ -18,7 +18,7 @@ Enjoying **Poku**? [Give him a star to show your support](https://github.com/wel
 
 ---
 
-☔️ **@pokujs/coverage** is a **Poku** plugin that unifies coverage collection across **Node.js**, **Deno**, and **Bun**.
+☔️ **@pokujs/coverage** unifies coverage collection across **Node.js**, **Deno**, and **Bun**.
 
 > [!TIP]
 >
@@ -29,7 +29,6 @@ Enjoying **Poku**? [Give him a star to show your support](https://github.com/wel
 
 ## Why
 
-- Move and combine entire test suites between **Node.js**, **Deno**, and **Bun** with zero configuration changes.
 - Know exactly what is and isn't tested across each runtime using the same test suite.
 - Whether it's **CommonJS**, **ES Modules**, **TypeScript**, or both, just install and use it.
 
@@ -43,7 +42,9 @@ Enjoying **Poku**? [Give him a star to show your support](https://github.com/wel
 npm i -D @pokujs/coverage
 ```
 
-### 🤹 Usage
+### Usage
+
+#### 🐷 Poku
 
 ```json
 {
@@ -56,6 +57,51 @@ npm i -D @pokujs/coverage
 ```
 
 - Then run the tests and a coverage summary will be printed after the suite results.
+
+---
+
+#### ⚡️ Vitest
+
+```ts
+// vitest.config.ts
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  test: {
+    coverage: {
+      provider: 'custom',
+      customProviderModule: '@pokujs/coverage/vitest',
+    },
+  },
+});
+```
+
+```json
+{
+  "scripts": {
+    "test": "vitest run --coverage"
+  }
+}
+```
+
+- **Node.js** only.
+
+---
+
+#### ⌨️ CLI
+
+```json
+{
+  "scripts": {
+    "test:node": "coverage node --test",
+    "test:ava": "coverage ava",
+    "test:mocha": "coverage mocha",
+    "test:deno": "coverage deno test"
+  }
+}
+```
+
+- **Bun** _(built-in)_ isn't supported in **CLI** mode yet.
 
 ---
 

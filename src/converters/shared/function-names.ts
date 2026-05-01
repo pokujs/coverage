@@ -2,6 +2,7 @@ import type { Node } from 'acorn';
 import type { TypedNode } from '../../@types/acorn-nodes.js';
 import type { FunctionLocation } from '../../@types/function-names.js';
 import type { FileAggregation } from '../../@types/v8.js';
+import { offsets } from '../../utils/offsets.js';
 import { astCache } from './ast-cache.js';
 
 const SKIP_KEYS: ReadonlySet<string> = new Set([
@@ -120,6 +121,7 @@ const collectFunctionLocations = (program: Node): FunctionLocation[] => {
 const resolve = (aggregation: FileAggregation, source: string): void => {
   const program = astCache.parse(source);
   const locations = program === null ? null : collectFunctionLocations(program);
+  const lineStartTable = offsets.lineStarts(source);
 
   for (const functionEntry of aggregation.functions.values()) {
     if (functionEntry.isModuleFunction) continue;
@@ -134,6 +136,28 @@ const resolve = (aggregation: FileAggregation, source: string): void => {
 
     if (match !== undefined && match.inferredName !== '')
       functionEntry.name = match.inferredName;
+  }
+
+  for (const functionEntry of aggregation.functions.values()) {
+    if (functionEntry.isModuleFunction) continue;
+    if (functionEntry.name !== '') continue;
+    if (locations === null) continue;
+
+    const match = locations.find(
+      (location) =>
+        location.startOffset >= functionEntry.startOffset &&
+        location.endOffset <= functionEntry.endOffset
+    );
+    if (match === undefined) continue;
+
+    const location = offsets.toLocation(match.startOffset, lineStartTable);
+
+    functionEntry.line = location.line;
+    functionEntry.column = location.column;
+    functionEntry.startOffset = match.startOffset;
+    functionEntry.endOffset = match.endOffset;
+
+    if (match.inferredName !== '') functionEntry.name = match.inferredName;
   }
 
   const anonymousEntries = Array.from(aggregation.functions.values())

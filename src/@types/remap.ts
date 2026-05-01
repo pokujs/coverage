@@ -20,3 +20,10 @@ export type OriginalFileState = {
   lineStartTable: number[];
   functions: V8Function[];
 };
+
+export type GeneratedNameHelper = {
+  state: OriginalFileState;
+  startOffset: number;
+  endOffset: number;
+  count: number;
+};

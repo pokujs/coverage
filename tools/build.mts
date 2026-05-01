@@ -39,11 +39,14 @@ const buildOptions: BuildOptions = {
     'poku/plugin',
     'toml.min',
     'yaml.min',
+    'vitest',
+    'vitest/node',
   ],
 };
 
 await rm('lib', { recursive: true, force: true });
 await mkdir('lib', { recursive: true });
+await mkdir('lib/integrations', { recursive: true });
 await Promise.all([
   // Index
   build({
@@ -94,6 +97,15 @@ await Promise.all([
     outfile: 'lib/bin/cli.js',
     banner: { js: '#!/usr/bin/env node' },
     external: ['../core.js'],
+  }),
+
+  // Vitest
+  build({
+    ...buildOptions,
+    format: 'esm',
+    entryPoints: ['src/integrations/vitest/index.ts'],
+    outfile: 'lib/integrations/vitest.js',
+    plugins: [externalizeCore('../core.js')],
   }),
 
   // Declarations

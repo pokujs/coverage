@@ -13,6 +13,9 @@
       "import": "./lib/index.js",
       "require": "./lib/index.cjs",
       "default": "./lib/index.js"
+    },
+    "./vitest": {
+      "default": "./lib/integrations/vitest.js"
     }
   },
   "bin": {
@@ -56,7 +59,8 @@
   },
   "peerDependencies": {
     "poku": "^4.3.0",
-    "typescript": "^5.9.3 || ^6.0.3"
+    "typescript": "^5.9.3 || ^6.0.3",
+    "vitest": "^4.0.0"
   },
   "peerDependenciesMeta": {
     "poku": {
@@ -64,7 +68,16 @@
     },
     "typescript": {
       "optional": true
+    },
+    "vitest": {
+      "optional": true
     }
+  },
+  "dependencies": {
+    "acorn": "^8.16.0",
+    "jsonc.min": "^1.1.2",
+    "toml.min": "^1.0.0",
+    "yaml.min": "^1.0.0"
   },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
@@ -83,7 +96,8 @@
     "poku": "^4.3.0",
     "prettier": "^3.8.3",
     "tsx": "^4.21.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.5"
   },
   "publishConfig": {
     "access": "public"
@@ -104,6 +118,9 @@
     "node",
     "bun",
     "deno",
+    "typescript",
+    "tsx",
+    "jsx",
     "cross-runtime",
     "cross-platform",
     "interoperability",
@@ -128,12 +145,12 @@
     "c8",
     "monocart-coverage-reports",
     "monocart",
-    "one-double-zero"
-  ],
-  "dependencies": {
-    "acorn": "^8.16.0",
-    "jsonc.min": "^1.1.2",
-    "toml.min": "^1.0.0",
-    "yaml.min": "^1.0.0"
-  }
+    "one-double-zero",
+    "vitest",
+    "jest",
+    "mocha",
+    "ava",
+    "type",
+    "types"
+  ]
 }

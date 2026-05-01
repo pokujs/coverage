@@ -36,14 +36,14 @@ const setup = (
     state.userProvidedTempDir = false;
   }
 
+  state.enabled = true;
+
   if (envVar) {
     state.originalEnv = process.env[envVar];
     process.env[envVar] = state.tempDir;
   }
 
   if (runtime === 'node') sourceMaps.enable(state);
-
-  state.enabled = true;
 };
 
 const teardown = (
