@@ -64,7 +64,6 @@ npm i -D @pokujs/coverage
 
 ```ts
 // vitest.config.ts
-
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -86,6 +85,23 @@ export default defineConfig({
 ```
 
 - **Node.js** only.
+
+---
+
+#### ⌨️ CLI
+
+```json
+{
+  "scripts": {
+    "test:node": "coverage node --test",
+    "test:ava": "coverage ava",
+    "test:mocha": "coverage mocha",
+    "test:deno": "coverage deno test"
+  }
+}
+```
+
+- **Bun** _(built-in)_ isn't supported in **CLI** mode yet.
 
 ---
 
