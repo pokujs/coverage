@@ -29,6 +29,12 @@
       "options": {
         "trailingComma": "none"
       }
+    },
+    {
+      "files": "*.coveragerc",
+      "options": {
+        "trailingComma": "none"
+      }
     }
   ]
 }

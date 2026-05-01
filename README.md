@@ -45,6 +45,8 @@ npm i -D @pokujs/coverage
 
 ### 🤹 Usage
 
+#### Poku
+
 ```json
 {
   "scripts": {
@@ -56,6 +58,36 @@ npm i -D @pokujs/coverage
 ```
 
 - Then run the tests and a coverage summary will be printed after the suite results.
+
+---
+
+#### Vitest
+
+```ts
+// vitest.config.ts
+
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  test: {
+    coverage: {
+      enabled: true,
+      provider: 'custom',
+      customProviderModule: '@pokujs/coverage/vitest',
+    },
+  },
+});
+```
+
+```json
+{
+  "scripts": {
+    "test": "vitest run --coverage"
+  }
+}
+```
+
+- **Node.js** only.
 
 ---
 
