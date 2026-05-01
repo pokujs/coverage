@@ -4,10 +4,7 @@ export function identity<T>(value: T): T {
   return value;
 }
 
-export function mapArray<
-  Input,
-  Output
->(
+export function mapArray<Input, Output>(
   items: ReadonlyArray<Input>,
   transform: (item: Input, index: number) => Output
 ): Output[] {

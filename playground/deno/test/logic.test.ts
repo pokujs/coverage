@@ -54,10 +54,11 @@ Deno.test('pickLabel hits all four nested-ternary arms', () => {
 });
 
 Deno.test('describeUser combines ?., ??, && and ||', () => {
-  assertEquals(
-    describeUser({ name: 'Ada', role: 'admin', verified: true }),
-    { name: 'Ada', role: 'admin', verified: true }
-  );
+  assertEquals(describeUser({ name: 'Ada', role: 'admin', verified: true }), {
+    name: 'Ada',
+    role: 'admin',
+    verified: true,
+  });
   assertEquals(describeUser(undefined), {
     name: 'anonymous',
     role: 'guest',
@@ -76,10 +77,13 @@ Deno.test('greet runs || inside a template interpolation', () => {
   assertEquals(greet('', ''), 'Hello, stranger!');
 });
 
-Deno.test('banner ignores branch tokens inside the template static part', () => {
-  assert(banner('Welcome').includes('Welcome'));
-  assert(banner(null).includes('untitled'));
-});
+Deno.test(
+  'banner ignores branch tokens inside the template static part',
+  () => {
+    assert(banner('Welcome').includes('Welcome'));
+    assert(banner(null).includes('untitled'));
+  }
+);
 
 Deno.test('askOrReturn respects the ? inside the string literal', () => {
   assertEquals(askOrReturn(true), 'what?:now');
@@ -92,10 +96,13 @@ Deno.test('matchOrDefault uses a regex literal with pipe alternation', () => {
   assertEquals(matchOrDefault('z', 'none'), 'none');
 });
 
-Deno.test('counter exercises && short-circuit even with line comment noise', () => {
-  assertEquals(counter(0), 0);
-  assertEquals(counter(5), 6);
-});
+Deno.test(
+  'counter exercises && short-circuit even with line comment noise',
+  () => {
+    assertEquals(counter(0), 0);
+    assertEquals(counter(5), 6);
+  }
+);
 
 Deno.test('ensureArray wraps non-array values, passes arrays through', () => {
   assertEquals(ensureArray([1, 2]), [1, 2]);

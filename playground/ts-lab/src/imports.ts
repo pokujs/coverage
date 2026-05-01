@@ -1,5 +1,5 @@
 // Type-only imports — should be stripped to nothing.
-import type { User, Session } from './types-only.ts';
+import type { Session, User } from './types-only.ts';
 import { makeUser } from './types-only.ts';
 
 // Line 5 above is pure TS (gets erased)

@@ -1,10 +1,10 @@
 import { strict as assert, test } from 'poku';
-import { isAdmin, makeUser, ok, err } from '../src/types-only.ts';
-import { identity, mapArray, narrow } from '../src/generics.ts';
-import { Status, describe, Level, rank } from '../src/enums.ts';
-import { Service, useService } from '../src/decorators.ts';
-import { authenticate, createGuest } from '../src/imports.ts';
 import { Calculator, useCalculator } from '../src/classes.ts';
+import { Service, useService } from '../src/decorators.ts';
+import { describe, Level, rank, Status } from '../src/enums.ts';
+import { identity, mapArray, narrow } from '../src/generics.ts';
+import { authenticate, createGuest } from '../src/imports.ts';
+import { err, isAdmin, makeUser, ok } from '../src/types-only.ts';
 
 test('types-only runtime', () => {
   const user = makeUser('1', 'Alice', 'admin');
@@ -15,7 +15,10 @@ test('types-only runtime', () => {
 
 test('generics', () => {
   assert.equal(identity(5), 5);
-  assert.deepEqual(mapArray([1, 2, 3], (n) => n * 2), [2, 4, 6]);
+  assert.deepEqual(
+    mapArray([1, 2, 3], (n) => n * 2),
+    [2, 4, 6]
+  );
   const widget = { kind: 'widget' as const, label: 'w' };
   assert.equal(narrow(widget, 'widget'), widget);
   assert.equal(narrow(widget, 'other' as 'widget'), null);

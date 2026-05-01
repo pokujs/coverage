@@ -1,10 +1,6 @@
 export const MODE: string = process.env.PLAYGROUND_MODE || 'default';
 
-export function firstNonEmpty(
-  a: string,
-  b: string,
-  c: string
-): string {
+export function firstNonEmpty(a: string, b: string, c: string): string {
   return a || b || c || 'anonymous';
 }
 

@@ -54,10 +54,11 @@ test('pickLabel hits all four nested-ternary arms', (t) => {
 });
 
 test('describeUser combines ?., ??, && and ||', (t) => {
-  t.deepEqual(
-    describeUser({ name: 'Ada', role: 'admin', verified: true }),
-    { name: 'Ada', role: 'admin', verified: true }
-  );
+  t.deepEqual(describeUser({ name: 'Ada', role: 'admin', verified: true }), {
+    name: 'Ada',
+    role: 'admin',
+    verified: true,
+  });
   t.deepEqual(describeUser(undefined), {
     name: 'anonymous',
     role: 'guest',
