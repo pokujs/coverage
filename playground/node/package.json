@@ -1,0 +1,6 @@
+{
+  "type": "module",
+  "scripts": {
+    "test": "node ../../lib/bin/cli.js node --test 'test/**/*.test.ts'"
+  }
+}

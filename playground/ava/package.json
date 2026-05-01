@@ -1,0 +1,9 @@
+{
+  "type": "module",
+  "scripts": {
+    "test": "node ../../lib/bin/cli.js ava"
+  },
+  "devDependencies": {
+    "ava": "^8.0.0"
+  }
+}
