@@ -149,6 +149,7 @@
     "vitest",
     "jest",
     "mocha",
+    "ava",
     "type",
     "types"
   ]
