@@ -14,7 +14,7 @@ The first code coverage package that targets Node.js (V8), Bun (JSC), and Deno (
 ## How It Works
 
 - Under **Node.js**, the plugin sets `NODE_V8_COVERAGE` before **Poku** spawns tests. On teardown, the plugin reads the **V8** **JSON** files from `<tempDir>` and forwards the data.
-- Under **Deno**, the plugin sets `DENO_COVERAGE_DIR` before **Poku** spawns tests. On teardown, the plugin shells out to `deno coverage <tempDir>` and forwards the data.
+- Under **Deno**, the plugin sets `DENO_COVERAGE_DIR` before **Poku** spawns tests. On teardown, the plugin reads the **V8** **JSON** files from `<tempDir>` (emitted as bare `V8ScriptCoverage` entries, without the Node-style envelope) and forwards the data.
 - Under **Bun**, the plugin attaches to the **JSC** **Inspector** over WebSocket and captures basic-block execution counts via `Runtime.getBasicBlocks`. On teardown, the plugin reads the **JSON** files from `<tempDir>` and forwards the data.
 
 > V8 vs. JSC reports have structural distinctions, therefore, the focus is not that all runtimes present exactly the same lines and percentages, but rather that coverage within the limits of each engine and runtime is coherent and consistent with the reality of each fixture and their respective snapshots.
@@ -34,7 +34,6 @@ The first code coverage package that targets Node.js (V8), Bun (JSC), and Deno (
 - **No `any`. No `as unknown as T` (or variants).** Direct `as T` only at real boundaries (`JSON.parse(content) as MyShape`), never to force compatibility between types you own.
 - **Prefer named types over `string`, `unknown`, or broad generics.** If a specific union already exists (e.g. `Runtime`), use it.
 - **Deduplicate.** If the same type appears in two places (even via `Foo['bar']`), unify it under `@types/` and import from both sides.
-- **When introducing a new type:** identify its domain, export it from the matching file (or create a new domain file), import it in consumers via the specific path.
 
 ---
 
@@ -70,7 +69,7 @@ The first code coverage package that targets Node.js (V8), Bun (JSC), and Deno (
 - **Runtime envelope handling stays at the entry boundary.** [src/converters/v8-nodefy/](src/converters/v8-nodefy/) is the only site where Node-vs-Deno V8 envelopes are inspected. Everything downstream operates on the uniform `V8NodefiedDocument`.
 - **Bun's preload script lives at [src/runtimes/bun/preload.ts](src/runtimes/bun/preload.ts) and builds separately in `lib/preload-bun.js`.**
 - **[src/core.ts](src/core.ts) is the boundary: [src/bin/](src/bin/) and [src/integrations/](src/integrations/) only import from it.**
-- **[src/integrations/](src/integrations/)\<runner\>.ts adapts the core to the shape an external test runner expects (e.g., `poku`, `vitest`, etc.).**
+- **Each runner under [src/integrations/](src/integrations/) adapts the core to the shape that runner expects (e.g., `poku`, `vitest`).** Same single-file-vs-directory rule as elsewhere applies.
 
 ### Exports
 
@@ -83,7 +82,7 @@ The first code coverage package that targets Node.js (V8), Bun (JSC), and Deno (
 
 ### Tests, fixtures, snapshots
 
-End-to-end tests live under [test/](test/). Open the directory to see the current layout.
+End-to-end tests live under [test/](test/).
 
 - **Follow established patterns before inventing a new one.** Look for a similar structure in the project and replicate it.
   - If the existing pattern does not fit, understand why before diverging.
@@ -92,7 +91,6 @@ End-to-end tests live under [test/](test/). Open the directory to see the curren
 - **Case is always its own path segment** in tests, in fixtures, in snapshots. Never flatten it into the filename. The three artifacts share the same `<case>` name so they can be located from one another by substitution.
 - **Runtime-agnostic test body.** Resolve fixture, run poku, compare against snapshot. Legitimate divergence between runtimes lives in the snapshot, never in the test.
 - **Fixtures are hydrated at setup time.** Each `<reporter>/<runtime>/<case>/` directory versions only its `poku.config.js`. `src/` and `test/` are copied in from [test/\_\_resources\_\_/](test/__resources__/) by the `hydrate()` step in [poku.config.js](poku.config.js).
-- **Fixture source of truth lives under [test/\_\_resources\_\_/](test/__resources__/).** Pattern resolution is done by a Map in [poku.config.js](poku.config.js).
 - **Test helpers follow the typed-object export pattern**, same rule as `src/`. Helper types live under `@types/` like any other domain.
 - **Snapshots are stored per platform: `<reporter>/<runtime>/<platform>/<case>.<ext>`** where `<platform>` is one of `darwin`, `linux`, `win32`. There is no "shared" snapshot. Every OS carries its own copy, even when content is identical.
 - **Every `.json` snapshot follows the canonical `CoverageSnapshot` shape in [src/@types/tests.ts](src/@types/tests.ts).** Each reporter fills only the fields it emits; simpler reporters are natural subsets of richer ones. Reader files in [test/**utils**/readers/](test/__utils__/readers/) parse the native format into that shape via builders in [test/**utils**/readers/shared/snapshot.ts](test/__utils__/readers/shared/snapshot.ts). Text reporters keep their `.txt` snapshots as-is.
@@ -120,15 +118,9 @@ bun run test:bun       # runs all tests for Bun
 deno task test:deno    # runs all tests for Deno
 ```
 
-Always ask before regenerating snapshots after a deliberate change to a reporter's output.
-
-```sh
-npm run build:snapshots
-```
-
 ---
 
-### Skills
+## Skills
 
 - [.claude/skills/v8-audit/SKILL.md](.claude/skills/v8-audit/SKILL.md): audits uncovered lines/branches/functions of a project against raw V8 (Node.js / Deno).
   - **Usage:** `/v8-audit <project-path> [<coverage-path>]` (requires `lcov` and `v8` reporter outputs)
