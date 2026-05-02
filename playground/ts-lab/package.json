@@ -1,12 +1,8 @@
 {
   "type": "module",
   "scripts": {
-    "test:node": "poku --coverage",
-    "test:bun": "bun --bun poku --coverage",
-    "test:deno": "deno run -A npm:poku --coverage"
-  },
-  "devDependencies": {
-    "@pokujs/coverage": "file:..",
-    "poku": "^4.3.0"
+    "test:bun": "bun --bun poku",
+    "test:deno": "deno run -A npm:poku",
+    "test:node": "poku"
   }
 }

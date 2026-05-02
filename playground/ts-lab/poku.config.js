@@ -1,5 +1,5 @@
-import { coverage } from '@pokujs/coverage';
 import { defineConfig } from 'poku';
+import { coverage } from '../../lib/index.js';
 
 export default defineConfig({
   quiet: true,
