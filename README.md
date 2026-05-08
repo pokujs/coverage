@@ -129,7 +129,7 @@ module.exports = defineConfig({
 
 ### Examples
 
-[**Poku**](./playground/ts/) • [**Node.js**](./playground/node/) • [**Deno**](./playground/deno/) • [**Vitest**](./playground/vitest/) • [**Mocha**](./playground/mocha/) • [**AVA**](./playground/ava/)
+[**Poku**](./playground/ts/) • [**Node.js**](./playground/node/) • [**Deno**](./playground/deno/) • [**Vitest**](./playground/vitest/) • [**Jest**](./playground/jest/) • [**Mocha**](./playground/mocha/) • [**AVA**](./playground/ava/)
 
 ---
 
