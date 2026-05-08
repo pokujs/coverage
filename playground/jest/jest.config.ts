@@ -1,9 +1,10 @@
-import type { Config } from 'jest';
+import { defineConfig } from 'jest';
 
-const config: Config = {
+export default defineConfig({
   preset: 'ts-jest/presets/default-esm',
   extensionsToTreatAsEsm: ['.ts'],
   testMatch: ['<rootDir>/test/**/*.test.ts'],
-};
-
-export default config;
+  coverageReporters: ['none'], // disable Jest reporters
+  reporters: ['default', '@pokujs/coverage/jest'],
+  coverageProvider: 'v8',
+});

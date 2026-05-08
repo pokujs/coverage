@@ -108,6 +108,16 @@ await Promise.all([
     plugins: [externalizeCore('../core.js')],
   }),
 
+  // Jest (CJS reporter)
+  build({
+    ...buildOptions,
+    ...esmToCjs,
+    format: 'cjs',
+    entryPoints: ['src/integrations/jest/index.ts'],
+    outfile: 'lib/integrations/jest.cjs',
+    plugins: [externalizeCore('../core.cjs')],
+  }),
+
   // Declarations
   writeFile('lib/index.d.ts', dtsBundle, 'utf-8'),
 ]);

@@ -16,6 +16,9 @@
     },
     "./vitest": {
       "default": "./lib/integrations/vitest.js"
+    },
+    "./jest": {
+      "default": "./lib/integrations/jest.cjs"
     }
   },
   "bin": {
@@ -76,7 +79,8 @@
   "peerDependencies": {
     "poku": "^4.3.0",
     "typescript": "^5.9.3 || ^6.0.3",
-    "vitest": "^4.0.0"
+    "vitest": "^4.0.0",
+    "jest": "^30.0.0"
   },
   "peerDependenciesMeta": {
     "poku": {
@@ -86,6 +90,9 @@
       "optional": true
     },
     "vitest": {
+      "optional": true
+    },
+    "jest": {
       "optional": true
     }
   },
@@ -97,16 +104,20 @@
   },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
+    "@jest/reporters": "^30.4.1",
+    "@jest/test-result": "^30.4.1",
+    "@jest/types": "^30.4.1",
     "@jridgewell/trace-mapping": "^0.3.31",
     "@sveltejs/acorn-typescript": "^1.0.9",
     "@types/lcov-parse": "^1.0.2",
-    "@types/node": "^25.6.0",
+    "@types/node": "^25.6.2",
     "cross-env": "^10.1.0",
     "domhandler": "^6.0.1",
     "dts-bundle-generator": "^9.5.1",
     "esbuild": "^0.28.0",
-    "fast-xml-parser": "^5.7.2",
+    "fast-xml-parser": "^5.7.3",
     "htmlparser2": "^12.0.0",
+    "jest-resolve": "^30.4.1",
     "lcov-parse": "^1.0.0",
     "packages-update": "^2.0.0",
     "poku": "^4.3.0",

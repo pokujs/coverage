@@ -1,10 +1,11 @@
 {
   "type": "module",
   "scripts": {
-    "test": "NODE_OPTIONS=--experimental-vm-modules node ../../lib/bin/cli.js jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --coverage"
   },
   "devDependencies": {
-    "jest": "^30.3.0",
+    "@pokujs/coverage": "file:../..",
+    "jest": "^30.4.1",
     "ts-jest": "^29.4.9"
   }
 }

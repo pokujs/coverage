@@ -28,6 +28,7 @@ import { BaseCoverageProvider as BaseProvider } from 'vitest/node';
 import { config, lifecycle, state, vitestrc } from '../../core.js';
 import { traceMap } from '../../utils/source-map/index.js';
 import { sourceMapTrim } from '../../utils/source-map/trim.js';
+import { lineLengths } from '../shared/line-lengths.js';
 
 const WORKER_STATE_KEY = '__pokujsCoverageVitestWorker__';
 const NO_OP_DEBUG: ((..._logs: unknown[]) => void) & { enabled: false } =
@@ -59,22 +60,6 @@ const workerOnly = (entry: V8ScriptCoverage): boolean => {
 const stripQuery = (url: string): string => {
   const queryIndex = url.indexOf('?');
   return queryIndex === -1 ? url : url.slice(0, queryIndex);
-};
-
-const computeLineLengths = (code: string): number[] => {
-  const lengths: number[] = [];
-  let lineStart = 0;
-
-  for (let charIndex = 0; charIndex < code.length; charIndex++) {
-    if (code.charCodeAt(charIndex) === 10) {
-      lengths.push(charIndex - lineStart);
-
-      lineStart = charIndex + 1;
-    }
-  }
-
-  lengths.push(code.length - lineStart);
-  return lengths;
 };
 
 const shiftFunctions = (
@@ -271,7 +256,7 @@ class PokuCoverageProvider extends BaseProvider implements CoverageProvider {
         }
       }
 
-      const lineLengths = computeLineLengths(transform.code);
+      const transpiledLineLengths = lineLengths.compute(transform.code);
 
       const adjustedScript: V8ScriptCoverage = {
         scriptId: entry.scriptId,
@@ -285,7 +270,10 @@ class PokuCoverageProvider extends BaseProvider implements CoverageProvider {
       const envelope = {
         result: [adjustedScript],
         'source-map-cache': {
-          [entry.url]: { data: trimmedMap, lineLengths },
+          [entry.url]: {
+            data: trimmedMap,
+            lineLengths: transpiledLineLengths,
+          },
         },
       };
 
