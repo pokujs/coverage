@@ -49,21 +49,19 @@ npm i -D @pokujs/coverage
 ```json
 {
   "scripts": {
+    "test:node": "poku --coverage",
     "test:bun": "bun --bun poku --coverage",
-    "test:deno": "deno run -A npm:poku --coverage",
-    "test:node": "poku --coverage"
+    "test:deno": "deno run -A npm:poku --coverage"
   }
 }
 ```
-
-- Then run the tests and a coverage summary will be printed after the suite results.
 
 ---
 
 #### ⚡️ Vitest
 
-```ts
-// vitest.config.ts
+```js
+// vitest.config.js
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -84,7 +82,31 @@ export default defineConfig({
 }
 ```
 
-- **Node.js** only.
+---
+
+#### 🃏 Jest
+
+```js
+// jest.config.js
+const { defineConfig } = require('jest');
+
+module.exports = defineConfig({
+  coverageProvider: 'v8',
+  coverageReporters: ['none'],
+  reporters: ['default', '@pokujs/coverage/jest'],
+});
+```
+
+```json
+{
+  "scripts": {
+    "test": "jest --coverage"
+  }
+}
+```
+
+- `coverageReporters: ['none']` disables **Jest** coverage reporters.
+- **Jest** coverage settings are not remapped to **@pokujs/coverage**.
 
 ---
 
