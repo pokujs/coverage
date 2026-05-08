@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0](https://github.com/pokujs/coverage/compare/v0.9.0...v0.10.0) (2026-05-08)
+
+
+### Features
+
+* support Jest ([#43](https://github.com/pokujs/coverage/issues/43)) ([39275e6](https://github.com/pokujs/coverage/commit/39275e66609c2d068bc9c3c81beddc729ae0113b))
+
 ## [0.9.0](https://github.com/pokujs/coverage/compare/v0.8.1...v0.9.0) (2026-05-01)
 
 
